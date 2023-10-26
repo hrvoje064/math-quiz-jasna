@@ -1226,6 +1226,7 @@ Restart program immediately after"]
           (simplify-path
            (string->some-system-path scribble-path 'windows)
            )))))
+(provide scribble-path)
 
 (define menu-item-html (new menu-item%
                            [label "HTML Documentation"]
@@ -2366,13 +2367,17 @@ Restart program immediately after"]
                                (if (eq? *exec-button* calc-button)
                                    (send number-input enable #t)
                                    (disable/enable-input-fields #t))
-                               (send button set-label "Pause"))
+                               (send button set-label "Pause")
+                               (disable/enable-set/font-menu #f)) ; disable doc/about menu
                               (else
                                (set! *wiwi* #t) ; set pause to on
                                (set! *wiwi-start* (current-seconds)) ; mark time
                                (send text-lines change-style style-delta-blue)
                                (send text-lines insert
                                      (format "On the break -  time suspended~n"))
+                               ;; enabling doc/about menu
+                               (send menu-item-doc enable #t)
+                               (send menu-item-about enable #t)
                                ; disable all buttons and input fields
                                (send *exec-button* enable #f)
                                (disable/enable-input-fields #f) ; seq cheat button
@@ -3084,7 +3089,7 @@ Restart program immediately after"]
                   set-all-fonts set-comparison-level set-status-msg-font
                   set-input-font set-doc-font set-about-font set-report-font
                   set-button-font set-clock-level set-fraction-level
-                  set-skip-increment set-text-level)))
+                  set-skip-increment set-text-level menu-item-doc menu-item-about)))
 
 (define (disable/enable-popup-window-menu t/f)
   (for-each (lambda (menu) (send menu enable t/f))

@@ -2,6 +2,7 @@
 
 (module+ test
   (require rackunit))
+(require racket/runtime-path)
 
 ;; Notice
 ;; To install (from within the package directory):
@@ -33,4 +34,3 @@
 )
 
 (require "math-quiz.rkt") ; Start the program
-
