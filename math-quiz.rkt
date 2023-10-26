@@ -1205,35 +1205,23 @@ Restart program immediately after"]
 ;;; Scribbling part
 ;;; ================================================================
 
-(define scribble-path "./scribblings/math-quiz.html") ; linux
-
 (define (normalize-path path-str)
-  "Fixing Windows path in racket -- replacing \\ with /"
-  (define (normalize lst)
-    (cond
-      ((null? lst) null)
-      ((char=? (car lst) #\\)
-       (cons #\/ (normalize (cdr lst))))
-      (else
-       (cons (car lst) (normalize (cdr lst))))))
   (list->string
-   (normalize (string->list path-str))))
+   (map (lambda (c) (case c
+                      ((#\\) #\/)
+                      (else c))) (string->list path-str))))
 
-(when (eq? (system-type) 'windows)
-  (set! scribble-path
-        (normalize-path
-         (some-system-path->string
-          (simplify-path
-           (string->some-system-path scribble-path 'windows)
-           )))))
-(provide scribble-path)
+(define scribble-path-string
+  (normalize-path
+   (string-append
+    (path->string (current-directory)) "scribblings/math-quiz.html")))
 
 (define menu-item-html (new menu-item%
                            [label "HTML Documentation"]
                            [parent help-menu]
                            [callback
                             (lambda (mi e)
-                              (send-url scribble-path))]))
+                              (send-url scribble-path-string))]))
 
 ;;; =================================================================
 
