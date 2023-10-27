@@ -14,5 +14,5 @@
 (define pkg-authors '(Hrvoje Blazevic))
 (define license '(Apache-2.0 OR MIT))
 ;;; making sure Racket package repo tests don't fail/time out
-;;; ther's nothing in main.rkt -- it just starts the GUI
+;;; there's nothing in main.rkt -- it just starts the GUI
 (define test-omit-paths '("main.rkt"))
