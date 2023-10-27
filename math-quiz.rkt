@@ -4466,10 +4466,18 @@ but limited by *max-penalty-exercises*"
          (seq2 (add-sequences seq1 inc-lst)))
     seq2))
 
+;; Direct solution
+;(define (add-sequences seq lsts)
+;  (if (null? lsts)
+;      seq
+;      (map + (car lsts) (add-sequences seq (cdr lsts)))))
+
+;; Tool solution
+(define (apply-map f lol)
+  (foldl (lambda (l r) (map f l r)) (car lol) (cdr lol)))
+
 (define (add-sequences seq lsts)
-  (if (null? lsts)
-      seq
-      (map + (car lsts) (add-sequences seq (cdr lsts)))))
+  (apply-map + (cons seq lsts)))
 
 (module+ test
   (check-equal? (add-sequences '(18 20 22 24 26) (make-list 1 '(0 0 1 3 6)))
@@ -4478,7 +4486,7 @@ but limited by *max-penalty-exercises*"
                 '(18 20 25 33 44))
   )
 
-;;; tough sequences; Fibonacci, inc=exp inc=exp */+ incremented
+;;; tough sequences; Fibonacci, inc=exp inc=exp */+ incremented, * n
 
 (define (exp-inc*sequence) ; tough
   (let ((begin (random 0 IQ-seq-limit))
@@ -4498,6 +4506,12 @@ but limited by *max-penalty-exercises*"
 (define (fibonacci-sequence n ac1 ac2)
   (reverse (fibonacci n ac1 ac2 '())))
 
+(define (expt-sequence)
+  (let* ((begin (random 0 5))
+         (exponent (random 2 4)) ; max 3
+         (seq (build-list 5 (lambda (i) (+ i begin)))))
+    (map (lambda (x) (expt x exponent)) seq)))
+
 (module+ test
   (check-equal? (fibonacci-sequence IQ-seq-limit-fib 0 1)
                 '(0 1 1 2 3 5 8 13 21 34 55 89 144))
@@ -4505,7 +4519,6 @@ but limited by *max-penalty-exercises*"
                 '(4 7 11 18 29 47 76 123 199 322 521 843 1364))
   )
   
-
 (define (get-sequence-3)
   (let* ((fibs (lambda ()
                  (take (drop (fibonacci-sequence IQ-seq-limit-fib 0 1)
@@ -4516,7 +4529,7 @@ but limited by *max-penalty-exercises*"
                    (take (drop (fibonacci-sequence IQ-seq-limit-fib acc1 acc2)
                                (random (- IQ-seq-limit-fib 4))) 5)))
          (seq-lst
-          (list fibs exp-inc*sequence fibs-x exp-inc+sequence))
+          (list fibs-x exp-inc*sequence fibs exp-inc+sequence fibs-x expt-sequence))
          (chosen (list-ref seq-lst (random (length seq-lst)))))
     (chosen)))
 
