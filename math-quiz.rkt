@@ -328,6 +328,7 @@
 ;;; Main Window & geometry
 ;;; ================================================================
 
+(provide main-window)
 (define main-window (new frame%
                          [label "Jasna's math quiz"]
                          [width 790]
@@ -3079,6 +3080,7 @@ Restart program immediately after"]
                   set-button-font set-clock-level set-fraction-level
                   set-skip-increment set-text-level menu-item-doc menu-item-about)))
 
+(provide disable/enable-popup-window-menu)
 (define (disable/enable-popup-window-menu t/f)
   (for-each (lambda (menu) (send menu enable t/f))
             (list show-compare-window-menu show-odd-even-window-menu
@@ -5107,9 +5109,9 @@ but limited by *max-penalty-exercises*"
  (send about-text scroll-to-position 0))
 
 
-;;; Starting the GUI
-;;; ===========================================================
-(send main-window show #t)
-
-;;; disable popup menus
-(disable/enable-popup-window-menu #f)
+;;;; Starting the GUI
+;;;; ===========================================================
+;(send main-window show #t)
+;
+;;;; disable popup menus
+;(disable/enable-popup-window-menu #f)

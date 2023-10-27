@@ -1,4 +1,4 @@
-#lang racket/base
+#lang racket/gui
 
 (module+ test
   (require rackunit))
@@ -30,7 +30,12 @@
   ;; this file is run using DrRacket or the `racket` executable.  The code here
   ;; does not run when this file is required by another module. Documentation:
   ;; http://docs.racket-lang.org/guide/Module_Syntax.html#%28part._main-and-test%29
-)
+  )
 
-(require "math-quiz.rkt") ; Start the program
+(require "math-quiz.rkt")
 
+;;; Starting the GUI
+;;; ===========================================================
+(send main-window show #t)
+;;; disable popup menus
+(disable/enable-popup-window-menu #f)
