@@ -12,4 +12,4 @@
 (define pkg-desc "Math quiz for grade 1,2,3 ...")
 (define version "1.0")
 (define pkg-authors '(Hrvoje Blazevic))
-(define license '(Apache-2.0 OR MIT))
+(define license '(MIT))
