@@ -1221,7 +1221,7 @@ Restart program immediately after"]
 ;(println math-quiz-module)
 
 (define-runtime-path scribble-path "scribblings/math-quiz.html")
-(println scribble-path)
+;(println scribble-path)
 
 (define menu-item-html (new menu-item%
                            [label "HTML Documentation"]
