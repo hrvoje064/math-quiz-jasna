@@ -28,7 +28,6 @@
 (require graphics/value-turtles)
 (require racket/unsafe/ops)
 (require browser/external)
-(require "info.rkt")
 
 (require "docs.rkt") ; docs.rkt file must be in the same directory as math-quiz
 (require "word-problems.rkt") ; data for ABC-sort, and text-problems
