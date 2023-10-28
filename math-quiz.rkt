@@ -28,6 +28,7 @@
 (require graphics/value-turtles)
 (require racket/unsafe/ops)
 (require browser/external)
+(require racket/runtime-path)
 
 (require "docs.rkt") ; docs.rkt file must be in the same directory as math-quiz
 (require "word-problems.rkt") ; data for ABC-sort, and text-problems
@@ -1211,17 +1212,32 @@ Restart program immediately after"]
                       ((#\\) #\/)
                       (else c))) (string->list path-str))))
 
-(define scribble-path-string
-  (normalize-path
-   (string-append
-    (path->string (current-directory)) "scribblings/math-quiz.html")))
+;(define scribble-path-string
+;  (normalize-path
+;   (string-append
+;    (path->string (current-directory)) "scribblings/math-quiz.html")))
+
+;(define-runtime-module-path-index math-quiz-module "math-quiz.rkt")
+;(println math-quiz-module)
+
+(define-runtime-path scribble-path "scribblings/math-quiz.html")
+(println scribble-path)
 
 (define menu-item-html (new menu-item%
                            [label "HTML Documentation"]
                            [parent help-menu]
                            [callback
                             (lambda (mi e)
-                              (send-url scribble-path-string))]))
+                              (send-url
+                               (normalize-path
+                                (path->string scribble-path))))]))
+
+;(define menu-item-html (new menu-item%
+;                           [label "HTML Documentation"]
+;                           [parent help-menu]
+;                           [callback
+;                            (lambda (mi e)
+;                              (send-url (path->string scribble-path-string)))]))
 
 ;;; =================================================================
 

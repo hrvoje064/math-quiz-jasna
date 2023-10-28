@@ -33,7 +33,6 @@
   )
 
 (require "math-quiz.rkt")
-
 ;;; Starting the GUI
 ;;; ===========================================================
 (send main-window show #t)

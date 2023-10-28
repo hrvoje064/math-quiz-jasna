@@ -1,5 +1,5 @@
 #lang info
-(define name "Math-quiz")
+(define name "math-quiz")
 (define gracket-launcher-names '("math-quiz"))
 (define collection "math-quiz")
 (define deps '("drracket"
