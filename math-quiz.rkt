@@ -1206,38 +1206,22 @@ Restart program immediately after"]
 ;;; Scribbling part
 ;;; ================================================================
 
-(define (normalize-path path-str)
+(define (fix-path path-str)
   (list->string
    (map (lambda (c) (case c
                       ((#\\) #\/)
                       (else c))) (string->list path-str))))
 
-;(define scribble-path-string
-;  (normalize-path
-;   (string-append
-;    (path->string (current-directory)) "scribblings/math-quiz.html")))
-
-;(define-runtime-module-path-index math-quiz-module "math-quiz.rkt")
-;(println math-quiz-module)
-
 (define-runtime-path scribble-path "scribblings/math-quiz.html")
-;(println scribble-path)
 
 (define menu-item-html (new menu-item%
-                           [label "HTML Documentation"]
-                           [parent help-menu]
-                           [callback
-                            (lambda (mi e)
-                              (send-url
-                               (normalize-path
-                                (path->string scribble-path))))]))
-
-;(define menu-item-html (new menu-item%
-;                           [label "HTML Documentation"]
-;                           [parent help-menu]
-;                           [callback
-;                            (lambda (mi e)
-;                              (send-url (path->string scribble-path-string)))]))
+                            [label "HTML Documentation"]
+                            [parent help-menu]
+                            [callback
+                             (lambda (mi e)
+                               (send-url
+                                (fix-path
+                                 (path->string scribble-path))))]))
 
 ;;; =================================================================
 
