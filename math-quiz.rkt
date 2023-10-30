@@ -2,32 +2,13 @@
 
 ;;; Copyright (c) 2022,2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Scheme (Racket) source
-
-;;; Math Quiz, Version 3.8.5
-;;; added level 0 for "+ -" fast simple addition/subtraction, forcing calculation
-;;; without using fingers for counting.
-;;; Sequences, before/between/after, position-value added
-;;; geometry odd/even adjusted, arithmetic/popup separated
-;;; fractions and scrolling start-button panel added, fonts cleaned
-;;; Roman Numerals added
-;;; Counting money (USD) added - erasing of cash input fields changed
-;;; Counting money (Philippine Peso) added
-;;; Sorting words alphabetically
-;;; Skip counting added
-;;; Docs & dictionary transfered to new module - finally!
-
-;;; working with three digits unlimited
-;;; when subtraction weighing left number with more 0s in the middle digit
-;;; for comparison weighin "=" to 1/5
-;;; multiplication table 12*12 (default 10*10)
-
+;;; Math Quiz, Version scribblings-v1.0
 
 (require 2htdp/universe)
 (require pict)
 (require graphics/value-turtles)
 (require racket/unsafe/ops)
-(require browser/external)
+(require net/sendurl)
 (require racket/runtime-path)
 
 (require "docs.rkt") ; docs.rkt file must be in the same directory as math-quiz
@@ -1206,22 +1187,21 @@ Restart program immediately after"]
 ;;; Scribbling part
 ;;; ================================================================
 
-(define (fix-path path-str)
-  (list->string
-   (map (lambda (c) (case c
-                      ((#\\) #\/)
-                      (else c))) (string->list path-str))))
+(define-runtime-path scribble-path "scribblings")
+(define scribble-path-string (path->string scribble-path))
 
-(define-runtime-path scribble-path "scribblings/math-quiz.html")
+(if (eq? (system-type) 'windows)
+    (set! scribble-path-string
+          (string-append scribble-path-string "\\math-quiz.html"))
+    (set! scribble-path-string
+          (string-append scribble-path-string "/math-quiz.html")))
 
 (define menu-item-html (new menu-item%
                             [label "HTML Documentation"]
                             [parent help-menu]
                             [callback
                              (lambda (mi e)
-                               (send-url
-                                (fix-path
-                                 (path->string scribble-path))))]))
+                               (send-url/file scribble-path-string))]))
 
 ;;; =================================================================
 
