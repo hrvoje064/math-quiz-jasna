@@ -1,5 +1,6 @@
 #lang info
 (define name "math-quiz")
+(define gracket-launcher-libraries '("main.rkt"))
 (define gracket-launcher-names '("math-quiz"))
 (define collection "math-quiz")
 (define deps '("drracket"
