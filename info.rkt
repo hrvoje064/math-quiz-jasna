@@ -3,7 +3,8 @@
 (define gracket-launcher-libraries '("main.rkt"))
 (define gracket-launcher-names '("math-quiz"))
 (define collection "math-quiz")
-(define deps '("drracket"
+(define deps '("net-lib"
+               "drracket"
                "gui-lib"
                "htdp-lib"
                "pict-lib"
