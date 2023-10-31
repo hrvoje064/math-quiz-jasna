@@ -2920,16 +2920,6 @@ Restart program immediately after"]
   (send text-input enable #t)
   (start-quiz *n* 0))
 
-(define (append-shuffle L . Lists)
-  "Append with shuffle"
-  (define (shuffle L1 L2)
-    (cond
-      ((null? L2) L1)
-      ((null? L1) L2)
-      (else
-       (cons (car L1) (cons (car L2) (shuffle (cdr L1) (cdr L2)))))))
-  (foldl (lambda (L R) (shuffle L R)) L Lists))
-
 ;;; ==============================================================
 
 (define (cents= n1 n2)

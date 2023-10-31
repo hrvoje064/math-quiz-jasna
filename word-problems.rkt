@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v3.8.5
+;;; v1.0
 
 (define *dictionary*
   '(*handle* ability able above accepted access acid added address adult advice after age
@@ -62,7 +62,19 @@
 ;;; Text problems
 ;;; ========================================================================
 
-(define word+problems ; addition only
+(define t-func (lambda x #t))
+
+(define (append-shuffle L . Lists)
+  "Append with shuffle"
+  (define (shuffle L1 L2)
+    (cond
+      ((null? L2) L1)
+      ((null? L1) L2)
+      (else
+       (cons (car L1) (cons (car L2) (shuffle (cdr L1) (cdr L2)))))))
+  (foldl (lambda (L R) (shuffle L R)) L Lists))
+
+(define word+problems1 ; addition only
   (list
    (list "There are ~a birds sitting on a tree, and then ~a more birds fly in.~n~n\
  How many birds are sitting on a tree now?"
@@ -186,7 +198,115 @@ Legazpy city.~n~n How many kilometers did we drive today?"
          (lambda (a b c d) `(,a + ,b + ,c + ,d)))                                                      
    ))
 
-(define word-problems ; subtraction only
+(define word+problems2
+  (list
+   (list "A florist shop sold ~a orchids, ~a roses, and ~a carnations.~n~n \
+How many flowers did they sell altogether?"
+         '((10 40) (20 50) (15 60))
+         t-func
+         (lambda (a b c) `(,a + ,b + ,c)))
+   
+   (list "Clara has ~a cards. Lisa has ~a more cards than Clara. Ariel has \
+~a more cards than Lisa.~n~n \
+How many cards does Ariel have?"
+         '((50 150) (20 50) (40 70))
+         t-func
+         (lambda (a b c) `(,a + ,b + ,c)))
+
+   (list "Garry has ~a seashells. His sister has ~a seashells more than he \
+does.~n~n How many seashells do they have altogether?"
+         '((100 250) (50 200))
+         t-func
+         (lambda (a b) `(,a + ,b + ,a)))
+
+   (list "Grandmother baked some cookies. She gave ~a cookies to my mother, \
+and ~a cookies to her neighbours. She had ~a cookies left.~n~n \
+How many cookies did she bake?"
+         '((100 250) (200 500) (50 100))
+         t-func
+         (lambda (a b c) `(,a + ,b + ,c)))   
+   ))
+
+(define word-problems2
+  (list
+   (list "Ivan puts ~a cookies into boxes A and B. If there are ~a cookies in \
+box A, how many cookies are there in box B?"
+         '((10 20) (5 10))
+         t-func
+         (lambda (a b) `(,a - ,b)))
+
+   (list "Jasna had ~a playing cards. She gave ~a cards to her friend Elise, \
+and ~a cards to me.~n~n How many cards did she have left?"
+         '((160 250) (30 75) (30 75))
+         t-func
+         (lambda (a b c) `(,a - ,b - ,c)))
+
+   (list "Zia got a ~a page book as a present from her mother. She read ~a \
+pages on the first day, and ~a pages on the second day.~n~n \
+How many more pages does she have to read to finish the book?"
+         '((300 450) (100 150) (80 120))
+         t-func
+         (lambda (a b c) `(,a - ,b - ,c)))
+
+   (list "There were ~a persons at the movie theatre. ~a were men, and \
+~a were women. The rest were children.~n~n \
+How many children were there?"
+         '((180 250) (40 75) (50 75))
+         t-func
+         (lambda (a b c) `(,a - ,b - ,c)))
+
+   (list "Rachel collected ~a stamps. Frank collected ~a fewer stamps than \
+Rachel. Charmien collected ~a fewer than Frank.~n~n \
+How many stamps did Charmien collect?"
+         '((250 300) (40 80) (40 80))
+         t-func
+         (lambda (a b c) `(,a - ,b - ,c)))
+
+   (list "There are ~a buttons in the box. ~a of then are round, and the rest \
+are square.~n~n How many more square buttons than round ones are there?"
+         '((500 700) (180 230))
+         t-func
+         (lambda (a b) `(,a - ,b - ,b)))
+   ))
+
+(define word+-problems2
+  (list
+   (list "A fruit vendor sold ~a mangoes on Sunday. He sold ~a fewer mangoes \
+on Saturday than on Sunday.~n~n \
+How many mangoes did he sell on both days?"
+         '((300 500) (50 100))
+         t-func
+         (lambda (a b) `(,a - ,b + ,a)))
+
+   (list "There were ~a girls, and ~a fewer boys.~n~n \
+How many children were there altogether?"
+         '((100 150) (20 40))
+         t-func
+         (lambda (a b) `(,a - ,b + ,a)))
+
+   (list "Rope A is ~a cm long. Rope B is ~a cm longer than rope A. \
+Rope C is ~a cm shorter than rope B.~n~n \
+How long is rope C?"
+         '((200 350) (50 100) (70 120))
+         t-func
+         (lambda (a b c) `(,a + ,b - ,c)))
+
+   (list "Jasna Elise, and Symone went collecting seashells on the beach. \
+Jasna collected ~a more shells than Elise. Elise collected ~a shells fewer than \
+Symone. Symone collected ~a shells.~n~n \
+How many shells did Jasna collect?"
+         '((10 25) (5 15) (20 30))
+         t-func
+         (lambda (a b c) `(,c - ,b + ,a)))
+
+   (list "Father is thinking of two numbers. The smaller one is ~a. \
+Their difference is ~a.~n~n What is the sum of these two numbers?"
+         '((60 100) (30 50))
+         t-func
+         (lambda (a b) `(,a + ,b + ,a)))    
+   ))
+  
+(define word-problems1 ; subtraction only
   (list
    (list "There are ~a birds sitting on a tree. ~a birds fly away.~n~n\
  How many birds are left sitting on a tree?"
@@ -313,7 +433,7 @@ lap of ~a seconds.~n~n How many seconds was Ducati faster than Yamaha?"
          (lambda (a b _) `(,b - ,a)))         
    ))
 
-(define word+-problems ; addition & subtraction
+(define word+-problems1 ; addition & subtraction
   (list
    (list "Cristina has ~a cookies, and Jasna has ~a cookies. They give ~a \
 cookies to Gerry.~n~n How many cookies do Cristina and Jasna have left altogether?"
@@ -715,6 +835,10 @@ which is ~a km away from station A?"
 
 (define d/v (string->symbol (string (integer->char 247)))) ; division character
 
+(define word+problems (append-shuffle word+problems1 (list word+problems2)))
+(define word-problems (append-shuffle word-problems1 (list word-problems2)))
+(define word+-problems (append-shuffle word+-problems1 (list word+-problems2)))
+
 ;;; export
 ;;; ===========================================================
 
@@ -722,7 +846,8 @@ which is ~a km away from station A?"
 (provide *dictionary* word+problems word-problems word+-problems word*problems
          word/problems)
 
-
+;;; functions
+(provide append-shuffle t-func)
 
 ;;; division symbol for equation printout
 (provide d/v)
