@@ -64,112 +64,102 @@
 
 (define t-func (lambda x #t))
 
-(define (append-shuffle L . Lists)
-  "Append with shuffle"
-  (define (shuffle L1 L2)
-    (cond
-      ((null? L2) L1)
-      ((null? L1) L2)
-      (else
-       (cons (car L1) (cons (car L2) (shuffle (cdr L1) (cdr L2)))))))
-  (foldl (lambda (L R) (shuffle L R)) L Lists))
-
 (define word+problems1 ; addition only
   (list
    (list "There are ~a birds sitting on a tree, and then ~a more birds fly in.~n~n\
  How many birds are sitting on a tree now?"
          '((30 125) (20 80))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a + ,b)))
            
    (list "There are ~a cars, and ~a motorcycles on a parking lot.~n~n\
  How many vehicles are there altogether?"
          '((500 2000) (700 2000))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a + ,b)))
           
    (list "Marco has ~a cookies, Tina has ~a cookies, and Ana has ~a cookies.~n~n\
  How many cookies do they have altogether?"
          '((30 125) (30 125) (30 125))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a + ,b + ,c)))         
    
    (list "A pirate has found a treasure chest. Inside are ~a gold coins, ~a \
 silver coins, and ~a copper coins.~n~n How many coins has he found altogether?"
          '((500 1000) (700 1500) (1000 2000))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a + ,b + ,c)))                  
    
    (list "Jasna has ~a php in her purse. Ken has ~a php in his wallet.~n~n\
  How much money do they have altogether?"
          '((1000 2000) (500 1200))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a + ,b)))         
    
    (list "Lila has ~a dollars in her wallet, Ben has ~a dollars, and Symone has ~a \
 dollars in her purse.~n~n How much money do they have altogether?"
          '((100 1000) (100 1000) (100 1000))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a + ,b + ,c)))                           
    
    (list "Our town has four elementary schools. There are ~a pupils in school A, \
 ~a pupils in school B, ~a pupils in school C, and ~a pupils in school D.~n~n\
  How many pupils are there altogether in our town?"
          '((1000 2000) (600 1500) (700 2000) (500 1000))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a + ,b + ,c + ,d)))                                    
    
    (list "Father went to the shop and he bought bread for ~a php, cheese for \
 ~a php, a carton of eggs for ~a php, and a bottle of wine for ~a php.~n~n How much \
 money did he spend altogether?"
          '((80 120) (800 2000) (120 220) (350 600))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a + ,b + ,c + ,d)))                                             
    
    (list "Our family went fishing. Father caught ~a fish, my brother caught ~a \
 fish, and I caught ~a fish.~n~n How many fish did we catch altogether?"
          '((10 30) (15 30) (20 35))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a + ,b + ,c)))                                    
    
    (list "I had ~a coins. Karina gave me ~a coins, Marcus gave me ~a coins, and \
 Lily gave me ~a coins more.~n~n How many coins do I have now?"
          '((10 30) (20 100) (30 100) (20 120))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a + ,b + ,c + ,d)))                                                      
    
    (list "Jasna's family went to a restaurant. Mother ordered pizza \
 for ~a dollars. Father ordered hamburger for ~a dollars, \
 and Jasna ordered tuna pasta for ~a dollars.~n~n How much money did they spend?"
          '((30 50) (10 20) (15 30))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a + ,b + ,c)))                                             
    
    (list "Our school played basketball with another school. \
 We scored ~a points, and another school scored ~a points.~n~n\
  How many points were scored altogether?"
          '((40 80) (30 70))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a + ,b)))                  
    
    (list "A mango tree has 4 branches. On the first branch, there are ~a green leaves. \
 On second, there are ~a green leaves. On third, there are ~a yellow leaves, \
 and on fourth, there are ~a green leaves.~n~n How many green leaves are there on a tree?"
          '((100 1000) (200 1000) (500 1000) (100 1000))
-         (lambda x #t)
+         t-func
          (lambda (a b _ d) `(,a + ,b + ,d)))                                                      
    
    (list "There are ~a trucks, ~a motorcycles, ~a cars, and ~a tricycles \
 on a parking lot.~n~n How many four-wheel vehicles are there altogether?"
          '((200 1200) (300 2000) (250 1200) (50 250))
-         (lambda x #t)
+         t-func
          (lambda (a _b c _d) `(,a + ,c)))                                             
    
    (list "There were ~a girls and ~a boys present at the start of a school \
 celebration. Then ~a boys, and ~a girls joined in.~n~n How many boys were there \
 at the celebration?"
          '((200 500) (300 600) (100 300) (200 500))
-         (lambda x #t)
+         t-func
          (lambda (_a b c _d) `(,b + ,c)))                                                                  
    
    (list "The famous explorer, Indiana Jones found two jars filled with gems in a lost \
@@ -177,7 +167,7 @@ Mayan city. First jar contained ~a rubies, ~a emeralds, and ~a diamonds. \
 Second jar contained ~a diamonds, ~a rubies, and ~a emeralds.~n~n\
  How many emeralds did he find altogether?"
          '((50 150) (60 200) (20 50) (30 50) (50 100) (50 200))
-         (lambda x #t)
+         t-func
          (lambda (_a b _c _d _e f) `(,b + ,f)))
    
    (list "KTM completed a three day rally with these times: \
@@ -186,7 +176,7 @@ but failed to complete the third day. Yamaha completed with these times: \
 ~a, ~a, and ~a minutes.~n~n What was the total time in minutes, of all teams \
 that completed the rally?"
          '((120 150) (130 180) (125 160) (140 170) (140 190) (130 160) (140 200) (130 165))
-         (lambda x #t)
+         t-func
          (lambda (a b c _d _e f g h) `(,a + ,b + ,c + ,f + ,g + ,h)))         
 
    (list "We went on a weekend trip from our home to Sorsogon. We drove ~a kilometers to \
@@ -311,13 +301,13 @@ Their difference is ~a.~n~n What is the sum of these two numbers?"
    (list "There are ~a birds sitting on a tree. ~a birds fly away.~n~n\
  How many birds are left sitting on a tree?"
          '((30 120) (10 70))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a - ,b)))         
    
    (list "Karen is holding ~a coins in her hand. She stumbles and loses ~a coins.~n~n\
  How many coins does she have left?"
          '((20 50) (10 30))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a - ,b)))         
    
    (list "Samantha has ~a php. She gives ~a to Lucy and ~a to Danilo.~n~n\
@@ -336,32 +326,32 @@ neighbors.~n~n How many do we have left?"
 dollars, fruit for ~a dollars, and milk for ~a dollars. The rest of the money, \
 she gave to her mother.~n~n How much money did she give to her mother?"
          '((200 500) (30 60) (20 40) (10 30))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a - ,b - ,c - ,d)))         
    
    (list "There are ~a goats in the stable. ~a jumped over the fence, and ~a \
 run away through the open door.~n~n How many goats are left in the stable?"
          '((50 120) (20 50) (10 20))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a - ,b - ,c)))         
    
    (list "~a ducks started swimming across the river. ~a ducks were eaten by \
 crocodiles, and ~a ducks turned around and swam back.~n~n How many ducks arrived to \
 the other side?"
          '((70 150) (20 40) (10 30))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a - ,b - ,c)))         
    
    (list "Nicole collected ~a pebbles on the beach. She lost ~a pebbles running to the \
 hotel, and gave ~a to her friend Zia.~n~n How many pebbles does she have left?"
          '((50 100) (10 30) (20 40))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a - ,b - ,c)))         
    
    (list "Our cat Marla, caught ~a mice. She eat ~a for breakfast, and the rest run\
  away.~n~n How many mice did run away?"
          '((10 25) (2 8))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a - ,b)))                                       
    
    (list "We found a wallet containing ~a php. I bought an ice-cream for \
@@ -369,40 +359,40 @@ hotel, and gave ~a to her friend Zia.~n~n How many pebbles does she have left?"
 The rest of the money from the wallet, we gave to our parents.~n~n\
  How much money did we give to our parents?"
          '((1000 2000) (100 200) (150 300))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a - ,b - ,c)))                  
    
    (list "There was a birthday celebration in our class. We had ~a pieces of \
 candy. We gave ~a pieces to class B, ~a pieces to class C, and ~a pieces to \
 class D.~n~n How many pieces of candy do we have left?."
          '((1000 2000) (200 300) (200 300) (200 400))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a - ,b - ,c - ,d)))         
    
    (list "Mayla picked ~a mangoes from a mango tree. She gave ~a to her \
 classmates, and carried home ~a to her family. She ate all the rest.~n~n\
  How many mangoes did she eat?"
          '((60 120) (30 50) (20 50))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a - ,b - ,c)))                           
    
    (list "Jasna's parents gave her ~a dollars for amusement park. She had a Ferris \
 wheel ride for ~a dollars, then bumble bee ride for ~a dollars, and finally, bumper \
 to bumper ride for ~a dollars.~n~n How much money does she have left?"
          '((200 300) (20 30) (10 25) (15 30))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a - ,b - ,c - ,d)))         
    
    (list "Jerry has ~a dollars, but he owes Nina ~a dollars. He pays her back, \
 and then buys a toy for ~a dollars.~n~n How many dollars has he got left?"
          '((1000 2000) (500 800) (100 250))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a - ,b - ,c)))         
    
    (list "David has ~a pieces of candy. He eats ~a pieces, then gives ~a pieces \
 to his son. If he wants to eat ~a more,~n~n how many pieces can he give to Jagoda?"
          '((100 150) (20 30) (20 40) (10 20))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a - ,b - ,c - ,d)))
            
    (list "During swimming competition, Mia swam breaststroke in ~a \
@@ -415,21 +405,21 @@ seconds, and freestyle stroke in ~a seconds, while Lucy swam the same in \
    (list "During a 400 meters race on a race track, Dario finished in ~a seconds, \
 while Flavio finished in ~a seconds.~n~n How many seconds was Dario faster than Flavio?"
          '((120 150) (130 170))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,b - ,a)))         
    
    (list "During a MotoGP race Ducati had a fastest lap of ~a seconds, \
 Yamaha had a fastest lap of ~a seconds, while Honda had a fastest \
 lap of ~a seconds.~n~n How many seconds was Ducati faster than Honda?"
          '((99 120) (105 130) (110 135))
-         (lambda x #t)
+         t-func
          (lambda (a _ c) `(,c - ,a)))        
    
    (list "During a MotoGP race Ducati had a fastest lap of ~a seconds, \
 Yamaha had a fastest lap of ~a seconds, while Honda had a fastest \
 lap of ~a seconds.~n~n How many seconds was Ducati faster than Yamaha?"
          '((99 120) (110 135) (105 130))
-         (lambda x #t)
+         t-func
          (lambda (a b _) `(,b - ,a)))         
    ))
 
@@ -438,7 +428,7 @@ lap of ~a seconds.~n~n How many seconds was Ducati faster than Yamaha?"
    (list "Cristina has ~a cookies, and Jasna has ~a cookies. They give ~a \
 cookies to Gerry.~n~n How many cookies do Cristina and Jasna have left altogether?"
          '((20 50) (30 50) (40 50))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a + ,b - ,c)))         
    
    (list "Tina has ~a cookies, and Jasna has ~a cookies. Tina gives ~a \
@@ -452,7 +442,7 @@ Cristina and Jasna have left altogether?"
 customers enter, then ~a leave, then ~a enter, and finally ~a leave.~n~n\
  How many customers are left in the supermarket now?"
          '((300 1000) (100 300) (200 500) (200 700))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a - ,b + ,c - ,d)))         
    
    (list "There are ~a vehicles on a parking lot. ~a vehicles drive away, \
@@ -465,14 +455,14 @@ then ~a more drive away. Then ~a drive in, and finally ~a drive away.~n~n\
    (list "Myra gets ~a php from her father. Mother gives her ~a php more. \
 Then Myra buys a new tablet for ~a php.~n~n How much money has she got left?"
          '((1000 2000) (1000 2000) (2000 3000))
-         (lambda x #t)
+         t-func
          (lambda (a b c) `(,a + ,b - ,c)))         
    
    (list "In our mall, there are three levels of parking. On level 1 \
 there are ~a cars. On level 2 there are ~a cars, and on level 3 there are ~a cars. \
 Then, ~a cars exit the mall.~n~n How many cars are left parked altogether?"
          '((500 1000) (500 1000) (500 1000) (1000 1500))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a + ,b + ,c - ,d)))                  
    
    (list "There are three floors in our school. ~a pupils are on the first floor, \
@@ -480,33 +470,33 @@ Then, ~a cars exit the mall.~n~n How many cars are left parked altogether?"
 and ~a pupils from second went home.~n~n How many pupils are left on first \
 and second floors altogether?"
          '((300 500) (300 500) (200 500) (100 300) (100 300))
-         (lambda x #t)
+         t-func
          (lambda (a b c d e) `(,a - ,d + ,b - ,e)))
    
    (list "Mother bought ~a apples, and ~a oranges. My brother eat ~a apples, and \
 ~a oranges.~n~n How many pieces of fruit are left altogether?"
          '((11 50) (11 40) (5 11) (4 11))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a - ,c + ,b - ,d)))                  
    
    (list "While playing basketball with Emma, we shot the ball ~a times, \
 and then later again ~a times more. I scored ~a times, while Emma scored ~a times.~n~n\
  How many times did we miss altogether?"
          '((30 75) (30 75) (10 30) (10 30))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a + ,b - ,c - ,d)))                           
    
    (list "When climbing the stairs, starting on step ~a, Ely went ~a \
 steps up, then ~a steps down, then ~a steps up, then again ~a steps up, and finally \
 ~a steps down.~n~n On what step did he end up?"
          '((10 20) (20 30) (20 30) (10 30) (10 20) (10 20))
-         (lambda x #t)
+         t-func
          (lambda (a b c d e f) `(,a + ,b - ,c + ,d + ,e - ,f)))         
    
    (list "We had ~a goats, ~a pigs, and ~a chicken in the yard. Then we sold ~a \
 animals.~n~n How many animals have we got left altogether?"
          '((15 30) (10 30) (20 40) (30 60))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a + ,b + ,c - ,d)))         
    
    (list "Bob went to a birthday party. There were ~a boys there, including him, \
@@ -527,7 +517,7 @@ left at the party?"
 ~a dollars, and a plane ride for ~a dollars. Elsa gave her ~a dollars more, so Jasna \
 went to horror tunnel for ~a dollars.~n~n How many dollars does she have left?"
          '((50 100) (15 30) (10 20) (20 40) (10 20))
-         (lambda x #t)
+         t-func
          (lambda (a b c d e) `(,a - ,b - ,c + ,d - ,e)))                  
    
    (list "Our neighbors had ~a dollars in the bank. They bought a car for ~a \
@@ -548,7 +538,7 @@ for ~a dollars.~n~n How much money has he got left?"
 erased ~a words. Then she wrote ~a words more, but she changed her mind, \
 and erased ~a again.~n~n How many words are on the paper now?"
          '((555 2000) (200 500) (555 1000) (300 500))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a - ,b + ,c - ,d)))         
    
    (list "While playing basketball, I shot the ball ~a times, while Elise shot \
@@ -569,21 +559,21 @@ the ball ~a times. I scored ~a times, and Elise scored ~a times.~n~n\
 for ~a php. Then we went to Vista hotel, where we paid ~a php \
 for a room and ~a php for dinner.~n~n How much more did we pay in Sogo hotel?"
          '((2000 2500) (700 1000) (1000 2000) (500 700))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,a + ,b - ,c - ,d)))         
    
    (list "During rally, KTM completed track 1 in ~a minutes, and track \
 2 in ~a minutes. Yamaha completed same tracks in ~a and ~a minutes.~n~n\
  How many minutes was KTM faster than Yamaha overall?"
          '((50 85) (60 90) (60 90) (70 100))
-         (lambda x #t)
+         t-func
          (lambda (a b c d) `(,c + ,d - ,a - ,b)))                  
    
    (list "Class A picked ~a apples, and ~a mangoes. Class B picked \
 ~a oranges, and class C picked ~a pears, and ~a apples.~n~n\
  How many pieces of fruit did class C collect more than class A?"
          '((99 200) (99 200) (100 200) (120 300) (120 300))
-         (lambda x #t)
+         t-func
          (lambda (a b c d e) `(,d + ,e - ,a - ,b)))         
 
    (list "We went on a weekend trip from our home to Sorsogon. We drove ~a kilometers to \
@@ -619,7 +609,7 @@ cart, and Jasna placed ~a ice-creams in the cart. A carton of milk has ~a boxes 
 and a packet of 3 in 1 Nescafe has ~a sachets in it.~n~n\
  How many individual items did they have in the cart?"
          '((2 7) (3 8) (5 10) (6 13) (6 11))
-         (lambda x #t)
+         t-func
          (lambda (a b c d e) `((,a * ,d) + (,b * ,e) + ,c)))
    
    (list "We had a Christmas party. Bob brought with him ~a coolers \
@@ -648,20 +638,20 @@ left on the train station now?"
 She went on a long trip today, and her truck used ~a liters of fuel.~n~n\
  How many kilometers did she travel in total?"
          '((11 20) (30 50))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a * ,b)))
 
    (list "Zia invited ~a kids to her party. If she wants to give ~a pieces of \
 candy to each kid at the party,~n~n how many pieces of candy does she have to buy?"
          '((15 30) (11 30))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a * ,b)))
 
    (list "Jessie is riding on his motorcycle at the average speed of ~a kph (kilometers \
 per hour). He is riding for ~a hours, and then he stops for refreshments.~n~n\
  How many kilometers has he covered so far?"
          '((55 80) (5 10))
-         (lambda x #t)
+         t-func
          (lambda (a b) `(,a * ,b)))
 
    (list "We have many models of regular polygons in our class. We have ~a \
@@ -719,7 +709,7 @@ where we had lunch, and then continued ~a kilometers to Matnog. When we arrived,
 we topped up the fuel tank again with ~a liters of diesel.~n~n\
  How many kilometers is our SUV managing per 1 liter of fuel?"
          '((10 20) (60 100) (120 150) (15 25))
-         (lambda x #t)
+         t-func
          (lambda (_ a b c) `((,a + ,b) ,d/v ,c)))
 
    (list "Our neighbors family has ~a kids. They went to the mall today and bought \
@@ -832,12 +822,21 @@ which is ~a km away from station A?"
 
    ))
 
-
 (define d/v (string->symbol (string (integer->char 247)))) ; division character
 
-(define word+problems (append-shuffle word+problems1 (list word+problems2)))
-(define word-problems (append-shuffle word-problems1 (list word-problems2)))
-(define word+-problems (append-shuffle word+-problems1 (list word+-problems2)))
+(define (append-shuffle L . Lists)
+  "Append with shuffle"
+  (define (shuffle L1 L2)
+    (cond
+      ((null? L2) L1)
+      ((null? L1) L2)
+      (else
+       (cons (car L1) (cons (car L2) (shuffle (cdr L1) (cdr L2)))))))
+  (foldl (lambda (L R) (shuffle L R)) L Lists))
+
+(define word+problems (append-shuffle word+problems1 word+problems2))
+(define word-problems (append-shuffle word-problems1 word-problems2))
+(define word+-problems (append-shuffle word+-problems1 word+-problems2))
 
 ;;; export
 ;;; ===========================================================
@@ -847,7 +846,7 @@ which is ~a km away from station A?"
          word/problems)
 
 ;;; functions
-(provide append-shuffle t-func)
+(provide append-shuffle)
 
 ;;; division symbol for equation printout
 (provide d/v)

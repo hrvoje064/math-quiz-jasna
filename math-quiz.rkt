@@ -3600,7 +3600,7 @@ Restart program immediately after"]
                                   result
                                   (exact->inexact result)))
               (set-problem-op! *problem* (apply equation inputs))
-              ;(println (truncate-result (problem-y *problem*)))
+              ;(println (truncate-result (problem-y *problem*))) ; for quick checking
               ))))
     (when (= len 1) ; last problem consumed
       (set! word-problem (list-copy *word-problem*))) ; restore problem set
