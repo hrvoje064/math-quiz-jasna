@@ -176,6 +176,18 @@
      (cons (nth! dict (cdr dict) (random start end))
            (pick-n (sub1 n) start end)))))
 
+(module+ test
+  (let ((TL (list 'handle 1 2 3)))
+    (check-equal?
+     (nth! TL (cdr TL) 0) 1)
+    (check-equal? TL '(handle 2 3))
+    (check-equal?
+     (nth! TL (cdr TL) 1) 3)
+    (check-equal? TL '(handle 2))
+    (check-equal?
+     (nth! TL (cdr TL) 0) 2)
+    (check-equal? TL '(handle))))
+
 ;;; ==============================================================
 ;;; built in operations, print form and exec form
 (define plus (cons '+ +))

@@ -838,6 +838,35 @@ which is ~a km away from station A?"
 (define word-problems (append-shuffle word-problems1 word-problems2))
 (define word+-problems (append-shuffle word+-problems1 word+-problems2))
 
+(module+ test
+  (require rackunit) 
+  (check-equal?
+   (caar (memf (lambda (x) (string=? (car x)
+                                     "Garry has ~a seashells. His sister has ~a seashells more than he \
+does.~n~n How many seashells do they have altogether?")) word+problems))
+   "Garry has ~a seashells. His sister has ~a seashells more than he \
+does.~n~n How many seashells do they have altogether?")
+  (check-equal?
+   (caar (memf (lambda (x) (string=? (car x)
+                                     "Ivan puts ~a cookies into boxes A and B. If there are ~a cookies in \
+box A, how many cookies are there in box B?")) word-problems))
+  "Ivan puts ~a cookies into boxes A and B. If there are ~a cookies in \
+box A, how many cookies are there in box B?") 
+  (check-equal?
+   (caar (memf (lambda (x) (string=? (car x)
+                                     "Rope A is ~a cm long. Rope B is ~a cm longer than rope A. \
+Rope C is ~a cm shorter than rope B.~n~n \
+How long is rope C?")) word+-problems))  "Rope A is ~a cm long. Rope B is ~a cm longer than rope A. \
+Rope C is ~a cm shorter than rope B.~n~n \
+How long is rope C?")
+  (check-=
+   (+ (length word+problems1) (length word+problems2)) (length word+problems) 0)
+  (check-=
+   (+ (length word-problems1) (length word-problems2)) (length word-problems) 0)
+  (check-=
+   (+ (length word+-problems1) (length word+-problems2)) (length word+-problems) 0))
+   
+
 ;;; export
 ;;; ===========================================================
 
