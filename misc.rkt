@@ -28,12 +28,18 @@
 ;;; for sequence
 ;;; ================================================================
 (define *n-s* (make-base-namespace))
+
 (define (apply-map f LL)
   (define (apply-m f)
     (lambda (lists)
       (let ((lol (map (lambda (x) `(quote ,x)) lists)))
         `(,map ,f ,@lol))))
   (eval ((apply-m f) LL) *n-s*))
+
+;;; How about this? Also works, about the same speed
+;(define (apply-map f lol)
+;  (let ((quoted-lol (map (lambda (x) `(quote ,x)) lol)))
+;    (eval (cons map (cons f quoted-lol)) *n-s*)))
 
 (define (up-down lst)
   (let* ((rev-lst '(#f #t #f))
