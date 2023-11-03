@@ -5,6 +5,8 @@
 
 ;;; v1.0
 
+(require "misc.rkt")
+
 (define *dictionary*
   '(*handle* ability able above accepted access acid added address adult advice after age
              ahead airplane airport alien alive alone amount angle angry apple apply
@@ -822,21 +824,14 @@ which is ~a km away from station A?"
 
    ))
 
-(define d/v (string->symbol (string (integer->char 247)))) ; division character
-
-(define (append-shuffle L . Lists)
-  "Append with shuffle"
-  (define (shuffle L1 L2)
-    (cond
-      ((null? L2) L1)
-      ((null? L1) L2)
-      (else
-       (cons (car L1) (cons (car L2) (shuffle (cdr L1) (cdr L2)))))))
-  (foldl (lambda (L R) (shuffle L R)) L Lists))
+;(define d/v (string->symbol (string (integer->char 247)))) ; division character
 
 (define word+problems (append-shuffle word+problems1 word+problems2))
 (define word-problems (append-shuffle word-problems1 word-problems2))
 (define word+-problems (append-shuffle word+-problems1 word+-problems2))
+
+;;; tests
+;;; ==========================================================
 
 (module+ test
   (require rackunit) 
@@ -866,7 +861,6 @@ How long is rope C?")
   (check-=
    (+ (length word+-problems1) (length word+-problems2)) (length word+-problems) 0))
    
-
 ;;; export
 ;;; ===========================================================
 
@@ -874,8 +868,3 @@ How long is rope C?")
 (provide *dictionary* word+problems word-problems word+-problems word*problems
          word/problems)
 
-;;; functions
-(provide append-shuffle)
-
-;;; division symbol for equation printout
-(provide d/v)

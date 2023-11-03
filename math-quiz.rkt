@@ -1,18 +1,18 @@
 #lang racket/gui
 
-;;; Copyright (c) 2022,2023, Capt. Hrvoje Blazevic. All rights reserved.
+;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
 ;;; Math Quiz, Version scribblings-v1.0
 
-(require 2htdp/universe)
-(require pict)
-(require graphics/value-turtles)
-(require racket/unsafe/ops)
 (require net/sendurl)
 (require racket/runtime-path)
 
 (require "docs.rkt") ; docs.rkt file must be in the same directory as math-quiz
 (require "word-problems.rkt") ; data for ABC-sort, and text-problems
+(require "misc.rkt") ; functions required by several modules
+(require "logo-turtle.rkt") ; clock & fractions drawings
+(require "roman.rkt") ; Roman numerals conversion
+(require "sequence.rkt") ; sequence problems
 
 (define *speed-factor* 1) ; reduce or increase allotted time
 (define *left-number* 700) ; Max size-1 of left number
@@ -152,21 +152,8 @@
 ;;; Dictionary for Alphabetic sort
 ;;; ==========================================================
 
-
 (define dict null) ; working dictionary
 (define words #f) ; number of words remaining in dict
-
-(define (list-copy lst) ; utility procedure - protecting the *dictionary* 
-  (if (null? lst)
-      null
-      (cons (car lst) (list-copy (cdr lst)))))
-
-(define (nth! before lst n) ; finding nth item and removing it from list
-  (cond
-    ((zero? n) (unsafe-set-immutable-cdr! before (cdr lst))
-               (car lst))
-    (else
-     (nth! (cdr before) (cdr lst) (sub1 n)))))
 
 (define (pick-n n start end) ; picking-out N words from dict 
   (cond
@@ -175,18 +162,6 @@
      (set! words (sub1 words))
      (cons (nth! dict (cdr dict) (random start end))
            (pick-n (sub1 n) start end)))))
-
-(module+ test
-  (let ((TL (list 'handle 1 2 3)))
-    (check-equal?
-     (nth! TL (cdr TL) 0) 1)
-    (check-equal? TL '(handle 2 3))
-    (check-equal?
-     (nth! TL (cdr TL) 1) 3)
-    (check-equal? TL '(handle 2))
-    (check-equal?
-     (nth! TL (cdr TL) 0) 2)
-    (check-equal? TL '(handle))))
 
 ;;; ==============================================================
 ;;; built in operations, print form and exec form
@@ -2036,7 +2011,6 @@ Restart program immediately after"]
                                   (math-quiz-type (string-trim input))))]))
 
 ;;; =================================================================
-
 ;;; Sequence (IQ) problems
 ;;; =================================================================
 
@@ -3491,7 +3465,11 @@ Restart program immediately after"]
          (x1 (get-left-number- (random 0 *left-digit*)))
          (x (if (<= x1 2) (add1 x1) x1))
          ; choose randomly from 2 up to Min of left number and (x)
-         (y (random 2 (min *left-number* x))))
+         (y1 (random 2 (min *left-number* x)))
+         (decide '(#f #t #f #t #f))
+         (y (if (and (> y1 50) (list-ref decide (random (length decide))))
+                (quotient y1 2)
+                y1)))
     (check-used x op y)))
 
 (define (get-problem<=>)
@@ -3612,59 +3590,14 @@ Restart program immediately after"]
                                   result
                                   (exact->inexact result)))
               (set-problem-op! *problem* (apply equation inputs))
-              ;(println (truncate-result (problem-y *problem*))) ; for quick checking
+              #;(println (truncate-result (problem-y *problem*)
+                                        *exponent*)) ; for quick checking
               ))))
     (when (= len 1) ; last problem consumed
       (set! word-problem (list-copy *word-problem*))) ; restore problem set
     (get-inputs)))
 
-;;; Infix evaluator
-;;; =========================================================
-
-(define (evaluate x)
-  "A quick & dirty infix expression evaluator, used for result calculation"
-  (cond
-    ((number? x) x)
-    ((null? (cdr x)) (evaluate (car x)))
-    ((pair? (car x)) (evaluate (cons (evaluate (car x)) (cdr x))))
-    (else
-     (evaluate (cons (calc (take x 3)) (cdddr x))))))
-
-(define (calc t) ((operation (second t)) (first t) (evaluate (third t))))
-
-(define arith-ops (list (cons '+ +) (cons '- -) (cons '* *) (cons d/v /)))
-(define (operation x) (cdr (assq x arith-ops)))
-
-(module+ test
-  (require rackunit)
-  (check-equal? (evaluate '(1 + 2 + 3 - 4 + 5 - 6 + 7)) 8)
-  (check-equal? (evaluate '((1 + 2) + (3 - 4) + (5 - 6 + 7))) 8)
-  (check-equal? (evaluate `((((1 + 2) * 2) + (((3 - 4) + (5 - 6 + 7)) * 2)) ,d/v 2)) 8)
-  (check-equal? (evaluate `((((1 + 2) * 3) + (((3 - 4) + (5 - 6 + 7)) * 3)) ,d/v 7)) 24/7)
-  (check-=
-   (evaluate `((((1 + 2) * 3 ,d/v 3 * 3) + (((3 - 4) + (5 - 6 + 7 + 3 - (6 ,d/v 2))) * 3))
-               ,d/v 7 * 5 - 55.)) -37.857142857 0.0000000002)
-  (check-exn exn:fail? (lambda () (evaluate '( 3 + 4 / 5)))) ; / is not valid in evaluator
-  ) 
-
 ;;; ==========================================================
-;;; end of infix evaluator
-
-(define (replace old new exp) ; not used now
-  "Beautifying the equation display"
-  (cond
-    ((null? exp) null)
-    ((eq? (car exp) old) (cons new (replace old new (cdr exp))))
-    ((list? (car exp)) (cons (replace old new (car exp))
-                             (replace old new (cdr exp))))
-    (else
-     (cons (car exp) (replace old new (cdr exp))))))
-
-(define (fix-equation equation)
-  "Beautifying the equation display"
-  (replace '/ d/v equation))
-
-;;; ===========================================================
 
 (define (get-problem-bba)
   (let* ((op (choose-bba-op))
@@ -3762,39 +3695,9 @@ Restart program immediately after"]
   (set-problem-op! *problem* op)
   (set-problem-y! *problem* y))
 
-;;; approximately equal (for division)
-;;; only counts *exponent* digits after decimal point
-;;; returns number-string truncated to decimal places (*exponent*)
+;;; approx=ndp - result equal to number of decimal places (ndp)
 (define (approx= input calc)
-  (let ((in-int (exact-floor (* input (expt 10 *exponent*))))
-        (calc-int (exact-floor (* calc (expt 10 *exponent*)))))
-    (cond
-      ((= in-int calc-int) (truncate-result input))
-      ((> (abs (- calc-int in-int)) 1) #f)
-      (else
-       (compare (string->list (number->string input))
-                (string->list (number->string (exact->inexact calc)))
-                input)))))
-
-(define (compare input calc in)
-  (cond ((and (char=? (car input) #\.) (char=? (car calc) #\.))
-         (compare-decimal (cdr input) (cdr calc) *exponent* in))
-        ((char=? (car input) (car calc)) (compare (cdr input) (cdr calc) in))
-        (else #f)))
-
-(define (compare-decimal input calc n in)
-  (cond
-    ((zero? n) (truncate-result in))
-    ((or (empty? input) (empty? calc)) #f)
-    ((char=? (car input) (car calc))
-     (compare-decimal (cdr input) (cdr calc) (sub1 n) in))
-    (else #f)))
-
-(define (truncate-result input)
-  (let* ((in-whole-len (string-length (number->string (exact-floor input))))
-         (in-str (number->string input))
-         (in-len (string-length in-str)))
-    (substring in-str 0 (min (+ in-whole-len 1 *exponent*) in-len))))
+  (approx=ndp input calc *exponent*))
 
 (define (clock= hour minute h m)
   (and (= hour h) (= minute m)))
@@ -4087,7 +3990,7 @@ Restart program immediately after"]
           (let ((position (problem-z *problem*)))
             (send text-lines insert
                   (format "Incorrect number(s) starting with ~a in ~a~n"
-                          (car (find pair? position)) position))))
+                          (car (findf pair? position)) position))))
          ((string? result)
           (send text-lines insert
                 (string-append "Started with " result " insted of "
@@ -4126,7 +4029,7 @@ Restart program immediately after"]
            (test-increment (cdr lst) inc))))
 
 (define (calc-return input-0-list)
-  (if (find (lambda (x) (> x 4)) input-0-list)
+  (if (findf (lambda (x) (> x 4)) input-0-list)
       "ERROR - more than 4 of the same denomination"        
       (let ((cash-list
              (map * input-0-list '(100 50 20 10 5 1 1/4 1/10 1/20 1/100))))
@@ -4411,111 +4314,6 @@ but limited by *max-penalty-exercises*"
 (define (ones n)
   (remainder n 10))
 
-;;; IQ part
-;;; ============================================================
-;;; Missing number in a sequence (IQ) problem for math-quiz program
-
-(define IQ-seq-limit 21)
-(define IQ-seq-limit-fib 12)
-
-;;; easy exercises - just incrementing by a constant (1 - 5) and reverse
-
-(define (get-inc)
-  (let* ((inc-lst (list (random 1 3) (random 1 6)))
-         (inc (list-ref inc-lst (random (length inc-lst)))))
-    inc))
-
-(define (get-sequence-1)
-  (let* ((inc (get-inc))
-         (start (random 0 IQ-seq-limit))
-         (lst (build-list 5 (lambda (i) (+ start (* i inc))))))
-    lst))
-
-(define (up-down lst)
-  (let* ((rev-lst '(#f #t #f))
-         (reverse? (list-ref rev-lst (random (length rev-lst)))))
-    (if reverse?
-        (reverse lst)
-        lst)))
-
-;;; medium exercises increment is incrementing
-
-(define inc-inc1 '(0 0 1 3 6)) ; increment-increment by 1
-
-(define (get-sequence-2)
-  (let* ((seq1 (get-sequence-1))
-         (inc (random 1 4)) ; 1 - 3 inc
-         (inc-lst (make-list inc inc-inc1))
-         (seq2 (add-sequences seq1 inc-lst)))
-    seq2))
-
-;; Direct solution
-;(define (add-sequences seq lsts)
-;  (if (null? lsts)
-;      seq
-;      (map + (car lsts) (add-sequences seq (cdr lsts)))))
-
-;; Tool solution
-(define (apply-map f lol)
-  (foldl (lambda (l r) (map f l r)) (car lol) (cdr lol)))
-
-(define (add-sequences seq lsts)
-  (apply-map + (cons seq lsts)))
-
-(module+ test
-  (check-equal? (add-sequences '(18 20 22 24 26) (make-list 1 '(0 0 1 3 6)))
-                '(18 20 23 27 32))
-  (check-equal? (add-sequences '(18 20 22 24 26) (make-list 3 '(0 0 1 3 6)))
-                '(18 20 25 33 44))
-  )
-
-;;; tough sequences; Fibonacci, inc=exp inc=exp */+ incremented, * n
-
-(define (exp-inc*sequence) ; tough
-  (let ((begin (random 0 IQ-seq-limit))
-        (inc (random 1 4))) ; max 3
-    (build-list 5 (lambda (i) (+ begin (* i (* i inc)))))))
-
-(define (exp-inc+sequence) ; tough
-  (let ((begin (random 0 IQ-seq-limit))
-        (inc (random 1 4))) ; max 3
-    (build-list 5 (lambda (i) (+ begin (* i (+ i inc)))))))
-
-(define (fibonacci n acc1 acc2 seq)
-  (if (zero? n)
-      (cons acc1 seq)
-      (fibonacci (- n 1) acc2 (+ acc1 acc2) (cons acc1 seq))))
-
-(define (fibonacci-sequence n ac1 ac2)
-  (reverse (fibonacci n ac1 ac2 '())))
-
-(define (expt-sequence)
-  (let* ((begin (random 0 5))
-         (exponent (random 2 4)) ; max 3
-         (seq (build-list 5 (lambda (i) (+ i begin)))))
-    (map (lambda (x) (expt x exponent)) seq)))
-
-(module+ test
-  (check-equal? (fibonacci-sequence IQ-seq-limit-fib 0 1)
-                '(0 1 1 2 3 5 8 13 21 34 55 89 144))
-  (check-equal? (fibonacci-sequence IQ-seq-limit-fib 4 7)
-                '(4 7 11 18 29 47 76 123 199 322 521 843 1364))
-  )
-  
-(define (get-sequence-3)
-  (let* ((fibs (lambda ()
-                 (take (drop (fibonacci-sequence IQ-seq-limit-fib 0 1)
-                             (random (- IQ-seq-limit-fib 4))) 5)))
-         (acc1 (random 2 5))
-         (acc2 (random (add1 acc1) 8))
-         (fibs-x (lambda ()
-                   (take (drop (fibonacci-sequence IQ-seq-limit-fib acc1 acc2)
-                               (random (- IQ-seq-limit-fib 4))) 5)))
-         (seq-lst
-          (list fibs-x exp-inc*sequence fibs exp-inc+sequence fibs-x expt-sequence))
-         (chosen (list-ref seq-lst (random (length seq-lst)))))
-    (chosen)))
-
 ;;; I/O part
 ;;; =============================================================
 
@@ -4557,11 +4355,11 @@ but limited by *max-penalty-exercises*"
   (format "~a ~a is not ~a~n" x (show op) result))
 
 (define (msg-text x op y result)
-  (calc-stub x "=" (truncate-result (string->number result))))
+  (calc-stub x "=" (truncate-result (string->number result) *exponent*)))
 
 (define (msg-text-error x op y result)
   (let ((line2 (format "~nEquation: ~a \\=" (list2string op))))
-    (calc-stub x line2 (truncate-result (string->number result)))))
+    (calc-stub x line2 (truncate-result (string->number result) *exponent*))))
 
 (define (list2string lst)
   "remove outer parentheses"
@@ -4655,100 +4453,14 @@ but limited by *max-penalty-exercises*"
 (define (pad-pos n pos)
   (string-append n (make-string pos #\0)))
 
-;;; =================================================================
-;;; Drawings
-;;; =================================================================
-
-;; prepare to draw a box around pie-chart
-(define logo
-  (set-pen-color (turn 90 (move 65 (turn 90 (move 65 (turtles 300 200)))))
-                 "white"))
-
-;; draw a box to prevent cropping pie-chart image
-(define (logo-box n world)
-  (if (zero? n)
-      (turn 90 (move 65 (turn 90 (move 67 world))))
-      (logo-box (sub1 n) (turn 90 (set-pen-color (draw 130 world) "white")))))
-
-;; drawing a pie-chart
-(define (n-slice r d n theta world)
-  (cond ((zero? d) (clean world))
-        ((zero? n)
-         (n-slice r (sub1 d) 0 theta
-                  (slice r theta
-                         (turn 90
-                               (draw r
-                                     (set-pen-width
-                                      (set-pen-color world "black") 5))))))
-        (else
-         (n-slice r (sub1 d)(sub1 n) theta
-                  (slice r theta
-                         (turn 90
-                               (draw r
-                                     (set-pen-width
-                                      (set-pen-color world "red") 5))))))))
-;; drawing one slice
-(define (slice r theta world)
-  (if (<= theta 0)
-      (turn 180 (draw r (turn 90 world)))
-      (slice r (sub1 theta) (draw 1 (turn 1 world)))))
-
-;; return turtles-world with pie-chart drawn
-;; if startup call, return a dummy world
-(define (get-turtles)
-  (if (null? *used-numbers*) ; startup call
-      (let ((denominator 1) (numerator 1))
-        (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))
-      (let* ((denominator (problem-y *problem*))
-             (numerator (problem-x *problem*)))
-        (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))))
-
-;; return turtles-world with 2 pie-charts drawn
-;; if startup call, return a dummy world
-(define (get-turtles-left)
-  (if (null? *used-numbers*) ; startup call
-      (let ((denominator 1) (numerator 1))
-        (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))
-      (let* ((n/d (map string->number (string-split (problem-x *problem*) "/")))
-             (numerator (car n/d))
-             (denominator (cadr n/d)))
-        (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))))
-
-(define (get-turtles-right)
-  (if (null? *used-numbers*) ; startup call
-      (let ((denominator 1) (numerator 1))
-        (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))
-      (let* ((n/d (map string->number (string-split (problem-y *problem*) "/")))
-             (numerator (car n/d))
-             (denominator (cadr n/d)))
-        (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))))
-
-(define (fraction-canvas-callback canvas dc)
-  ;; clearing previous pie-chart
-  (send dc draw-bitmap
-        (pict->bitmap
-         (disk 150 #:color "white" #:border-color "white"))
-        70 46)
-  (send dc draw-bitmap
-        (pict->bitmap
-         (disk 150 #:color "white" #:border-color "white"))
-        290 46)
-  ;; drawing new pie-chart
-  (case *fraction-level*
-    ((1) (send dc draw-bitmap
-               (pict->bitmap (turtles-pict
-                              (get-turtles))) 80 55))
-    ((2 3) (send dc draw-bitmap
-                 (pict->bitmap (turtles-pict
-                                (get-turtles-left))) 80 55)
-           (send dc draw-bitmap
-                 (pict->bitmap (turtles-pict
-                                (get-turtles-right))) 300 55))
-    (else (error '*fraction-level*))))
-
 ;;; ==================================================================
 ;;; Fractions problems
 ;;; ==================================================================
+
+(define (fraction-callback canvas dc)
+  (fraction-canvas-callback
+   canvas dc *fraction-level* *used-numbers*
+   (problem-x *problem*) (problem-y *problem*)))
 
 (define fraction-dialog (new frame%
                              [label "Fractions questions"]
@@ -4766,7 +4478,7 @@ but limited by *max-penalty-exercises*"
                              [vert-margin 10]
                              [horiz-margin 10]
                              [style '(border no-focus)]
-                             [paint-callback fraction-canvas-callback]))
+                             [paint-callback fraction-callback]))
 
 (define fraction-pane (new horizontal-pane%
                            [parent fraction-dialog]
@@ -4854,99 +4566,14 @@ but limited by *max-penalty-exercises*"
                (math-quiz-type
                 (map (lambda (x) (strip-spaces x)) input))))))]))
                                                                            
-(define (strip-spaces strng)
-  (define (strip lst)
-    (cond ((null? lst) lst)
-          ((eq? (car lst) #\space) (strip (cdr lst)))
-          (else (cons (car lst) (strip (cdr lst))))))
-  (list->string (strip (string->list strng))))
-
 ;;; =================================================================
 ;;; Clock problems
 ;;; =================================================================
 
-;;; funcions for drawing clock
-
-(define logo1
-  (set-pen-color (turn 90 (move 130 (turn 90 (move 130 (turtles 400 300)))))
-                 "white"))
-
-;; draw a box to prevent cropping pie-chart image
-(define (clock-box n world)
-  (if (zero? n)
-      (turn 180 (move 130 (turn 90 (move 130 world))))
-      (clock-box (sub1 n) (turn 90 (set-pen-color (draw 260 world) "white")))))
-
-(define clock-world
-  (set-pen-color (turn -90 (move 115 (clock-box 4 logo1))) "gray"))
-
-(define (draw-circle r theta world)
-  (if (<= theta 0)
-      (turn 180 (move r (turn -90 world)))
-      (draw-circle r (sub1 theta) (draw 2 (turn -1 world)))))
-
-(define (draw-hub r theta world)
-  (if (<= theta 0)
-      (turn 180 (move r (turn -90 world)))
-      (draw-hub r (- theta 16) (draw 1 (turn -16 world)))))
-
-(define (minute-marks r theta r-delta m-theta world)
-  (if (<= theta 0)
-      world
-      (minute-marks
-       r (- theta m-theta) r-delta m-theta
-       (turn (- m-theta)
-             (turn 180 (move r (turn 180 (draw r-delta (move (- r r-delta) world))
-                                     )))))))
-
-(define (hour-hand r h m world)
-  (let ((theta (+ (* h 30) (/ m 2)))
-        (d (* r 3/5)))
-    (turn (+ 180 theta)
-          (move d
-                (turn 180
-                      (draw d (set-pen-color (turn (- theta) world) "purple")))))))
-    
-(define (minute-hand r m world)
-  (let ((theta (* m 360/60))
-        (d (* r 3/4)))
-    (turn (+ 180 theta)
-          (move d
-                (turn 180
-                      (draw d (set-pen-color (turn (- theta) world) "black")))))))
-
-(define (draw-clock r h m)
-  (let* ((world1
-          (set-pen-color (draw-circle r 360 (set-pen-width clock-world 5)) "black"))
-         (world2 (minute-marks r 360 5 (/ 360 60) (set-pen-width world1 2)))
-         (world3 (minute-marks r 360 7 (/ 360 12) (set-pen-width world2 3)))
-         (world4 (minute-hand r m (set-pen-width world3 4)))
-         (world5 (hour-hand r h m (set-pen-width world4 7)))
-         (world6 ; drawing hub
-          (draw-hub 8 360 (turn -90 (draw 7 (set-pen-color world5 "black"))))))
-    (clean world6)))
-
-;; return turtles-world with pie-chart drawn
-;; if startup call, return a dummy world
-(define (get-clock-turtles)
-  (if (null? *used-numbers*) ; startup call
-      (let ((hour 0) (minute 0))
-        (draw-clock 114 hour minute))  
-      (let ((minute (problem-y *problem*))
-            (hour (problem-x *problem*)))
-        (draw-clock 114 hour minute))))
-
-(define (clock-canvas-callback canvas dc)
-  ;; clearing previous clock
-  (send dc draw-bitmap
-        (pict->bitmap
-         (disk 250 #:color "white" #:border-color "white"))
-        70 46)
-  ;; drawing new clock
-  (send dc draw-bitmap
-        (pict->bitmap (turtles-pict
-                       (get-clock-turtles))) 80 30))
-
+(define (clock-callback canvas dc)
+  (clock-canvas-callback
+   canvas dc *used-numbers* (problem-x *problem*) (problem-y *problem*)))
+  
 (define clock-dialog (new frame%
                           [label "Clock questions"]
                           [parent main-window]
@@ -4963,7 +4590,7 @@ but limited by *max-penalty-exercises*"
                           [vert-margin 10]
                           [horiz-margin 10]
                           [style '(border no-focus)]
-                          [paint-callback clock-canvas-callback]))
+                          [paint-callback clock-callback]))
 
 (define clock-pane (new horizontal-pane%
                         [parent clock-dialog]
@@ -5014,62 +4641,8 @@ but limited by *max-penalty-exercises*"
                                (send clock-input set-value input-label)
                                (math-quiz-type (strip-spaces input))))]))
 
-;;; ================================================================
-;;; Roman Numerals Exercises
-;;; ================================================================
-
-;;; Arabic to Roman
-
-(define rn-list
-  '((1 . "I") (2 . "II") (3 . "III") (4 . "IV") (5 . "V")
-              (6 . "VI") (7 . "VII") (8 . "VIII") (9 . "IX")
-              (10 . "X") (20 . "XX") (30 . "XXX") (40 . "XL") (50 . "L")
-              (60 . "LX") (70 . "LXX") (80 . "LXXX") (90 . "XC")
-              (100 . "C") (200 . "CC") (300 . "CCC") (400 . "CD") (500 . "D")
-              (600 . "DC") (700 . "DCC") (800 . "DCCC") (900 . "CM")
-              (1000 . "M") (2000 . "MM") (3000 . "MMM") (0 . "")))
-
-(define (roman n)
-  (let* ((ones (remainder n 10))
-         (tens (remainder (- n ones) 100))
-         (hundreds (remainder (- n ones tens) 1000))
-         (thousands (- n ones tens hundreds)))
-    (foldr
-     (lambda (d rn) (string-append (cdr (assoc d rn-list)) rn)) ""
-     (list thousands hundreds tens ones))))
-
-;;; Roman to Arabic - redundant code
-
-;;; math-quiz never uses this code because the arabic number is always known beforehand
-;;; this code is included just for completeness sake
-
-(define an-list
-  (cdr (map (lambda (x) (cons (cdr x) (car x))) (reverse rn-list))))
-
-(define (arabic rns)
-  (if (zero? (string-length rns))
-      0
-      (let ((prefix (find (string-prefix1? rns) (map car an-list))))
-        (+ (cdr (assoc prefix an-list)) (arabic (string-trim rns prefix))))))
-
-(define (find f lst)
-  (cond ((null? lst) #f)
-        ((f (car lst)) (car lst))
-        (else (find f (cdr lst)))))
-
-(define (string-prefix1? str)
-  (lambda (prefix) (string-prefix? str prefix)))
-
-(module+ test
-  (check-equal? (roman 3948) "MMMCMXLVIII")
-  (check-equal? (roman 3094) "MMMXCIV")
-  (check-equal? (roman 2888) "MMDCCCLXXXVIII")
-  (check-equal? (arabic "MMMCMXLVII") 3947)
-  (check-equal? (arabic "MXCIV") 1094)
-  (check-equal? (arabic "MMDCCCLXXXIX") 2889))
-
 ;;; =================================================================
-;;; Instructions
+;;; Instructions - text only
 ;;; =================================================================
        
 (send doc-instructions change-style style-delta-font-doc1-family)
@@ -5089,10 +4662,3 @@ but limited by *max-penalty-exercises*"
  (send doc-instructions scroll-to-position 0)
  (send about-text scroll-to-position 0))
 
-
-;;;; Starting the GUI
-;;;; ===========================================================
-;(send main-window show #t)
-;
-;;;; disable popup menus
-;(disable/enable-popup-window-menu #f)
