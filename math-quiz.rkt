@@ -2,7 +2,7 @@
 
 ;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Math Quiz, Version scribblings-v1.0
+;;; Math Quiz, V4.0
 
 (require net/sendurl)
 (require racket/runtime-path)

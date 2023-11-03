@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v3.8.5
+;;; v4.0
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -202,7 +202,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v3.8.5
+  "Jasna's Math Quiz, v4.0
 
 This program was developed when my daughter attended pre-school, and the teacher started teaching addition and subtraction.
 When she switched to 2 digit addition/subtraction (limited version, not involving carry or borrow operations), I got tired of giving Jasna written exercises on sheets of paper, and checking her results. Therefore, this program was written to let the computer do the \"hard work\".
