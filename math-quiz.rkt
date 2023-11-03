@@ -2867,35 +2867,35 @@ Restart program immediately after"]
   (define ty #f)
   (case *gapesa-level*
     ((1) (set! *word-problem* (cons 'handle word+problems))
-         (set! *time-factor* 3) (set! ty "   +  "))
+         (set! *time-factor* 3) (set! ty "     +    "))
     ((2) (set! *word-problem* (cons 'handle word-problems))
-         (set! *time-factor* 7/2) (set! ty "   -  "))
+         (set! *time-factor* 7/2) (set! ty "    -     "))
     ((3) (set! *word-problem*
                (cons 'handle (append-shuffle word+problems word-problems)))
-         (set! *time-factor* 7/2) (set! ty "+ or -"))
+         (set! *time-factor* 7/2) (set! ty "  + or -  "))
     ((4) (set! *word-problem* (cons 'handle word+-problems))
-         (set! *time-factor* 4) (set! ty "  +-  "))
+         (set! *time-factor* 4) (set! ty "    +-    "))
     ((5) (set! *word-problem*
                (cons 'handle (append-shuffle word+problems word-problems
                                              word+-problems)))
          (set! *time-factor* 4) (set! ty "mix + +- -"))
     ((6) (set! *word-problem* (cons 'handle word*problems))
-         (set! *time-factor* 5) (set! ty "  *  "))
+         (set! *time-factor* 5) (set! ty "    *     "))
     ((7) (set! *word-problem* (cons 'handle word/problems))
-         (set! *time-factor* 6) (set! ty "  /  ")
+         (set! *time-factor* 6) (set! ty "    /     ")
          (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
     ((8) (set! *word-problem*
                (cons 'handle (append-shuffle word*problems word/problems)))
-         (set! *time-factor* 6) (set! ty "  */  ")
+         (set! *time-factor* 6) (set! ty "    */    ")
          (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
     (else (error *gapesa-level*)))
   (send text-lines insert
-        (format "------    GAPESA problems ~a exercise    ----~n" ty))
+        (format "------  GAPESA problems ~a exercise  ----~n" ty))
   (send text-dialog create-status-line)
   (send text-dialog set-status-text
         (string-append
          "Read the problem, understand the question, and formulate the Equation."
-         "  Then calculate the result, and enter it in to the input field."))
+         "  Then calculate the result, and enter it into the input field."))
   (unless (> *gapesa-level* 6)
     (set! equal= =))
   (set! do-math do-math-text) ; set non arithmetic operation
