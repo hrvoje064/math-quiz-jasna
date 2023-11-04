@@ -29,17 +29,12 @@
 ;;; ================================================================
 (define *n-s* (make-base-namespace))
 
-(define (apply-map f LL)
-  (define (apply-m f)
-    (lambda (lists)
-      (let ((lol (map (lambda (x) `(quote ,x)) lists)))
-        `(,map ,f ,@lol))))
-  (eval ((apply-m f) LL) *n-s*))
+(define (apply-map f lol)
+  (eval `(,map ,f ,@(map (lambda (l) `(quote ,l)) lol)) *n-s*))
 
 ;;; How about this? Also works, about the same speed
 ;(define (apply-map f lol)
-;  (let ((quoted-lol (map (lambda (x) `(quote ,x)) lol)))
-;    (eval (cons map (cons f quoted-lol)) *n-s*)))
+;    (eval (cons map (cons f (map (lambda (l) `(quote ,l)) lol))) *n-s*))
 
 (define (up-down lst)
   (let* ((rev-lst '(#f #t #f))
@@ -99,6 +94,8 @@
                   '((1 a 10) (2 b 20) (3 c 30)))
   (check-equal? (apply-map * '((1 2 3) (2 2 2) (10 20 30))) '(20 80 180))
   (check-equal? (apply-map + '((1 2 3))) '(1 2 3))
+  (check-equal? (apply-map (compose1 reverse list) '((a b c) (d e f)))
+                '((d a) (e b) (f c)))
   )
 
 ;;; for ABC sort & GAPESA
