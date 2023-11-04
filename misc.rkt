@@ -32,7 +32,7 @@
 (define (apply-map f lol)
   (eval `(,map ,f ,@(map (lambda (l) `(quote ,l)) lol)) *n-s*))
 
-;;; How about this? Also works, about the same speed
+;;; How about this? Also works, at about the same speed
 ;(define (apply-map f lol)
 ;    (eval (cons map (cons f (map (lambda (l) `(quote ,l)) lol))) *n-s*))
 
