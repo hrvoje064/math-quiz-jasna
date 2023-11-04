@@ -27,14 +27,6 @@
 
 ;;; for sequence
 ;;; ================================================================
-(define *n-s* (make-base-namespace))
-
-(define (apply-map f lol)
-  (eval `(,map ,f ,@(map (lambda (l) `(quote ,l)) lol)) *n-s*))
-
-;;; How about this? Also works, at about the same speed
-;(define (apply-map f lol)
-;    (eval (cons map (cons f (map (lambda (l) `(quote ,l)) lol))) *n-s*))
 
 (define (up-down lst)
   (let* ((rev-lst '(#f #t #f))
@@ -90,12 +82,6 @@
   (check-equal? (append-shuffle '(1 2 3 4 5) '(10 20 30) '(100 200 300 400 500))
                 '(100 10 200 1 300 20 400 2 500 30 3 4 5))
   (check-equal? (strip-spaces "  123   / 456 : 005 ") "123/456:005")
-  (check-equal? (apply-map list '((1 2 3) (a b c) (10 20 30)))
-                  '((1 a 10) (2 b 20) (3 c 30)))
-  (check-equal? (apply-map * '((1 2 3) (2 2 2) (10 20 30))) '(20 80 180))
-  (check-equal? (apply-map + '((1 2 3))) '(1 2 3))
-  (check-equal? (apply-map (compose1 reverse list) '((a b c) (d e f)))
-                '((d a) (e b) (f c)))
   )
 
 ;;; for ABC sort & GAPESA

@@ -34,7 +34,7 @@
     seq2))
 
 (define (add-sequences seq lsts)
-  (apply-map + (cons seq lsts)))
+  (apply map + (cons seq lsts)))
 
 (module+ test
   (require rackunit)
