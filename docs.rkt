@@ -198,6 +198,9 @@ Whenever the font size(s) are changed with one of the Font sub-menus, the progra
 To exit/stop the running set of exercises, use the \"Stop\" button. You can then start the next set of exercises, with the same setup you have set before with the \"Setup\" menu.
 The last sub-menu under \"Setup\" menu is \"Clear all reports\". This will erase all report printouts from previous exercises.
 
+One of the sub-menus under \"Help\" menu is \"Update math-quiz\". This menu is only active if the user has the Racket language installed on their computer, and if math-quiz is installed via Racket Package Installer.
+If this is not the case (you are running binary only version downloaded from \"hrvoje064.itch.io/jasnas-math-quiz\", then the \"Update ...\" sub-menu will be disabled, as it serves no purpose.
+
 When finished with exercises, exit the program by clicking X in the right top corner of the main window."
   )
 

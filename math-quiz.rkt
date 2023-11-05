@@ -137,16 +137,16 @@
 ;;; Disabling black terminal on Windows
 ;;; ==========================================================
 
-(define (remap-port port)
+(define (remap-port port flag)
   (cond
-    [(eq? (system-type) 'unix) port]
+    [(eq? (system-type) 'unix) (if flag port (open-output-nowhere))]
     [(eq? (system-type) 'windows) (open-output-nowhere)]
     [(terminal-port? port) port]
     [else
      (open-output-nowhere)]))
 
-(parameterize ([current-output-port (remap-port (current-output-port))]
-               [current-error-port  (remap-port (current-error-port))])
+(parameterize ([current-output-port (remap-port (current-output-port) #t)]
+               [current-error-port  (remap-port (current-error-port) #t)])
   ;;; Initialize!
   (initialize-fonts))
 
@@ -1246,6 +1246,11 @@ Restart program immediately after"]
                                (lambda (mi e)
                                  (make-pkg-installer #:package-to-offer
                                                      "math-quiz"))]))
+(parameterize ([current-output-port (remap-port (current-output-port) #t)]
+               [current-error-port  (remap-port (current-error-port) #f)])
+  ;;; Check if Racket is installed
+  (unless (system "racket --version")
+    (send menu-item-update enable #f)))
 
 ;;; Arithmetic problems
 ;;; ==================================================================                      

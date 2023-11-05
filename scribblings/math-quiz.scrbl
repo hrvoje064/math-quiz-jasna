@@ -438,5 +438,14 @@ menu.
 The last sub-menu under @bold{Setup} menu is @bold{Clear all reports}. This will
 erase all report printouts from previous exercises.
 
+@section{Update math-quiz}
+
+One of the sub-menus under @bold{Help} menu is @bold{Update math-quiz}. This menu is only
+active if the user has the Racket language installed on their computer, and if math-quiz
+is installed via Racket Package Installer.
+If this is not the case (you are running binary only version downloaded from
+@bold{hrvoje064.itch.io/jasnas-math-quiz}, then the @bold{Update ...} sub-menu will be
+disabled, as it serves no purpose.
+
 When finished with exercises, exit the program by clicking X in the right top corner of the
 main window.
