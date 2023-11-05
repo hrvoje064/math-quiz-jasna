@@ -6,6 +6,7 @@
 
 (require net/sendurl)
 (require racket/runtime-path)
+(require pkg/gui)
 
 (require "docs.rkt") ; docs.rkt file must be in the same directory as math-quiz
 (require "word-problems.rkt") ; data for ABC-sort, and text-problems
@@ -1234,6 +1235,17 @@ Restart program immediately after"]
                           [vert-margin 10]
                           [horiz-margin 10]
                           [style '(no-hscroll auto-vscroll no-focus)]))
+
+;;; Update math-quiz
+;;; ================================================================
+
+(define menu-item-update (new menu-item%
+                              [label "Update math-quiz"]
+                              [parent help-menu]
+                              [callback
+                               (lambda (mi e)
+                                 (make-pkg-installer #:package-to-offer
+                                                     "math-quiz"))]))
 
 ;;; Arithmetic problems
 ;;; ==================================================================                      
