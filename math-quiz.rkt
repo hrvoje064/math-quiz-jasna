@@ -1239,6 +1239,13 @@ Restart program immediately after"]
 ;;; Update math-quiz
 ;;; ================================================================
 
+(define (check-update-menu)
+  (parameterize ([current-output-port (remap-port (current-output-port) #t)]
+                 [current-error-port  (remap-port (current-error-port) #f)])
+    ;;; Check if Racket is installed
+    (unless (system "racket --version")
+      (send menu-item-update enable #f))))
+
 (define menu-item-update (new menu-item%
                               [label "Update math-quiz"]
                               [parent help-menu]
@@ -1246,11 +1253,8 @@ Restart program immediately after"]
                                (lambda (mi e)
                                  (make-pkg-installer #:package-to-offer
                                                      "math-quiz"))]))
-(parameterize ([current-output-port (remap-port (current-output-port) #t)]
-               [current-error-port  (remap-port (current-error-port) #f)])
-  ;;; Check if Racket is installed
-  (unless (system "racket --version")
-    (send menu-item-update enable #f)))
+
+(check-update-menu) ; disable Help->Update... menu, if Racket not installed
 
 ;;; Arithmetic problems
 ;;; ==================================================================                      
@@ -2339,16 +2343,18 @@ Restart program immediately after"]
                                    (send number-input enable #t)
                                    (disable/enable-input-fields #t))
                                (send button set-label "Pause")
-                               (disable/enable-set/font-menu #f)) ; disable doc/about menu
+                               (disable/enable-set/font-menu #f)) ; disable doc/about/update menu
                               (else
                                (set! *wiwi* #t) ; set pause to on
                                (set! *wiwi-start* (current-seconds)) ; mark time
                                (send text-lines change-style style-delta-blue)
                                (send text-lines insert
                                      (format "On the break -  time suspended~n"))
-                               ;; enabling doc/about menu
+                               ;; enabling doc/about/update menu
                                (send menu-item-doc enable #t)
                                (send menu-item-about enable #t)
+                               (send menu-item-update enable #t)
+                               (check-update-menu) ; disable anyway?
                                ; disable all buttons and input fields
                                (send *exec-button* enable #f)
                                (disable/enable-input-fields #f) ; seq cheat button
@@ -3050,7 +3056,9 @@ Restart program immediately after"]
                   set-all-fonts set-comparison-level set-status-msg-font
                   set-input-font set-doc-font set-about-font set-report-font
                   set-button-font set-clock-level set-fraction-level
-                  set-skip-increment set-text-level menu-item-doc menu-item-about)))
+                  set-skip-increment set-text-level menu-item-doc menu-item-about
+                  menu-item-update))
+  (check-update-menu))
 
 (provide disable/enable-popup-window-menu)
 (define (disable/enable-popup-window-menu t/f)
