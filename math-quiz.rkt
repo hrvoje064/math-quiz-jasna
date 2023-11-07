@@ -146,7 +146,7 @@
      (open-output-nowhere)]))
 
 (parameterize ([current-output-port (remap-port (current-output-port) #t)]
-               [current-error-port  (remap-port (current-error-port) #t)])
+               [current-error-port  (remap-port (current-error-port) #f)])
   ;;; Initialize!
   (initialize-fonts))
 
@@ -1178,6 +1178,11 @@ Restart program immediately after"]
 (define-runtime-path scribble-path "scribblings")
 (define scribble-path-string (path->string scribble-path))
 
+(define in-package-string ; checking for update menu
+  (let* ((scrbl-len (string-length scribble-path-string))
+         (decrement (min scrbl-len 26)))
+  (substring scribble-path-string 0 (- scrbl-len decrement))))
+
 (if (eq? (system-type) 'windows)
     (set! scribble-path-string
           (string-append scribble-path-string "\\math-quiz.html"))
@@ -1240,11 +1245,16 @@ Restart program immediately after"]
 ;;; ================================================================
 
 (define (check-update-menu)
-  (parameterize ([current-output-port (remap-port (current-output-port) #t)]
-                 [current-error-port  (remap-port (current-error-port) #f)])
-    ;;; Check if Racket is installed
-    (unless (system "racket --version")
-      (send menu-item-update enable #f))))
+  (unless
+      (and
+       (file-exists?
+        (string-append in-package-string "/pkgs/pkgs.rktd"))
+       (or
+        (file-exists?
+         (string-append in-package-string "/pkgs/.LOCKpkgs.rktd"))
+        (file-exists?
+         (string-append in-package-string "/pkgs/_LOCKpkgs.rktd"))))  
+    (send menu-item-update enable #f)))
 
 (define menu-item-update (new menu-item%
                               [label "Update math-quiz"]
@@ -1254,7 +1264,7 @@ Restart program immediately after"]
                                  (make-pkg-installer #:package-to-offer
                                                      "math-quiz"))]))
 
-(check-update-menu) ; disable Help->Update... menu, if Racket not installed
+(check-update-menu) ; disable Help->Update... menu, not in a package
 
 ;;; Arithmetic problems
 ;;; ==================================================================                      
