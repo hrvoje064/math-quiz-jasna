@@ -51,7 +51,9 @@
           (list " "          "________________________________________")
           (list "skip-count" @italic{Starts Negative Skip Counting exercises.})
           (list " "          "________________________________________")
-          (list "GAPESA"     @italic{Given, Asked, Process, Equation, Solution, Answer}))]
+          (list "GAPESA"     @italic{Given, Asked, Process, Equation, Solution, Answer})
+          (list " "          "________________________________________")
+          (list "Circumference" @italic{Starts circumference related exercises.}))]
 
 
 @section{Number of Exercises}
@@ -101,13 +103,13 @@ gradually increase difficulty by changing up to (12*12).
 
 @subsection{Maximum Size of Numbers}
 
-To change the max size of numbers (for all exercises, except for sequence, position value,
-fractions, cash, and Roman numbers) click on @bold{Setup->Set max size of numbers} menu.
+To change the max size of numbers (for most exercises, except for those where it obviously
+does not make sense, like Roman numbers) click on @bold{Setup->Set max size of numbers} menu.
 Move the slider to desired size. Slider goes from 100 to 900 with default of 700.
 It is recommended to lower the number to say, max 350, to avoid huge results in (*) exercises.
 
 
-@section{Comparison Exercises}
+@section[#:tag "Comparison"]{Comparison Exercises}
 
 The comparison exercise @bold{<=>}, works slightly differently. It opens a separate input window,
 and of-course does not require numerical result. Student is asked to input one of comparison
@@ -186,7 +188,7 @@ The default max size of pie-chart is 10 slices, but that can be changed with
 Fractions exercise works in 3 levels. Level 1 (reading the fraction, described above)
 is the default level. This can be changed with
 @bold{Setup->Set fraction level: read or compare} sub-menu to display and compare 2 fractions.
-Level 2 works in a similar way to comparison (fractions level) exercise. Student should
+Level 2 works in a similar way to @seclink{Comparison} (fractions level). Student should
 enter @bold{<, =, >} into the middle input field to indicate weather the left fraction
 pie-chart is smaller, equal, or greater than the right one.
 Level 3 works almost the same, except that all 3 input fields are active, and all 3 require
@@ -242,7 +244,7 @@ The student should first calculate the correct cash-return (as in 500 - price), 
 enter numbers from 1-4 in denomination input fields, until correct return is reached.
 Entering 0 in some input fields that will not be used is not required. Just leave them empty.
 
-@subsection{Cash Return Error Reporting}
+@subsection[#:tag "Cash"]{Cash Return Error Reporting}
 
 This exercise behaves slightly differently from all previous exercises. It does not clear
 the input fields as soon as enter, or check button is clicked. It will clear the inputs
@@ -265,7 +267,7 @@ to the word's alphabetical order.
 
 @subsection{ABC Sort Errors}
 
-Just like the cash exercise, it does not clear the inputs in case of error.
+Just like the @seclink{Cash}, it does not clear the inputs in case of error.
 Errors can be of two types. Words were not correctly indexed, or indices did not follow
 the rules, as in there are two or more same indices or one or more indices are out of
 scope, as in 0,6,7..., or one or more indices were left blank.
@@ -275,7 +277,7 @@ the report field in green, and will not be penalized.
 
 @section{Skip Count Exercises}
 
-The skip+count/skip-count exercise pops the window with one large input field that has
+The @bold{skip+count/skip-count} exercise pops the window with one large input field that has
 one (starting) number already in it. Student should continue entering numbers as per
 increment/decrement indicated on the prompt after the input field. Comma @bold{(,)} must
 separate all the numbers, and student must enter minimum 9 additional numbers.
@@ -294,18 +296,18 @@ varying from max-1 (if max>3) or max-2 (if max>6) to max.
 Exercise will report 4 possible errors:
 
 @itemlist[@item{Incorrect number(s) starting with X in (n1 n2 n3 @bold{(X)} n4 ...). If one or more numbers
-are wrong. The wrong number will be shown in parentheses.}
+           are wrong. The wrong number will be shown in parentheses.}
           @item{Started with X instead of Y. If student erases the starting number Y, and starts
-counting from their own starting number X.}
+           counting from their own starting number X.}
           @item{Only X numbers entered! Where X is a number smaller than 10. This error is
            not counted!}
           @item{Erroneous input (x y z...) - error will not be counted! If input is
            syntactically wrong (as in space instead of comma, or any other characters
            entered.}]
 
-Just like with cash exercises, input field will not be cleared on errors.
+Just like with @seclink{Cash}, input field will not be cleared on errors.
 
-@section{GAPESA Exercises}
+@section[#:tag "GAPESA"]{GAPESA Exercises}
 
 The GAPESA exercise is math problem given in words. It stands for Given, Asked, Process,
 Equation, Solution, and Answer.
@@ -328,7 +330,7 @@ If the student is working on division exercises, then precision of the answer be
 Just like in arithmetic division problems, the number of significant (taken into account)
 decimal places can be set with @bold{Setup->Set Division Precision} sub-menu. Default
 is 3 places. Do not round up the answer, just give 3 decimal digits (or whatever is
-set-up for division precision) without rounding the number.
+set up for division precision) without rounding the number.
 However in existing set of exercises, only 2 problems require inexact (floating point)
 number. All the others are set up so, that the answer is always an integer.
 
@@ -336,6 +338,20 @@ number. All the others are set up so, that the answer is always an integer.
 
 In case the student answers with wrong solution (wrong number), error message will be
 printed in red, but it will also show the correct equation for the solution.
+
+@section{Circumference Exercises}
+
+The Circumference exercises deal with calculation of circumference of several different types of
+polygons, including the circle (in levels 2 and 3).
+The exercise behaves exactly the same way as the @seclink{GAPESA} explained above, except for the
+levels, which are only 3 here.
+The levels are chosen with @bold{Setup->Set Circumference level} sub-menu.
+Exercises involving circle require floating point results, therefore the precision (number of
+decimal places required) is set with @bold{Setup->Set division precision} sub-menu. 
+This is set by default to 3. Again, do not round up/down the answers. 
+Circle exercises use @bold{3.14} as the value of @bold{PI} (which is noted in the text of
+each exercise). Do not use more precise values for @bold{PI}, because the results will not be accepted!
+
 
 @section{Error reporting for ALL Exercises}
 
@@ -401,7 +417,9 @@ default set by the program, set the slider back to 100%.
           @item{3.5 minutes for GAPESA level 2 & 3}
           @item{4 minutes for GAPESA level 4 & 5}
           @item{5 minutes for GAPESA level 6}
-          @item{6 minutes for GAPESA level 7 & 8}]
+          @item{6 minutes for GAPESA level 7 & 8}
+          @item{3 minutes for Circumference level 1}
+          @item{4 minutes for Circumference level 2 & 3}]
 
 @section{Pause Button}
 
@@ -410,15 +428,15 @@ is a toilet break. If a student needs to go to the toilet, they can press this b
 and exercises will be suspended. Most importantly the running time will be stopped, and
 the input-field will not accept any inputs.
 When the student is ready to resume, she/he can click again on @bold{Resume} button
-(after the first click, the button label has changed from Pause to Resume), or just
-click return, and exercises will resume. The time spent during the break will not count.
-However, any exercise can be paused only one time. After that the @bold{Pause} button is
+(after the first click, the button label has changed from Pause to Resume), and exercises
+will resume. The time spent during the break will not count.
+However, any set of exercises can be paused only one time. After that the @bold{Pause} button is
 disabled until the next set of exercises is started.
 Pause button is only active if number of exercises is set to 5 or more.
 
 @section{Font Adjustment}
 
-On notebooks with small display, most of the default font sizes that the program is using
+On computers with small display, most of the default font sizes that the program is using
 are to small for comfortable use. Therefore the font adjustment @bold{Preferences} menu was
 added to the program. That menu contains several sub-menus for changing the size of
 individual fonts, or all fonts at the same time in increments up to +3/-3 point sizes.

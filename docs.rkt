@@ -9,45 +9,47 @@
   "Start the program by clicking on one of Exercise buttons.
 
 _______________________________________________________________
-/          Starts 3 digit division exercises.
+/             Starts 3 digit division exercises.
 _______________________________________________________________
-100/10     Starts division table exercises (up to 100/10).
+100/10        Starts division table exercises (up to 100/10).
 _______________________________________________________________
-*          Starts 3 digit multiplication exercises.
+*             Starts 3 digit multiplication exercises.
 _______________________________________________________________
-10*10      Starts multiplication table exercises (up to 10*10).
+10*10         Starts multiplication table exercises (up to 10*10).
 _______________________________________________________________
-+ -        Starts the addition/subtraction exercises.
++ -           Starts the addition/subtraction exercises.
 _______________________________________________________________
-< = >      Starts the comparison exercises.
+< = >         Starts the comparison exercises.
 _______________________________________________________________
-odd even   Starts the 3 digit odd or even exercises.
+odd even      Starts the 3 digit odd or even exercises.
 _______________________________________________________________
-sequence   Starts a missing number in a sequence exercises.
+sequence      Starts a missing number in a sequence exercises.
 _______________________________________________________________
-B B A      Starts Before Between After number exercises.
+B B A         Starts Before Between After number exercises.
 _______________________________________________________________
-PosVal     Starts Position Value exercises.
+PosVal        Starts Position Value exercises.
 _______________________________________________________________
-fractions  Starts Fractions exercises.
+fractions     Starts Fractions exercises.
 _______________________________________________________________
-clock      Starts Clock exercises.
+clock         Starts Clock exercises.
 _______________________________________________________________
-N->Roman   Starts Arabic to Roman number exercises.
+N->Roman      Starts Arabic to Roman number exercises.
 _______________________________________________________________
-Roman->N   Starts Roman to Arabic number exercises.
+Roman->N      Starts Roman to Arabic number exercises.
 _______________________________________________________________
-cash USD   Starts Return Change exercises (USD).
+cash USD      Starts Return Change exercises (USD).
 _______________________________________________________________
-cash Peso  Starts Return Change exercises (Philippine Peso).
+cash Peso     Starts Return Change exercises (Philippine Peso).
 _______________________________________________________________
-ABC sort   Starts Alphabetical Sorting exercises.
+ABC sort      Starts Alphabetical Sorting exercises.
 _______________________________________________________________
-skip+count Starts Positive Skip Counting exercises.
+skip+count    Starts Positive Skip Counting exercises.
 _______________________________________________________________
-skip-count Starts Negative Skip Counting exercises.
+skip-count    Starts Negative Skip Counting exercises.
 _______________________________________________________________
-GAPESA     Given, Asked, Process, Equation, Solution, Answer
+GAPESA        Given, Asked, Process, Equation, Solution, Answer
+_______________________________________________________________
+Circumference Starts circumference related exercises.
 _______________________________________________________________\n\n"
   )
 
@@ -127,6 +129,12 @@ Do not round up the answer, just give 3 decimal digits (or whatever is set-up fo
 However in existing set of exercises, only 2 problems require inexact (floating point) number. All the others are set up so that the answer is always an integer.
 In case the student answers with wrong solution (wrong number), error message will be printed in red, but it will also show the correct equation for the solution.
 
+The Circumference exercises deal with calculation of circumference of several different types of polygons, including the circle (in levels 2 and 3).
+The exercise behaves exactly the same way as the GAPESA exercise explained above, except for the levels, which are only 3 here.
+The levels are chosen with \"Setup->Set Circumference level\" sub-menu.
+Exercises involving circle require floating point results, therefore the precision (number of decimal places required) is set with \"Setup->Set division precision\" sub-menu. This is set by default to 3. Again, do not round up/down the answers. 
+Circle exercises use 3.14 as the value of PI (which is noted in the text of each exercise). Do not use more precise values for PI, because the results will not be accepted!
+
 For all exercises, if wrong result was entered, the report line (in the report panel) will be printed in red, and the computer will beep. Program will not move on (give next problem) until original problem is answered correctly.
 This will count as a mistake, and will be penalized after completion of exercises in the following way:
 Each mistake will result in one additional exercise, up to 5 mistakes. No more penalty exercises will be given after 5.
@@ -185,14 +193,16 @@ ________________________________________________________
 4 minutes for GAPESA level 4 & 5
 5 minutes for GAPESA level 6
 6 minutes for GAPESA level 7 & 8
+3 minutes for Circumference level 1
+4 minutes for Circumference level 2 & 3
 ___________________________________________________________
 
 The button above all start exercise buttons is labeled \"Pause\". The purpose for this is a toilet break. If a student needs to go to the toilet, they can press this button, and exercises will be suspended. Most importantly the running time will be stopped, and the input-field will not accept any inputs.
-When the student is ready to resume, she/he can click again on \"Resume\" button (after the first click, the button label has changed from Pause to Resume), or just click return, and exercises will resume. The time spent during the break will not count.
-However, any exercise can be paused only one time. After that the \"Pause\" button is disabled until the next set of exercises is started.
+When the student is ready to resume, she/he can click again on \"Resume\" button (after the first click, the button label has changed from Pause to Resume), and exercises will resume. The time spent during the break will not count.
+However, any set of exercises can be paused only one time. After that the \"Pause\" button is disabled until the next set of exercises is started.
 Pause button is only active if number of exercises is set to 5 or more.
 
-On notebooks with small display, most of the default font sizes that the program is using are to small for comfortable use. Therefore the font adjustment \"Preferences\" menu was added to the program. That menu contains several sub-menus for changing the size of individual fonts, or all fonts at the same time in increments up to +3/-3 point sizes.
+On computers with small display, most of the default font sizes that the program is using are to small for comfortable use. Therefore the font adjustment \"Preferences\" menu was added to the program. That menu contains several sub-menus for changing the size of individual fonts, or all fonts at the same time in increments up to +3/-3 point sizes.
 Whenever the font size(s) are changed with one of the Font sub-menus, the program has to be restarted for the change to take effect. However, there's no need to update fonts every time, as the program is (after every change of fonts) updating \".jmq-fontrc\" file (in the same directory as the program).
 
 To exit/stop the running set of exercises, use the \"Stop\" button. You can then start the next set of exercises, with the same setup you have set before with the \"Setup\" menu.
@@ -209,14 +219,14 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.0
+  "Jasna's Math Quiz, v4.1
 
-This program was developed when my daughter attended pre-school, and the teacher started teaching addition and subtraction.
-When she switched to 2 digit addition/subtraction (limited version, not involving carry or borrow operations), I got tired of giving Jasna written exercises on sheets of paper, and checking her results. Therefore, this program was written to let the computer do the \"hard work\".
-Initially I was following the limited choice of number system, but as Jasna got better and better, I added the full, unlimited 3 digit addition/subtraction.
+This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
-Later, I added multiplication table (up to 10*10), 3 digit multiplication, division table (up to 100/10), 3 digit division, comparison (> = <) of integers and fractions, odd/even exercises, missing number in a sequence, before/between/after number, value position, graphical fraction (3 levels), and 5 levels of clock exercises.
-Finally, as Jasna is now in grade 2, I added Roman Number exercises, money (cash-return), alphabetical sorting exercises, skip-counting exercises, and GAPESA (text problem exercises).
+My daughter is now in 2nd grade, and the program is being updated with all she is learning at school.
+Most of the exercises have several levels of difficulty, with level one being appropriate for 1st, or 2nd grades, and higher levels for higher grades.
+
+I intend to continue updating the program with new exercises (and/or new levels of existing exercises), as per material she is learning at school.
 
 The program is written in Racket (Scheme) compiler v8.10
 It was developed on x86 based PC running Linux OS.
@@ -226,7 +236,7 @@ Raspberry pi version was compiled and tested on raspberry pi 4B.
 Problems, or any suggestions, report to hrvoje064@gmail.com
 
 
-Copyright, (c) 2022,2023. Capt. Hrvoje Blazevic")
+Copyright, (c) 2022, 2023  Capt. Hrvoje Blazevic")
 
 ;;; export
 ;;; ===========================================================

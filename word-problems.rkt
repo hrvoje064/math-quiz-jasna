@@ -824,8 +824,6 @@ which is ~a km away from station A?"
 
    ))
 
-;(define d/v (string->symbol (string (integer->char 247)))) ; division character
-
 (define word+problems (append-shuffle word+problems1 word+problems2))
 (define word-problems (append-shuffle word-problems1 word-problems2))
 (define word+-problems (append-shuffle word+-problems1 word+-problems2))
@@ -845,7 +843,7 @@ does.~n~n How many seashells do they have altogether?")
    (caar (memf (lambda (x) (string=? (car x)
                                      "Ivan puts ~a cookies into boxes A and B. If there are ~a cookies in \
 box A, how many cookies are there in box B?")) word-problems))
-  "Ivan puts ~a cookies into boxes A and B. If there are ~a cookies in \
+   "Ivan puts ~a cookies into boxes A and B. If there are ~a cookies in \
 box A, how many cookies are there in box B?") 
   (check-equal?
    (caar (memf (lambda (x) (string=? (car x)
@@ -860,11 +858,130 @@ How long is rope C?")
    (+ (length word-problems1) (length word-problems2)) (length word-problems) 0)
   (check-=
    (+ (length word+-problems1) (length word+-problems2)) (length word+-problems) 0))
+
+;;; Circumference & Area of Polygons
+;;; ===========================================================
+
+(define case0 #f) ; all equal size
+(define case1 #f) ; two same size
+;(define case2 #f) ; all different sizes
+(define choice (random 4))
+
+(define (reset-cases)
+  (set! case0 #f)
+  (set! case1 #f))
+;  (set! case2 #f))
+
+(define (reset-choice)
+  (set! choice (random 4)))
+
+(define circumference1
+  (list
+   (list "We are given a triangle with following sides:~n\
+a = ~a cm, b = ~a cm, and c = ~a cm. ~n
+ What is the circumference of the polygon?"
+         '((5 20) (5 20) (5 20))
+         (lambda (a b c)
+           (reset-cases)
+           (case choice
+             ((0) (and (set! case0 #t) (= a b c)))
+             ((1) (and (set! case1 #t)
+                       (and (not (= a b c))
+                            (or (and (= a b) (> (+ a b) c))
+                                (and (= a c) (> (+ a c) b))
+                                (and (= b c) (> (+ b c) a))))))
+             (else (and (> (+ a b) c)
+                        (> (+ a c) b)
+                        (> (+ b c) a)))))
+         (lambda (a b c)
+           (let ((formula
+                  (cond
+                    (case0 `(,a * 3))
+                    (case1 (or (and (= a b) `(,a * 2 + ,c))
+                               (and (= a c) `(,a * 2 + ,b))
+                               `(,b * 2 + ,a)))
+                    (else `(,a + ,b + ,c)))))
+             (reset-choice)
+             formula)))
+
+   (list "We are given a rectangle with following sides:~n\
+a = ~a cm, and b = ~a cm. ~n
+ What is the circumference of the polygon?"
+         `((5 20) (10 30))
+         (lambda (a b)
+           (reset-cases)
+           (case choice
+             ((0 1) (and (set! case0 #t) (= a b)))
+             (else #t)))
+         (lambda (a b)
+           (let ((formula (if case0 `(,a * 4) `((,a * 2) + (,b * 2)))))
+             (reset-choice)
+             formula)))
    
+   (list "We are given a pentagon with the side of ~a cm.~n
+ What is the circumference of the polygon?"
+         '((3 11))
+         t-func
+         (lambda (a) `(,a * 5)))
+
+   (list "We are given a hexagon with the side of ~a cm.~n
+ What is the circumference of the polygon?"
+         '((3 11))
+         t-func
+         (lambda (a) `(,a * 6)))
+
+      (list "We are given irregular pentagon with following sides:~n\
+a = ~a cm, b = ~a cm, c = ~a cm, d = ~a cm, and e = ~a cm. ~n
+ What is the circumference of the polygon?"
+         '((10 20) (10 20) (10 20) (10 20) (10 20))
+         t-func
+         (lambda (a b c d e) `(,a + ,b + ,c + ,d + ,e)))
+      ))
+
+(define circumference2
+  (list
+   (list "We are given a circle with radius of r = ~a cm.~n
+ What is the circumference of the circle?~n
+Use 3.14 for pi"
+         '((3 15))
+         t-func
+         (lambda (r) `(2 * ,r * 3.14)))
+
+   (list "We are given a triangle with circumference of ~a cm. Side a is \
+~a cm, and side b is ~a cm.~n
+ How long is the side c?"
+         '((15 34) (5 12) (5 12))
+         (lambda (o a b) (let ((c (- o (+ a b))))
+                           (and (< c (+ a b)) (< a (+ b c)) (< b (+ a c)))))
+         (lambda (o a b) `(,o - ,a - ,b)))
+
+   (list "We are given a rectangle with circumference of ~a cm. Side a is \
+~a cm.~n
+ How long is the side b?"
+         '((20 60) (5 16))
+         (lambda (c a) (let ((b2 (- c (* a 2))))
+                         (and (even? b2) (> b2 1))))
+         (lambda (c a) `((,c - (,a * 2)) ,d/v 2)))
+
+   (list "We are given a circle with circumference of ~a cm.~n
+ What is the radius of the circle?~n
+Use 3.14 for pi"
+         '((15 100))
+         t-func
+         (lambda (a) `(,a ,d/v (3.14 * 2))))
+
+   (list "We are given an irregular pentagon with circumference of ~a cm. Side \
+a is ~a cm, side b is ~a cm, side c is ~a cm, and side d is ~a cm.~n
+ How long is the side e?"
+         '((30 80) (5 16) (5 16) (5 16) (5 16))
+         t-func
+         (lambda (o a b c d) `(,o - (,a + ,b + ,c + ,d))))
+   ))
+ 
 ;;; export
 ;;; ===========================================================
 
 ;;; data
 (provide *dictionary* word+problems word-problems word+-problems word*problems
-         word/problems)
+         word/problems circumference1 circumference2)
 

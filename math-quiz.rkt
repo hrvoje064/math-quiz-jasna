@@ -36,6 +36,7 @@
 (define *fraction-level* 1) ; 1 reading fractions, 2 comparing fractions graphically
 (define *max-skip-increment* 2) ; skip counting increment
 (define *gapesa-level* 1) ; default word problem level, addition only
+(define *Carea-level* 1) ; default circumference/area level
 (define *word-problem* #f) ; original word problem set
 (define word-problem #f) ; copy of word problem set
 
@@ -555,6 +556,13 @@
                              (lambda (mi e)
                                (send slider-text-dialog show #t))]))
 
+(define set-circumference-level (new menu-item%
+                                     [label "Set Circumference level"]
+                                     [parent setup-menu]
+                                     [callback
+                                      (lambda (mi e)
+                                        (send slider-Carea-dialog show #t))]))
+
 (define slider-n-dialog (new dialog%
                              [label "Set"]
                              [parent main-window]
@@ -666,6 +674,14 @@
                                 [height 80]
                                 [style '(close-button)]
                                 [alignment '(right top)]))
+
+(define slider-Carea-dialog (new dialog%
+                                 [label "Set"]
+                                 [parent main-window]
+                                 [width 300]
+                                 [height 80]
+                                 [style '(close-button)]
+                                 [alignment '(right top)]))
 
 (define exercises-slider (new slider%
                               [label "number of exercises"]
@@ -825,6 +841,19 @@
                           (lambda (s e)
                             (set! *gapesa-level* (send s get-value)))]
                          [style '(vertical-label horizontal)]))
+
+(define Carea-slider (new slider%
+                          [label
+                           (format
+                            "Circumference level: 1 easy, 2 hard, 3 mix")]
+                          [min-value 1]
+                          [max-value 3]
+                          (parent slider-Carea-dialog)
+                          [init-value *Carea-level*]
+                          [callback
+                           (lambda (s e)
+                             (set! *Carea-level* (send s get-value)))]
+                          [style '(vertical-label horizontal)]))
 
 (define clear-reports (new menu-item%
                            [label "Clear all reports"]
@@ -1178,10 +1207,10 @@ Restart program immediately after"]
 (define-runtime-path scribble-path "scribblings")
 (define scribble-path-string (path->string scribble-path))
 
-(define in-package-string ; checking for update menu
+(define in-package-string ; check if running from a pkg
   (let* ((scrbl-len (string-length scribble-path-string))
          (decrement (min scrbl-len 26)))
-  (substring scribble-path-string 0 (- scrbl-len decrement))))
+    (substring scribble-path-string 0 (- scrbl-len decrement))))
 
 (if (eq? (system-type) 'windows)
     (set! scribble-path-string
@@ -2612,6 +2641,18 @@ Restart program immediately after"]
                                [callback
                                 (lambda (button event) (start-text))]))
 
+(define start-Carea-button (new button%
+                                [parent v-start-popup]
+                                [label "Circumference"]
+                                [font button-font]
+                                [min-width start-button-width]
+                                [min-height start-button-height]
+                                [enabled #t]
+                                [vert-margin 6]
+                                [horiz-margin 6]
+                                [callback
+                                 (lambda (button event) (start-Carea))]))
+
 ;;; ===============================================================
 
 ;;; callback functions
@@ -2922,15 +2963,46 @@ Restart program immediately after"]
          (set! *time-factor* 6) (set! ty "    */    ")
          (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
     (else (error *gapesa-level*)))
+  (send text-dialog set-label "GAPESA questions")
+  (send show-text-window-menu set-label "Show GAPESA Window")
   (send text-lines insert
         (format "------  GAPESA problems ~a exercise  ----~n" ty))
   (send text-dialog create-status-line)
   (send text-dialog set-status-text
         (string-append
-         "Read the problem, understand the question, and formulate the Equation."
-         "  Then calculate the result, and enter it into the input field."))
+         "Read the problem, understand the question, formulate the Equation,"
+         " calculate the result, and enter it into the input field."))
   (unless (> *gapesa-level* 6)
     (set! equal= =))
+  (set! do-math do-math-text) ; set non arithmetic operation
+  (set! get-problem get-problem-text)
+  (set! setup setup-text) ; setup function
+  (set! word-problem (list-copy *word-problem*)) ; fresh copy
+  (send text-dialog show #t)
+  (send text-input enable #t)
+  (start-quiz *n* 0))
+
+(define (start-Carea)
+  (define ty #f)
+  (case *Carea-level*
+    ((1) (set! *word-problem* (cons 'handle circumference1))
+         (set! *time-factor* 3) (set! ty "circumf-l1"))
+    ((2) (set! *word-problem* (cons 'handle circumference2))
+         (set! *time-factor* 4) (set! ty "circumf-l2"))
+    ((3) (set! *word-problem*
+               (cons 'handle (append-shuffle circumference1 circumference2)))
+         (set! *time-factor* 4) (set! ty "circumf-l3"))
+    (else (error *Carea-level*)))
+  (send text-lines insert
+        (format "---  Circumference problems ~a exercise  --~n" ty))
+  (send text-dialog set-label "Circumference questions")
+  (send show-text-window-menu set-label "Show Circumference Window")
+  (send text-dialog create-status-line)
+  (send text-dialog set-status-text
+        (string-append
+         "Read the problem, understand the question, formulate the Equation,"
+         " calculate the result, and enter it into the input field."))
+  (set! equal= approx=)
   (set! do-math do-math-text) ; set non arithmetic operation
   (set! get-problem get-problem-text)
   (set! setup setup-text) ; setup function
@@ -3056,7 +3128,8 @@ Restart program immediately after"]
                   start-bba-button start-pvalue-button start-fraction-button
                   start-clock-button start-a2r-button start-r2a-button
                   start-money-button start-money-p-button start-ABC-button
-                  start-skip-button start-skip-neg-button start-text-button)))
+                  start-skip-button start-skip-neg-button start-text-button
+                  start-Carea-button)))
 
 (define (disable/enable-set/font-menu t/f)
   (for-each (lambda (m) (send m enable t/f))
@@ -3066,8 +3139,8 @@ Restart program immediately after"]
                   set-all-fonts set-comparison-level set-status-msg-font
                   set-input-font set-doc-font set-about-font set-report-font
                   set-button-font set-clock-level set-fraction-level
-                  set-skip-increment set-text-level menu-item-doc menu-item-about
-                  menu-item-update))
+                  set-skip-increment set-text-level set-circumference-level
+                  menu-item-doc menu-item-about menu-item-update))
   (check-update-menu))
 
 (provide disable/enable-popup-window-menu)
@@ -3616,7 +3689,7 @@ Restart program immediately after"]
              (result (if (not (apply test inputs))
                          -1 ; failure flag
                          (evaluate (apply equation inputs)))))
-        (if (< result (random 10)) ; avoiding negative result
+        (if (< result (random 5)) ; avoiding negative result - no more than 5!
             (get-inputs)
             (let ((problem (apply format text inputs)))
               (set-problem-x! *problem* problem)
@@ -3626,7 +3699,7 @@ Restart program immediately after"]
                                   (exact->inexact result)))
               (set-problem-op! *problem* (apply equation inputs))
               #;(println (truncate-result (problem-y *problem*)
-                                        *exponent*)) ; for quick checking
+                                          *exponent*)) ; for quick checking
               ))))
     (when (= len 1) ; last problem consumed
       (set! word-problem (list-copy *word-problem*))) ; restore problem set
@@ -4271,6 +4344,7 @@ then additional problems are given."
   ; program was not restarted! set-all-fonts will not function properly
   (when all-fonts-delta (send set-all-fonts enable #f))
   (send wiwi-button enable #f)
+  (send wiwi-button set-label "Pause") ; just making sure
   (send *exec-button* enable #f)
   (disable/enable-popup-window-menu #f)
   (disable/enable-dialog-show #f)
