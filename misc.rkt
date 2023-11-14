@@ -111,35 +111,95 @@
      (nth! TL (cdr TL) 0) 2)
     (check-equal? TL '(handle))))
 
-;;; Infix evaluator
-;;; =========================================================
+;;; Infix evaluator, with precedence and left/right associativity
+;;; =============================================================
 
-(define (evaluate x)
-  "A quick & dirty infix expression evaluator, used for result calculation"
-  (cond
-    ((number? x) x)
-    ((null? (cdr x)) (evaluate (car x)))
-    ((pair? (car x)) (evaluate (cons (evaluate (car x)) (cdr x))))
-    (else
-     (evaluate (cons (calc (take x 3)) (cdddr x))))))
+;;; this is for displaying the devision sign, as printed in the math books
+(define // (string->symbol (string (integer->char 247)))) ; division character
+;;; this also complicates the evaluator, as the same equation is used to display
+;;; the equation itself, and to calculate the result.
 
-(define (calc t) ((operation (second t)) (first t) (evaluate (third t))))
+(define (evaluate expr)
+  "Infix evaluator respecting precedence and left or right associativity"
+  (define operations (list (cons '^ expt) (cons '* *) (cons // /) (cons '+ +) (cons '- -)))
+  (define (get-op sym) (cdr (assq sym operations)))
 
-(define d/v (string->symbol (string (integer->char 247)))) ; division character
-(define arith-ops (list (cons '+ +) (cons '- -) (cons '* *) (cons d/v /)))
-(define (operation x) (cdr (assq x arith-ops)))
+  (define (handle-parens expr)
+    "Dealing with parentheses first"
+    (if (null? expr)
+        null
+        (if (pair? (car expr))
+            (cons (evaluate (car expr)) (handle-parens (cdr expr)))
+            (cons (car expr) (handle-parens (cdr expr))))))
+
+  (define (left-associative ops expr)
+    "Priming left associative operations (+ - * /)"
+    (handle-op ops expr first third))
+
+  (define (right-associative ops expr)
+    "Priming right associative operations (^)"
+    (reverse (handle-op ops (reverse expr) third first)))
+
+  (define (handle-op ops expr left-f right-f)
+    "Handling both left & right operations"
+    (if (null? expr)
+        expr
+        (let ((op (memq (second expr) ops)))
+          (if op
+              (cons ((get-op (car op)) (left-f expr) (right-f expr)) (cdddr expr))
+              (cons (first expr) (cons (second expr)
+                                       (handle-op ops (cddr expr) left-f right-f)))))))
+
+  (define (evaluate expr)
+    "Precedence: (), ^(right assoc), * or /(left assoc), + or -(left assoc)" 
+    (cond
+      ;((number? expr) expr)
+      ((not (null? (filter pair? expr)))
+       (evaluate (handle-parens expr)))
+      ((memq '^ expr) (evaluate (right-associative '(^) expr)))
+      ((findf (lambda (x) (memq x `(* ,//))) expr)
+       (evaluate (left-associative `(* ,//) expr)))
+      ((findf (lambda (x) (memq x '(+ -))) expr)
+       (evaluate (left-associative '(+ -) expr)))
+      ((> (length expr) 1) (error "illegal expression in" 'evaluate expr))
+      (else (car expr))))
+
+  (evaluate expr))
 
 (module+ test
   (require rackunit)
+  (check-equal? (evaluate `(13)) 13)
   (check-equal? (evaluate '(1 + 2 + 3 - 4 + 5 - 6 + 7)) 8)
   (check-equal? (evaluate '((1 + 2) + (3 - 4) + (5 - 6 + 7))) 8)
-  (check-equal? (evaluate `((((1 + 2) * 2) + (((3 - 4) + (5 - 6 + 7)) * 2)) ,d/v 2)) 8)
-  (check-equal? (evaluate `((((1 + 2) * 3) + (((3 - 4) + (5 - 6 + 7)) * 3)) ,d/v 7)) 24/7)
+  (check-equal? (evaluate `((((1 + 2) * 2) + (((3 - 4) + (5 - 6 + 7)) * 2)) ,// 2)) 8)
+  (check-equal? (evaluate `((((1 + 2) * 3) + (((3 - 4) + (5 - 6 + 7)) * 3)) ,// 7)) 24/7)
+  (check-equal? (evaluate `(2 * 3 * 4 + 3 * 4 * 5 + 4 * 5 * 6))
+                (evaluate `((2 * 3 * 4) + (3 * 4 * 5) + (4 * 5 * 6))))
   (check-=
-   (evaluate `((((1 + 2) * 3 ,d/v 3 * 3) + (((3 - 4) + (5 - 6 + 7 + 3 - (6 ,d/v 2))) * 3))
-               ,d/v 7 * 5 - 55.)) -37.857142857 0.0000000002)
-  (check-exn exn:fail? (lambda () (evaluate '( 3 + 4 / 5)))) ; / is not valid in evaluator
-  ) 
+   (evaluate `((((1 + 2) * 3 ,// 3 * 3) + (((3 - 4) + (5 - 6 + 7 + 3 - (6 ,// 2))) * 3))
+               ,// 7 * 5 - 55.)) -37.857142857 0.0000000002)
+  (check-=
+   (evaluate `(((1 + 2) * 3 ,// 3 * 3 + (3 - 4 + (5 - 6 + 7 + 3 - 6 ,// 2)) * 3)
+               ,// 7 * 5 - 55.)) -37.857142857 0.0000000002) 
+  (check-exn exn:fail? (lambda () (evaluate `( 3 + 4 / 5)))) ; / is not valid in evaluator
+  (check-exn exn:fail? (lambda () (evaluate `( 3 + 4 // 5)))) ; // is not valid in evaluator
+  (check-equal? (evaluate `(1 + 2 + (3 ^ 3))) 30)
+  (check-equal? (evaluate `((10 - 8) * (2 ^ (2 ^ 2)) - 10)) 22)
+  (check-equal? (evaluate `((10 - 8) * 2 ^ 3 ^ 2 - 10)) 1014)
+  (check-equal? (evaluate `((10 - 8) * ((2 ^ 3) ^ 2) - 10)) 118)
+  (check-equal? (evaluate `((10 - 8) * (2 ^ (3 ^ 2)) - 10)) 1014)
+  (check-equal? (evaluate `((10 - 8) ^ 3 * (2 ^ (3 ^ 2)) - 10)) 4086)
+  (check-equal? (evaluate `((10 - 8) ^ 3 * (2 ^ (3 ^ 2)) - (10 ^ 3))) 3096)
+  (check-equal? (evaluate `((((10 - 8) ^ 3) * (2 ^ (3 ^ 2))) - (10 ^ 3))) 3096)
+  (check-equal? (evaluate `((10 - 8) ^ 3 * 2 ^ (3 ^ 2) - 10 ^ 3)) 3096)
+  (check-equal? (evaluate `((10 - 8) ^ 3 * 2 ^ 3 ^ 2 - 10 ^ 3)) 3096)
+  (check-equal? (evaluate `(10 + 27 ,// 3 ^ (1 + 2) * 2 - 12)) 0)
+  (check-equal? (evaluate `((6 - 1) + ((27 ,// (3 ^ 3)) * (7 - 4)))) 8)
+  (check-equal? (evaluate `((6 - 1) + 27 ,// 3 ^ 3 * (7 - 4))) 8)
+  (check-equal? (evaluate `(6 - (1 + 26) ,// 3 ^ 3 * (7 - 4) + 16 ,// 4 * 2)) 11)
+  (check-equal? (evaluate `(1 + 2 + 4 ,// 4 ^ (3 - 3) * 4 ,// 2 ^ 4 - 3)) 1)
+  (check-equal? (evaluate `(9 + 2 ^ 3 ^ 2 ^ 3 ,// 2 ^ 6561 - 2 * 5)) 0)
+  )
 
 ;;; Exports
 ;;; =================================================================

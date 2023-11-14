@@ -595,7 +595,7 @@ each. During the party we all drank ~a cans of soda.~n~n How many cans of soda \
 were left after the party?"
          '((3 11) (6 11) (3 11) (6 11) (30 70))
          (lambda (a b c d e) (and (not (= a c)) (not (= b d))))
-         (lambda (a b c d e) `((,a * ,b) + (,c * ,d) - ,e)))
+         (lambda (a b c d e) `(,a * ,b + ,c * ,d - ,e)))
 
    (list "Ayla had ~a php in her wallet. She went to the market and bought \
 ~a kilos of potato, ~a kilos of rice, and one loaf of sliced bread, which \
@@ -603,7 +603,7 @@ she paid ~a php. Rice costs ~a php per kilo, and potatoes cost ~a php per kilo.\
 ~n~n How much money does she have left in her wallet?"
          '((1500 2000) (2 11) (2 11) (80 120) (50 100) (110 150))
          (lambda (a b c d e f) (not (= b c)))
-         (lambda (a b c d e f) `(,a - (,b * ,f) - (,c * ,e) - ,d)))
+         (lambda (a b c d e f) `(,a - ,b * ,f - ,c * ,e - ,d)))
 
    (list "Jasna went to the supermarket with her family. Father placed ~a cartons of milk \
 in the shopping cart. Mother placed ~a packets with Nescafe 3 in 1 sachets in the \
@@ -612,7 +612,7 @@ and a packet of 3 in 1 Nescafe has ~a sachets in it.~n~n\
  How many individual items did they have in the cart?"
          '((2 7) (3 8) (5 10) (6 13) (6 11))
          t-func
-         (lambda (a b c d e) `((,a * ,d) + (,b * ,e) + ,c)))
+         (lambda (a b c d e) `(,a * ,d + ,b * ,e + ,c)))
    
    (list "We had a Christmas party. Bob brought with him ~a coolers \
 with ~a bottles of beer each. We all drank ~a bottles. Then Rodney brought ~a \
@@ -620,7 +620,7 @@ coolers with ~a bottles of beer each. After that we all drank ~a bottles more.~n
  How many bottles of beer were left after the party?"
          '((3 11) (6 11) (10 20) (3 11) (6 11) (30 70))
          (lambda (a b c d e f) (and (not (= a d)) (not (= b e)) (>= (* a b) c)))
-         (lambda (a b c d e f) `((,a * ,b) - ,c + (,d * ,e) - ,f)))
+         (lambda (a b c d e f) `(,a * ,b - ,c + ,d * ,e - ,f)))
    
    (list "Our condominium has ~a floors. To get from one floor to the other, Ricky must \
 climb ~a stairs. He lives on the ~ath floor.~n~n How many stairs does he have to climb \
@@ -662,7 +662,7 @@ All polygons have the same side length, ~a cm (centimeters).~n~n\
  What is the total length of all polygon sides?"
          '((2 10) (3 9) (2 10) (3 9) (2 10) (3 9) (10 20))
          (lambda (a b c d e f g) (not (or (= b d) (= d f) (= b f))))
-         (lambda (a b c d e f g) `((,a * ,b * ,g) + (,c * ,d * ,g) + (,e * ,f * ,g))))
+         (lambda (a b c d e f g) `(,a * ,b * ,g + ,c * ,d * ,g + ,e * ,f * ,g)))
 
    (list"Our class went hiking into the forest. There were ~a pupils, and \
 each one was asked to collect ~a mushrooms. At the end of a hike, the teacher \
@@ -671,21 +671,21 @@ the rest managed to collect only ~a mushrooms each.~n~n how many mushrooms \
 did the teacher count?"
         '((20 40) (5 10) (10 30) (2 8))
         (lambda (a b c d) (and (< (+ 5 c) a) (< d b)))
-        (lambda (a b c d) `((,c * ,b) + ((,a - ,c) * ,d))))
+        (lambda (a b c d) `(,c * ,b + (,a - ,c) * ,d)))
 
    (list "David went shopping in a supermarket. He bought ~a boxes of Lipton \
 tea with ~a teabags in each, and ~a boxes of coffee with ~a sachets each. \
-But then he realised that he doesn't have enough money, so he \
+But then he realized that he doesn't have enough money, so he \
 returned ~a boxes of tea.~n~n How many individual items did he buy?"
          '((4 8) (20 50) (3 6) (10 30) (2 5))
          (lambda (a b c d e) (and (not (= a c)) (not (= b d)) (> a e)))
-         (lambda (a b c d e) `(((,a - ,e) * ,b) + (,c * ,d))))
+         (lambda (a b c d e) `((,a - ,e) * ,b + ,c * ,d)))
 
    (list "The red rectangle measures ~a cm by ~a cm, while the blue rectangle is \
 ~a cm by ~a cm. How many square centimeters do they have altogether?"
          '((10 15) (12 18) (5 11) (10 20))
          (lambda (a b c d) (and (not (= a c)) (not (= b d))))
-         (lambda (a b c d) `((,a * ,b) + (,c * ,d))))
+         (lambda (a b c d) `(,a * ,b + ,c * ,d)))
 
    (list "Marla has ~a boxes of pencils. Each box has ~a pencils in it.~n~n\
  How many pencils does Marla have?"
@@ -712,14 +712,14 @@ we topped up the fuel tank again with ~a liters of diesel.~n~n\
  How many kilometers is our SUV managing per 1 liter of fuel?"
          '((10 20) (60 100) (120 150) (15 25))
          t-func
-         (lambda (_ a b c) `((,a + ,b) ,d/v ,c)))
+         (lambda (_ a b c) `((,a + ,b) ,// ,c)))
 
    (list "Our neighbors family has ~a kids. They went to the mall today and bought \
 ~a chocolate bars. When they returned home they divided evenly chocolate bars \
 between the kids.~n~n How many bars did each kid get?"
          '((2 6) (40 80))
          (lambda (a b) (zero? (modulo b a)))
-         (lambda (a b) `(,b ,d/v ,a)))
+         (lambda (a b) `(,b ,// ,a)))
 
    (list "We have many models of regular polygons in our class. We have ~a \
 polygons with ~a sides, ~a polygons with ~a sides, and ~a polygons with ~a sides. \
@@ -728,13 +728,13 @@ If all the polygons have the same side length, and the total length of their sid
          '((2 10) (3 9) (2 10) (3 9) (2 10) (3 9) (1000 3000))
          (lambda (a b c d e f g) (and (not (or (= b d) (= d f) (= b f)))
                                       (zero? (modulo g (+ (* a b) (* c d) (* e f))))))
-         (lambda (a b c d e f g) `(,g ,d/v ((,a * ,b) + (,c * ,d) + (,e * ,f)))))
+         (lambda (a b c d e f g) `(,g ,// (,a * ,b + ,c * ,d + ,e * ,f))))
 
    (list "Symone has ~a php in her purse. She wants to buy a lot of chocolate bars.~n~n\
 How many can she buy, if each one costs ~a php?"
          '((1000 2000) (35 85))
          (lambda (a b) (zero? (modulo a b)))
-         (lambda (a b) `(,a ,d/v ,b)))
+         (lambda (a b) `(,a ,// ,b)))
 
    (list "Our class of ~a pupils went on a picnic to the park. Our teacher \
 brought ~a cookies with her. Then another class of ~a pupils joined us. Our teacher \
@@ -742,14 +742,14 @@ decided to distribute evenly the cookies among all the pupils.~n~n\
  How many cookies did each pupil get?"
          '((25 40) (100 300) (25 40))
          (lambda (a b c) (and (not (= a c)) (zero? (modulo b (+ a c)))))
-         (lambda (a b c) `(,b ,d/v (,a + ,c))))
+         (lambda (a b c) `(,b ,// (,a + ,c))))
 
    (list "David has ~a barrels filled with wine. There are ~a liters of wine in each \
 barrel. He wants to transfer all the wine into the plastic containers of ~a \
 liters each.~n~n How many containers does he need?"
          '((2 10) (50 100) (3 11))
          (lambda (a b c) (and (not (= a c)) (zero? (modulo (* a b) c))))
-         (lambda (a b c) `((,a * ,b) ,d/v ,c)))
+         (lambda (a b c) `(,a * ,b ,// ,c)))
 
    (list "Captain Jack Sparrow is in command of ~a pirate ships sailing to the port \
 of Barranquilla. Each ship is filled with a bullion of ~a gold bars. They run into a \
@@ -760,7 +760,7 @@ capital city.~n~n If each cart can carry ~a gold bars, how many carts are needed
          '((8 15) (50 100) (3 7) (5 10) (50 100) (11 20))
          (lambda (a b c d e f) (and (not (= b e))
                                     (zero? (modulo (+ (* (- a c) b) (* d e)) f))))
-         (lambda (a b c d e f) `(((,a - ,c) * ,b + (,d * ,e)) ,d/v ,f)))
+         (lambda (a b c d e f) `(((,a - ,c) * ,b + ,d * ,e) ,// ,f)))
 
    (list "There are ~a pirate ships sailing to the port of Cartagena. Each ship \
 is filled with a bullion of ~a gold bars. They run into a hurricane and ~a ships disappear, \
@@ -769,7 +769,7 @@ to transport the gold further on, to the capital city.~n~n\
  If each cart can carry ~a gold bars, how many carts are needed in all?"
          '((8 15) (50 100) (3 7) (10 20))
          (lambda (a b c d) (zero? (modulo (* (- a c) b) d)))
-         (lambda (a b c d) `((,a - ,c) * ,b ,d/v ,d)))
+         (lambda (a b c d) `((,a - ,c) * ,b ,// ,d)))
    
    (list "My brother has ~a php, and I have ~a php. Mother sends us to buy \
 bread. With the rest of the money, we can buy as many ice-creams as we can. \
@@ -777,21 +777,21 @@ Bread costs ~a php, and ice-creams cost ~a php.~n~n\
  How many ice-creams can we buy?"
          '((100 300) (200 400) (80 120) (50 80))
          (lambda (a b c d) (zero? (modulo (- (+ a b) c) d)))
-         (lambda (a b c d) `((,a + ,b - ,c) ,d/v ,d)))
+         (lambda (a b c d) `((,a + ,b - ,c) ,// ,d)))
 
    (list "We were driving a car at average speed of ~a kph, for ~a \
 kilometers before we stopped for dinner.~n~n\
  How many hours did we drive?"
          '((35 75) (300 750))
          (lambda (a b) (zero? (modulo b a)))
-         (lambda (a b) `(,b ,d/v ,a)))
+         (lambda (a b) `(,b ,// ,a)))
 
    (list "Cristina is cooking pork & chicken curry with rice. She has ~a grams of \
 lean pork meat, and ~a grams of chicken meat. It takes on the average ~a grams of meat \
 for a meal per person.~n~n How many persons can she feed with the meat she's got?"
          '((1000 2000) (1000 2000) (100 250))
          (lambda (a b c) (zero? (modulo (+ a b) c)))
-         (lambda (a b c) `((,a + ,b) ,d/v ,c)))
+         (lambda (a b c) `((,a + ,b) ,// ,c)))
 
    (list "Teacher has prepared ~a pink booklets for girls, and ~a blue booklets \
 for boys.~n~n If each girl gets ~a booklets, and each boy gets ~a booklets, \
@@ -799,13 +799,13 @@ how many pupils are in the class in all?"
          '((60 120) (60 120) (4 8) (4 8))
          (lambda (a b c d) (and (not (= a b)) (not (= c d))
                                 (zero? (modulo a c)) (zero? (modulo b d))))
-         (lambda (a b c d) `((,a ,d/v ,c) + (,b ,d/v ,d))))
+         (lambda (a b c d) `(,a ,// ,c + ,b ,// ,d)))
 
    (list "Our grandmother has ~a kilos of rice. She wants to give equal share to all \
 of her ~a children. How many grams of rice is each one getting?"
          '((20 50) (7 11))
          (lambda (a b) (zero? (modulo (* a 1000) b)))
-         (lambda (a b) `(,a * 1000 ,d/v ,b)))
+         (lambda (a b) `(,a * 1000 ,// ,b)))
 
    (list "When we started our trip, we topped up our fuel tank, and we zeroed \
 our partial trip meter. After traveling ~a kilometers, we stopped at a gas station, \
@@ -813,14 +813,14 @@ and topped our tank again with ~a liters of diesel.~n~n How many liters is our \
 truck consuming per 100 km?"
          '((80 500) (25 50))
          (lambda (a b) (and (> (/ a b) 6) (< (/ a b) 25)))
-         (lambda (a b) `(,b ,d/v (,a ,d/v 100))))
+         (lambda (a b) `(,b ,// (,a ,// 100))))
 
    (list "Train left station A at ~a o'clock AM. It is traveling at \
 average speed of ~a kph.~n~n At what time (o'clock PM) did the train arrive at station B, \
 which is ~a km away from station A?"
-         '((7 12) (40 90) (250 400))
+         '((8 12) (40 90) (250 400))
          (lambda (a b c) (and (zero? (modulo c b)) (> (/ c b) 4) (< (/ c b) 12)))
-         (lambda (a b c) `(,a + (,c ,d/v ,b) - 12)))
+         (lambda (a b c) `(,a + ,c ,// ,b - 12)))
 
    ))
 
@@ -914,7 +914,7 @@ a = ~a cm, and b = ~a cm. ~n
              ((0 1) (and (set! case0 #t) (= a b)))
              (else #t)))
          (lambda (a b)
-           (let ((formula (if case0 `(,a * 4) `((,a * 2) + (,b * 2)))))
+           (let ((formula (if case0 `(,a * 4) `(,a * 2 + ,b * 2))))
              (reset-choice)
              formula)))
    
@@ -961,14 +961,14 @@ Use 3.14 for pi"
          '((20 60) (5 16))
          (lambda (c a) (let ((b2 (- c (* a 2))))
                          (and (even? b2) (> b2 1))))
-         (lambda (c a) `((,c - (,a * 2)) ,d/v 2)))
+         (lambda (c a) `((,c - ,a * 2) ,// 2)))
 
    (list "We are given a circle with circumference of ~a cm.~n
  What is the radius of the circle?~n
 Use 3.14 for pi"
          '((15 100))
          t-func
-         (lambda (a) `(,a ,d/v (3.14 * 2))))
+         (lambda (a) `(,a ,// (3.14 * 2))))
 
    (list "We are given an irregular pentagon with circumference of ~a cm. Side \
 a is ~a cm, side b is ~a cm, side c is ~a cm, and side d is ~a cm.~n

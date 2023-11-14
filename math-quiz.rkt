@@ -832,7 +832,7 @@
                          [label
                           (format
                            "GAPESA level: 1+ ,  2- ,  3+ or - ,  4+- , 5mix +- ,  \
-6* ,  7~a ,  8*~a" d/v d/v)]
+6* ,  7~a ,  8*~a" // //)]
                          [min-value 1]
                          [max-value 8]
                          (parent slider-text-dialog)
@@ -3689,7 +3689,7 @@ Restart program immediately after"]
              (result (if (not (apply test inputs))
                          -1 ; failure flag
                          (evaluate (apply equation inputs)))))
-        (if (< result (random 5)) ; avoiding negative result - no more than 5!
+        (if (< result 0) ; avoiding negative result - no more than 5!
             (get-inputs)
             (let ((problem (apply format text inputs)))
               (set-problem-x! *problem* problem)
