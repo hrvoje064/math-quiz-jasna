@@ -114,14 +114,18 @@
 ;;; Infix evaluator, with precedence and left/right associativity
 ;;; =============================================================
 
-;;; this is for displaying the devision sign, as printed in the math books
+;;; this is for displaying special math symbols, as printed in math books
 (define // (string->symbol (string (integer->char 247)))) ; division character
+(define V (string->symbol (string (integer->char 8730)))) ; root character
 ;;; this also complicates the evaluator, as the same equation is used to display
 ;;; the equation itself, and to calculate the result.
 
 (define (evaluate expr)
   "Infix evaluator respecting precedence and left or right associativity"
-  (define operations (list (cons '^ expt) (cons '* *) (cons // /) (cons '+ +) (cons '- -)))
+  (define operations
+    (list (cons '^ (lambda (x y) (expt y x)))
+          (cons V (lambda (x y) (expt y (/ 1 x))))
+          (cons '* *) (cons // /) (cons '+ +) (cons '- -)))
   (define (get-op sym) (cdr (assq sym operations)))
 
   (define (handle-parens expr)
@@ -132,31 +136,30 @@
             (cons (evaluate (car expr)) (handle-parens (cdr expr)))
             (cons (car expr) (handle-parens (cdr expr))))))
 
-  (define (left-associative ops expr)
-    "Priming left associative operations (+ - * /)"
-    (handle-op ops expr first third))
-
   (define (right-associative ops expr)
     "Priming right associative operations (^)"
-    (reverse (handle-op ops (reverse expr) third first)))
+    (reverse (left-associative ops (reverse expr))))
 
-  (define (handle-op ops expr left-f right-f)
-    "Handling both left & right operations"
+  (define (left-associative ops expr) ; left associative operations
+    "Dealing with left associative operations (V * // + -)"
     (if (null? expr)
         expr
         (let ((op (memq (second expr) ops)))
           (if op
-              (cons ((get-op (car op)) (left-f expr) (right-f expr)) (cdddr expr))
+              (cons ((get-op (car op)) (first expr) (third expr)) (cdddr expr))
               (cons (first expr) (cons (second expr)
-                                       (handle-op ops (cddr expr) left-f right-f)))))))
+                                       (left-associative ops (cddr expr))))))))
 
   (define (evaluate expr)
-    "Precedence: (), ^(right assoc), * or /(left assoc), + or -(left assoc)" 
+    "Precedence: (), ^(right assoc), V(left assoc),
+    * or /(left assoc), + or -(left assoc)" 
     (cond
-      ;((number? expr) expr)
       ((not (null? (filter pair? expr)))
        (evaluate (handle-parens expr)))
-      ((memq '^ expr) (evaluate (right-associative '(^) expr)))
+      ((findf (lambda (x) (memq x `(^ ,V))) expr)
+       (if (eq? '^ (findf (lambda (x) (memq x `(^ ,V))) expr))
+           (evaluate (right-associative `(^) expr))
+           (evaluate (left-associative `(,V) expr))))
       ((findf (lambda (x) (memq x `(* ,//))) expr)
        (evaluate (left-associative `(* ,//) expr)))
       ((findf (lambda (x) (memq x '(+ -))) expr)
@@ -199,6 +202,15 @@
   (check-equal? (evaluate `(6 - (1 + 26) ,// 3 ^ 3 * (7 - 4) + 16 ,// 4 * 2)) 11)
   (check-equal? (evaluate `(1 + 2 + 4 ,// 4 ^ (3 - 3) * 4 ,// 2 ^ 4 - 3)) 1)
   (check-equal? (evaluate `(9 + 2 ^ 3 ^ 2 ^ 3 ,// 2 ^ 6561 - 2 * 5)) 0)
+  (check-= (evaluate `(8 ^ 2 * 3,V 512 ,// 2 ^ 3 ^ 2)) 1 0.0000000001)
+  (check-equal? (evaluate `(10 + 2 ^ 3 ^ 2 ,// 2,V 2 ^ 2,V 256 - 32)) 10)
+  (check-= (evaluate `(10 + 2 ^ 3 ^ 2 ,// (2,V 2) ^ 2,V 256 - 32)) 10 0.0000000001)
+  (check-equal? (evaluate `(10 + 2 ^ 3 ^ 2 ,// 2,V (2 ^ 2),V 256 - 32)) 10)
+  (check-= (evaluate `(3,V ((2 + 4) ^ 2 - (1 + 2 - 1) ^ 2) ,// 3,V 32))
+           1 0.000001)
+  (check-= (evaluate `(5,V 1024 ,// 2 ^ 10)) 0.00390625 0.00000001)
+  (check-equal? (evaluate `(3,V 8 ,// 2,V (2 ^ 2))) 1.0)
+  (check-= (evaluate `(3,V 8 ,// 2,V 2 ^ 2)) 1 0.0000000001)
   )
 
 ;;; Exports
