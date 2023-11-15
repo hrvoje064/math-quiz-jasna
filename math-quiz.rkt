@@ -557,7 +557,7 @@
                                (send slider-text-dialog show #t))]))
 
 (define set-circumference-level (new menu-item%
-                                     [label "Set Circumference level"]
+                                     [label "Set Perimeter/Area level"]
                                      [parent setup-menu]
                                      [callback
                                       (lambda (mi e)
@@ -678,7 +678,7 @@
 (define slider-Carea-dialog (new dialog%
                                  [label "Set"]
                                  [parent main-window]
-                                 [width 300]
+                                 [width 400]
                                  [height 80]
                                  [style '(close-button)]
                                  [alignment '(right top)]))
@@ -845,9 +845,9 @@
 (define Carea-slider (new slider%
                           [label
                            (format
-                            "Circumference level: 1 easy, 2 hard, 3 mix")]
+                            "Perimeter/Area level: 1 C-easy, 2 C-hard, 3 C-mix, 4 A-easy")]
                           [min-value 1]
-                          [max-value 3]
+                          [max-value 4]
                           (parent slider-Carea-dialog)
                           [init-value *Carea-level*]
                           [callback
@@ -2643,7 +2643,7 @@ Restart program immediately after"]
 
 (define start-Carea-button (new button%
                                 [parent v-start-popup]
-                                [label "Circumference"]
+                                [label "Perimeter/Area"]
                                 [font button-font]
                                 [min-width start-button-width]
                                 [min-height start-button-height]
@@ -2986,17 +2986,26 @@ Restart program immediately after"]
   (define ty #f)
   (case *Carea-level*
     ((1) (set! *word-problem* (cons 'handle circumference1))
-         (set! *time-factor* 3) (set! ty "circumf-l1"))
+         (set! *time-factor* 3) (set! ty "level-1"))
     ((2) (set! *word-problem* (cons 'handle circumference2))
-         (set! *time-factor* 4) (set! ty "circumf-l2"))
+         (set! *time-factor* 4) (set! ty "level-2"))
     ((3) (set! *word-problem*
                (cons 'handle (append-shuffle circumference1 circumference2)))
-         (set! *time-factor* 4) (set! ty "circumf-l3"))
+         (set! *time-factor* 4) (set! ty "level-3"))
+    ((4) (set! *word-problem* (cons 'handle area1))
+         (set! *time-factor* 4) (set! ty "level-4 "))
     (else (error *Carea-level*)))
-  (send text-lines insert
-        (format "---  Circumference problems ~a exercise  --~n" ty))
-  (send text-dialog set-label "Circumference questions")
-  (send show-text-window-menu set-label "Show Circumference Window")
+  (case *Carea-level*
+    ((1 2 3) 
+     (send text-lines insert
+           (format "----   Perimeter problems ~a exercise   ---~n" ty))
+     (send text-dialog set-label "Perimeter questions")
+     (send show-text-window-menu set-label "Show Perimeter Window"))
+    ((4)
+     (send text-lines insert
+           (format "------   Area problems ~a exercise   -----~n" ty))
+     (send text-dialog set-label "Area questions")
+     (send show-text-window-menu set-label "Show Area Window")))     
   (send text-dialog create-status-line)
   (send text-dialog set-status-text
         (string-append
@@ -3684,23 +3693,26 @@ Restart program immediately after"]
          (test (third wp))
          (equation (fourth wp)))
     (define (get-inputs)
-      (let* ((inputs
-              (map (lambda (range) (apply random range)) rangel))
-             (result (if (not (apply test inputs))
-                         -1 ; failure flag
-                         (evaluate (apply equation inputs)))))
-        (if (< result 0) ; avoiding negative result - no more than 5!
-            (get-inputs)
-            (let ((problem (apply format text inputs)))
-              (set-problem-x! *problem* problem)
-              (set-problem-y! *problem*
-                              (if (integer? result)
-                                  result
-                                  (exact->inexact result)))
-              (set-problem-op! *problem* (apply equation inputs))
-              #;(println (truncate-result (problem-y *problem*)
+      (let ((inputs
+             (do ([parameters
+                   (map (lambda (range) (apply random range)) rangel)
+                   (map (lambda (range) (apply random range)) rangel)])
+               ((apply test parameters) parameters))))
+        (let*-values
+            ([(formula-show formula-calc) (apply equation inputs)]
+             [(result) (evaluate formula-calc)])
+          (if (< result 0) ; avoiding negative result - no more than 5!
+              (get-inputs)
+              (let ((problem (apply format text inputs)))
+                (set-problem-x! *problem* problem)
+                (set-problem-y! *problem*
+                                (if (integer? result)
+                                    result
+                                    (exact->inexact result)))
+                (set-problem-op! *problem* formula-show)
+                #;(println (truncate-result (problem-y *problem*)
                                           *exponent*)) ; for quick checking
-              ))))
+                )))))
     (when (= len 1) ; last problem consumed
       (set! word-problem (list-copy *word-problem*))) ; restore problem set
     (get-inputs)))
@@ -4467,16 +4479,9 @@ but limited by *max-penalty-exercises*"
   (calc-stub x "=" (truncate-result (string->number result) *exponent*)))
 
 (define (msg-text-error x op y result)
-  (let ((line2 (format "~nEquation: ~a \\=" (list2string op))))
+  (let ((line2 (format "~n~a \\=" (if (string? op) op (list2string op)))))
     (calc-stub x line2 (truncate-result (string->number result) *exponent*))))
 
-(define (list2string lst)
-  "remove outer parentheses"
-  (if (null? lst)
-      ""
-      (string-append (format "~a " (car lst))
-                     (list2string (cdr lst)))))
-  
 (define (calc-stub text content result)
   "Printing first line of the problem, making sure that it is not longer than
   *report-line-length*. If it is, removing words from the end of line."

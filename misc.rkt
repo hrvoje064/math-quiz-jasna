@@ -4,6 +4,13 @@
 
 ;;; Functions required by more than one module
 
+(define (list2string lst)
+  "remove outer parentheses"
+  (if (null? lst)
+      ""
+      (string-append (format "~a " (car lst))
+                     (list2string (cdr lst)))))
+
 ;;; for GAPESA
 ;;; ================================================================
 (define (append-shuffle L . Lists)

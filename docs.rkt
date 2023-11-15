@@ -3,53 +3,53 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v4.0
+;;; v4.2
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
 
 _______________________________________________________________
-/             Starts 3 digit division exercises.
+/               Starts 3 digit division exercises.
 _______________________________________________________________
-100/10        Starts division table exercises (up to 100/10).
+100/10          Starts division table exercises (up to 100/10).
 _______________________________________________________________
-*             Starts 3 digit multiplication exercises.
+*               Starts 3 digit multiplication exercises.
 _______________________________________________________________
-10*10         Starts multiplication table exercises (up to 10*10).
+10*10           Starts multiplication table exercises (up to 10*10).
 _______________________________________________________________
-+ -           Starts the addition/subtraction exercises.
++ -             Starts the addition/subtraction exercises.
 _______________________________________________________________
-< = >         Starts the comparison exercises.
+< = >           Starts the comparison exercises.
 _______________________________________________________________
-odd even      Starts the 3 digit odd or even exercises.
+odd even        Starts the 3 digit odd or even exercises.
 _______________________________________________________________
-sequence      Starts a missing number in a sequence exercises.
+sequence        Starts a missing number in a sequence exercises.
 _______________________________________________________________
-B B A         Starts Before Between After number exercises.
+B B A           Starts Before Between After number exercises.
 _______________________________________________________________
-PosVal        Starts Position Value exercises.
+PosVal          Starts Position Value exercises.
 _______________________________________________________________
-fractions     Starts Fractions exercises.
+fractions       Starts Fractions exercises.
 _______________________________________________________________
-clock         Starts Clock exercises.
+clock           Starts Clock exercises.
 _______________________________________________________________
-N->Roman      Starts Arabic to Roman number exercises.
+N->Roman        Starts Arabic to Roman number exercises.
 _______________________________________________________________
-Roman->N      Starts Roman to Arabic number exercises.
+Roman->N        Starts Roman to Arabic number exercises.
 _______________________________________________________________
-cash USD      Starts Return Change exercises (USD).
+cash USD        Starts Return Change exercises (USD).
 _______________________________________________________________
-cash Peso     Starts Return Change exercises (Philippine Peso).
+cash Peso       Starts Return Change exercises (Philippine Peso).
 _______________________________________________________________
-ABC sort      Starts Alphabetical Sorting exercises.
+ABC sort        Starts Alphabetical Sorting exercises.
 _______________________________________________________________
-skip+count    Starts Positive Skip Counting exercises.
+skip+count      Starts Positive Skip Counting exercises.
 _______________________________________________________________
-skip-count    Starts Negative Skip Counting exercises.
+skip-count      Starts Negative Skip Counting exercises.
 _______________________________________________________________
-GAPESA        Given, Asked, Process, Equation, Solution, Answer
+GAPESA          Given, Asked, Process, Equation, Solution, Answer
 _______________________________________________________________
-Circumference Starts circumference related exercises.
+Perimeter/Area  Starts circumference related exercises.
 _______________________________________________________________\n\n"
   )
 
@@ -129,9 +129,9 @@ Do not round up the answer, just give 3 decimal digits (or whatever is set-up fo
 However in existing set of exercises, only 2 problems require inexact (floating point) number. All the others are set up so that the answer is always an integer.
 In case the student answers with wrong solution (wrong number), error message will be printed in red, but it will also show the correct equation for the solution.
 
-The Circumference exercises deal with calculation of circumference of several different types of polygons, including the circle (in levels 2 and 3).
-The exercise behaves exactly the same way as the GAPESA exercise explained above, except for the levels, which are only 3 here.
-The levels are chosen with \"Setup->Set Circumference level\" sub-menu.
+The Perimeter/Area exercises deal with calculation of circumference and area of several different types of polygons, including the circle (in higher levels).
+The exercise behaves exactly the same way as the GAPESA exercise explained above, except for the levels, which are only 4 here. Level 4 is Area exercises.
+The levels are chosen with \"Setup->Set Perimeter/Area level\" sub-menu.
 Exercises involving circle require floating point results, therefore the precision (number of decimal places required) is set with \"Setup->Set division precision\" sub-menu. This is set by default to 3. Again, do not round up/down the answers. 
 Circle exercises use 3.14 as the value of PI (which is noted in the text of each exercise). Do not use more precise values for PI, because the results will not be accepted!
 
@@ -219,7 +219,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.1
+  "Jasna's Math Quiz, v4.2
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

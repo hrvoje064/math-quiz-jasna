@@ -53,7 +53,7 @@
           (list " "          "________________________________________")
           (list "GAPESA"     @italic{Given, Asked, Process, Equation, Solution, Answer})
           (list " "          "________________________________________")
-          (list "Circumference" @italic{Starts circumference related exercises.}))]
+          (list "Perimeter/Area" @italic{Starts circumference related exercises.}))]
 
 
 @section{Number of Exercises}
@@ -339,13 +339,13 @@ number. All the others are set up so, that the answer is always an integer.
 In case the student answers with wrong solution (wrong number), error message will be
 printed in red, but it will also show the correct equation for the solution.
 
-@section{Circumference Exercises}
+@section{Perimeter/Area Exercises}
 
-The Circumference exercises deal with calculation of circumference of several different types of
-polygons, including the circle (in levels 2 and 3).
+The Perimeter/Area exercises deal with calculation of circumference and area of several
+different types of polygons, including the circle (in higher levels).
 The exercise behaves exactly the same way as the @seclink{GAPESA} explained above, except for the
-levels, which are only 3 here.
-The levels are chosen with @bold{Setup->Set Circumference level} sub-menu.
+levels, which are only 4 here. Level 4 is area exercises.
+The levels are chosen with @bold{Setup->Set Perimeter/Area level} sub-menu.
 Exercises involving circle require floating point results, therefore the precision (number of
 decimal places required) is set with @bold{Setup->Set division precision} sub-menu. 
 This is set by default to 3. Again, do not round up/down the answers. 
