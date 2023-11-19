@@ -742,7 +742,7 @@
 
 (define precision-slider (new slider%
                               [label "(/) precision - digits after (.)"]
-                              [min-value 1]
+                              [min-value 0]
                               [max-value 7]
                               [parent slider-precision-dialog]
                               [init-value *exponent*]
@@ -3701,7 +3701,7 @@ Restart program immediately after"]
         (let*-values
             ([(formula-show formula-calc) (apply equation inputs)]
              [(result) (evaluate formula-calc)])
-          (if (< result 0) ; avoiding negative result - no more than 5!
+          (if (< result 0) ; avoiding negative result
               (get-inputs)
               (let ((problem (apply format text inputs)))
                 (set-problem-x! *problem* problem)

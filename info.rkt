@@ -11,9 +11,9 @@
                "pict-lib"
                "base"))
 (define build-deps '("scribble-lib" "racket-doc" "rackunit-lib"))
-(define scribblings '(("scribblings/math-quiz.scrbl")))
+(define scribblings '(("scribblings/math-quiz.scrbl") (multi-page)))
 (define pkg-desc "Math quiz for grade 1,2,3 ...")
-(define version "4.2")
+(define version "4.2.1")
 (define pkg-authors '(Hrvoje Blazevic))
 (define license '(Apache-2.0 OR MIT))
 ;;; making sure Racket package repo tests don't fail/time out

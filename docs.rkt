@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v4.2
+;;; v4.2.1
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -49,7 +49,7 @@ skip-count      Starts Negative Skip Counting exercises.
 _______________________________________________________________
 GAPESA          Given, Asked, Process, Equation, Solution, Answer
 _______________________________________________________________
-Perimeter/Area  Starts circumference related exercises.
+Perimeter/Area  Starts circumference/area related exercises.
 _______________________________________________________________\n\n"
   )
 
@@ -62,7 +62,7 @@ Default maximum factor (for both multiplication and division tables) is set to 1
 Once you start the arithmetic (+ - * / 10*10 100/10) exercises, enter the result of requested exercise in the text field, and click \"Calculate\" button. Instead of clicking the \"Calculate\" button, you can also hit \"enter\" key on keyboard. If the result was correct, the confirmation will be printed in black in the panel below. If, on the other hand, the result was not correct, the same line will be printed in red.
 
 Important note. All arithmetic exercises require exact (integer) results. Only exception is division (/) that requires almost always inexact, (real -- floating point) numbers, but limited only to 3 digits after the decimal point. No need to enter more - excess digits will be discarded!
-You can change the default setting of 3 digits after decimal point in \"Setup->Set division precision\" menu. The pop-up slider allows 1-7 digit setting.
+You can change the default setting of 3 digits after decimal point in \"Setup->Set division precision\" menu. The pop-up slider allows 0-7 digit setting.
 Having said that, of-course, if division exercise actually gives an integer result (as in 10 / 2 = 5) entering only 5 as a result is fine. Likewise if result has less than 3 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is okay.
 
 The comparison exercise (<=>), works slightly differently. It opens a separate input window, and of-course does not require numerical result. Student is asked to input one of comparison symbols ( > = < ) depending on the two numbers shown to the left and the right of the input field, as in: 133  [     ]  211 . In this case the student should type < in the input field, as 133 is smaller than 211.
@@ -219,7 +219,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.2
+  "Jasna's Math Quiz, v4.2.1
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

@@ -1216,7 +1216,7 @@ and side c of ~a cm.~n
                  (sv (/ (+ a b c) 2)))
              (values (format "s    = ~a~narea = ~a" (list2string s)
                              (list2string `(2,V (s * (s - ,a) * (s - ,b) * (s - ,c)))))
-                     `(2,V (,s * (,s - ,a) * (,s - ,b) * (,s - ,c)))))))
+                     `(2,V (,sv * (,sv - ,a) * (,sv - ,b) * (,sv - ,c)))))))
 
    (list "We are given a rectangle with side a of ~a cm, and side b of ~a cm.~n
  What is the area of the rectangle?"
@@ -1232,11 +1232,37 @@ and side c of ~a cm.~n
              (values formula formula))))
 
    (list "We are given a circle with radius = ~a cm.~n
- What is the area of the circle?"
+ What is the area of the circle?~n
+Use 3.14 for pi"
          '((5 20))
          t-func
          (lambda (r)
            (let ((formula `(,r ^ 2 * 3.14)))
+             (values formula formula))))
+
+   (list "We are given a Right triangle with legs a = ~a cm, and b = ~a cm.~n
+ What is the length of side c (hypotenuse)?"
+         '((3 15) (3 15))
+         t-func
+         (lambda (a b)
+           (let ((formula `(2,V (,a ^ 2 + ,b ^ 2))))
+             (values formula formula))))
+
+   (list "We are given a circle with area = ~a cm^2.~n
+ What is the radius of the circle?~n
+Use 3.14 for pi"
+         '((25 250))
+         t-func
+         (lambda (a)
+           (let ((formula `(2,V (,a ,// 3.14))))
+             (values formula formula))))
+
+   (list "We are given a Right triangle with legs: a = ~a cm, and b = ~a cm.~n
+ What is the area of that triangle?"
+         '((5 20) (8 25))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * ,b ,// 2)))
              (values formula formula))))
    
    ))
