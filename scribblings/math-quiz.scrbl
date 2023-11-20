@@ -1,7 +1,7 @@
 #lang scribble/manual
-@require[@for-label[math-quiz racket/base]]
+@;@require[@for-label[math-quiz racket/base]]
+@;@(require (for-label math-quiz))
 
-@title{math-quiz}
 @author{Hrvoje Blazevic}
 
 @defmodule[math-quiz]
@@ -187,7 +187,7 @@ The default max size of pie-chart is 10 slices, but that can be changed with
 Fractions exercise works in 3 levels. Level 1 (reading the fraction, described above)
 is the default level. This can be changed with
 @bold{Setup->Set fraction level: read or compare} sub-menu to display and compare 2 fractions.
-Level 2 works in a similar way to @secref["comparison"] (fractions level). Student should
+Level 2 works in a similar way to @(secref "comparison") (fractions level). Student should
 enter @bold{<, =, >} into the middle input field to indicate weather the left fraction
 pie-chart is smaller, equal, or greater than the right one.
 Level 3 works almost the same, except that all 3 input fields are active, and all 3 require
@@ -266,7 +266,7 @@ to the word's alphabetical order.
 
 @subsection{ABC Sort Errors}
 
-Just like the @secref["cash"], it does not clear the inputs in case of error.
+Just like the @(secref "cash"), it does not clear the inputs in case of error.
 Errors can be of two types. Words were not correctly indexed, or indices did not follow
 the rules, as in there are two or more same indices or one or more indices are out of
 scope, as in 0,6,7..., or one or more indices were left blank.
@@ -304,10 +304,9 @@ Exercise will report 4 possible errors:
            syntactically wrong (as in space instead of comma, or any other characters
            entered.}]
 
-Just like with @secref["cash"], input field will not be cleared on errors.
+Just like with @(secref "cash"), input field will not be cleared on errors.
 
 @section[#:tag "gapesa"]{GAPESA Exercises}
-
 The GAPESA exercise is math problem given in words. It stands for Given, Asked, Process,
 Equation, Solution, and Answer.
 It pops a window with the text of a problem. The student must write the equation on a
@@ -342,8 +341,8 @@ printed in red, but it will also show the correct equation for the solution.
 
 The Perimeter/Area exercises deal with calculation of circumference and area of several
 different types of polygons, including the circle (in higher levels).
-The exercise behaves exactly the same way as the @secref["gapesa"] explained above, except for the
-levels, which are only 4 here. Level 4 is area exercises.
+The exercise behaves exactly the same way as the @(secref "gapesa") explained above,
+except for the levels, which are only 4 here. Level 4 is area exercises.
 The levels are chosen with @bold{Setup->Set Perimeter/Area level} sub-menu.
 Exercises involving circle require floating point results, therefore the precision (number of
 decimal places required) is set with @bold{Setup->Set division precision} sub-menu. 
