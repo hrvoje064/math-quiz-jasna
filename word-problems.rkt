@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v1.0
+;;; v4.2.2
 
 (require "misc.rkt")
 
@@ -1264,7 +1264,24 @@ Use 3.14 for pi"
          (lambda (a b)
            (let ((formula `(,a * ,b ,// 2)))
              (values formula formula))))
-   
+
+   (list "We are given a Right triangle with area = ~a cm^2, \
+and leg a = ~a cm.~n
+ What is the length of leg b?"
+         '((30 150) (5 20))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * 2 ,// ,b)))
+             (values formula formula))))
+
+   (list "We are given a Right triangle with hypotenuse c = ~a cm, and \
+leg a = ~a cm.~n What is the length of leg b?"
+         '((10 20) (5 15))
+         (lambda (c a) (> c (add1 a)))
+         (lambda (c a)
+           (let ((formula `(2,V (,c ^ 2 - ,a ^ 2))))
+             (values formula formula))))
+
    ))
                                                           
 ;;; export
