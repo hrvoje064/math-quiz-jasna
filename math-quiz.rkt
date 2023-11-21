@@ -1204,15 +1204,15 @@ Restart program immediately after"]
 ;;; Scribbling part
 ;;; ================================================================
 
-(define-runtime-path docs-path "X")
+(define-runtime-path docs-path "scribblings")
 (define docs-path-string
   (let* ((str (path->string docs-path))
          (len (string-length str)))
-    (substring str 0 (sub1 len))))
+    (substring str 0 (- len 11))))
 
 (define in-package-string ; check if running from a pkg
   (let* ((docs-len (string-length docs-path-string))
-         (decrement (min docs-len 16)))
+         (decrement (min docs-len 26)))
     (substring docs-path-string 0 (- docs-len decrement))))
 
 (define (remote?) ; is this local development testing, or remote install
