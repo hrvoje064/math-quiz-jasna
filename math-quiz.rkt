@@ -1210,35 +1210,19 @@ Restart program immediately after"]
          (len (string-length str)))
     (substring str 0 (- len 11))))
 
-(define in-package-string ; check if running from a pkg
-  (let* ((docs-len (string-length docs-path-string))
-         (decrement (min docs-len 26)))
-    (substring docs-path-string 0 (- docs-len decrement))))
+(define (remote?)
+  (cond
+    ((file-exists? (string-append docs-path-string "doc/math-quiz/index.html"))
+     (set! docs-path-string
+           (string-append docs-path-string "doc/math-quiz/index.html"))
+     #t)
+    ((file-exists? (string-append docs-path-string "scribblings/math-quiz.html"))
+     (set! docs-path-string
+           (string-append docs-path-string "scribblings/math-quiz.html"))
+     #f)
+    (else #f))) ; docs not available???
 
-(define (remote?) ; is this local development testing, or remote install
-  (if (and
-       (file-exists?
-        (string-append in-package-string "/pkgs/pkgs.rktd"))
-       (or
-        (file-exists?
-         (string-append in-package-string "/pkgs/.LOCKpkgs.rktd"))
-        (file-exists?
-         (string-append in-package-string "/pkgs/_LOCKpkgs.rktd"))))
-      #t #f))
-
-(case (system-type)
-  ((windows)
-   (if (remote?)
-       (set! docs-path-string
-             (string-append docs-path-string "\\doc\\math-quiz\\index.html"))
-       (set! docs-path-string
-             (string-append docs-path-string "\\scribblings\\math-quiz.html"))))
-  (else
-   (if (remote?)
-       (set! docs-path-string
-             (string-append docs-path-string "/doc/math-quiz/index.html"))
-       (set! docs-path-string
-             (string-append docs-path-string "/scribblings/math-quiz.html")))))
+(void (remote?))
 
 (define menu-item-html (new menu-item%
                             [label "HTML Documentation"]
