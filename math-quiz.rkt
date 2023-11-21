@@ -1210,19 +1210,21 @@ Restart program immediately after"]
          (len (string-length str)))
     (substring str 0 (- len 11))))
 
-(define (remote?)
+(define remote? #f)
+
+(define (remote-pkg)
   (cond
     ((file-exists? (string-append docs-path-string "doc/math-quiz/index.html"))
      (set! docs-path-string
            (string-append docs-path-string "doc/math-quiz/index.html"))
-     #t)
+     (set! remote? #t))
     ((file-exists? (string-append docs-path-string "scribblings/math-quiz.html"))
      (set! docs-path-string
            (string-append docs-path-string "scribblings/math-quiz.html"))
-     #f)
-    (else #f))) ; docs not available???
+     (set! remote? #f))
+    (else (set! remote? #f)))) ; docs not available???
 
-(void (remote?))
+(remote-pkg)
 
 (define menu-item-html (new menu-item%
                             [label "HTML Documentation"]
@@ -1280,7 +1282,7 @@ Restart program immediately after"]
 ;;; ================================================================
 
 (define (check-update-menu)
-  (unless (remote?)
+  (unless remote?
     (send menu-item-update enable #f)))
 
 (define menu-item-update (new menu-item%
