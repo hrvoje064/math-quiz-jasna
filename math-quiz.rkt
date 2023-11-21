@@ -1204,26 +1204,48 @@ Restart program immediately after"]
 ;;; Scribbling part
 ;;; ================================================================
 
-(define-runtime-path scribble-path "scribblings")
-(define scribble-path-string (path->string scribble-path))
+(define-runtime-path docs-path "X")
+(define docs-path-string
+  (let* ((str (path->string docs-path))
+         (len (string-length str)))
+    (substring str 0 (sub1 len))))
 
 (define in-package-string ; check if running from a pkg
-  (let* ((scrbl-len (string-length scribble-path-string))
-         (decrement (min scrbl-len 26)))
-    (substring scribble-path-string 0 (- scrbl-len decrement))))
+  (let* ((docs-len (string-length docs-path-string))
+         (decrement (min docs-len 16)))
+    (substring docs-path-string 0 (- docs-len decrement))))
 
-(if (eq? (system-type) 'windows)
-    (set! scribble-path-string
-          (string-append scribble-path-string "\\math-quiz.html"))
-    (set! scribble-path-string
-          (string-append scribble-path-string "/math-quiz.html")))
+(define (remote?) ; is this local development testing, or remote install
+  (if (and
+       (file-exists?
+        (string-append in-package-string "/pkgs/pkgs.rktd"))
+       (or
+        (file-exists?
+         (string-append in-package-string "/pkgs/.LOCKpkgs.rktd"))
+        (file-exists?
+         (string-append in-package-string "/pkgs/_LOCKpkgs.rktd"))))
+      #t #f))
+
+(case (system-type)
+  ((windows)
+   (if (remote?)
+       (set! docs-path-string
+             (string-append docs-path-string "\\doc\\math-quiz\\index.html"))
+       (set! docs-path-string
+             (string-append docs-path-string "\\scribblings\\math-quiz.html"))))
+  (else
+   (if (remote?)
+       (set! docs-path-string
+             (string-append docs-path-string "/doc/math-quiz/index.html"))
+       (set! docs-path-string
+             (string-append docs-path-string "/scribblings/math-quiz.html")))))
 
 (define menu-item-html (new menu-item%
                             [label "HTML Documentation"]
                             [parent help-menu]
                             [callback
                              (lambda (mi e)
-                               (send-url/file scribble-path-string))]))
+                               (send-url/file docs-path-string))]))
 
 ;;; =================================================================
 
@@ -1274,15 +1296,7 @@ Restart program immediately after"]
 ;;; ================================================================
 
 (define (check-update-menu)
-  (unless
-      (and
-       (file-exists?
-        (string-append in-package-string "/pkgs/pkgs.rktd"))
-       (or
-        (file-exists?
-         (string-append in-package-string "/pkgs/.LOCKpkgs.rktd"))
-        (file-exists?
-         (string-append in-package-string "/pkgs/_LOCKpkgs.rktd"))))  
+  (unless (remote?)
     (send menu-item-update enable #f)))
 
 (define menu-item-update (new menu-item%
