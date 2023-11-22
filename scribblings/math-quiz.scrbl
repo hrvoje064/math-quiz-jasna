@@ -1,5 +1,9 @@
 #lang scribble/manual
 
+@(require (for-label math-quiz))
+
+@title{Math Quiz}
+
 @author{Hrvoje Blazevic}
 
 @defmodule[math-quiz]

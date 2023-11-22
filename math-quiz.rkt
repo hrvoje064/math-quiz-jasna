@@ -1228,7 +1228,7 @@ Restart program immediately after"]
          (string-append docs-path-string "/scribblings/math-quiz.html"))
    (set! remote? #f)) ; not in installed package? 
   (else
-   (string-append docs-path-string "math-quiz.html")
+   (string-append docs-path-string "/math-quiz.html")
    (set! remote? #f))) ; docs not available???
 
 (define menu-item-html (new menu-item%
