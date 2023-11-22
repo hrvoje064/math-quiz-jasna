@@ -2,11 +2,12 @@
 
 ;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Math Quiz, V4.0
+;;; Math Quiz, V4.2.2
 
 (require net/sendurl)
 (require racket/runtime-path)
 (require pkg/gui)
+(require pkg/lib)
 
 (require "docs.rkt") ; docs.rkt file must be in the same directory as math-quiz
 (require "word-problems.rkt") ; data for ABC-sort, and text-problems
@@ -1204,27 +1205,31 @@ Restart program immediately after"]
 ;;; Scribbling part
 ;;; ================================================================
 
+(define remote? #f)
+
 (define-runtime-path docs-path "scribblings")
 (define docs-path-string
   (let* ((str (path->string docs-path))
          (len (string-length str)))
-    (substring str 0 (- len 11))))
+    (substring str 0 (- len 12))))
 
-(define remote? #f)
+(define package-dir (pkg-directory "math-quiz"))
+(when package-dir 
+  (set! package-dir (path->string (simplify-path package-dir)))
+  (when (string=? package-dir docs-path-string)
+    (set! remote? #t))) ; running from installed package (probably???)
 
-(define (remote-pkg)
-  (cond
-    ((file-exists? (string-append docs-path-string "doc/math-quiz/index.html"))
-     (set! docs-path-string
-           (string-append docs-path-string "doc/math-quiz/index.html"))
-     (set! remote? #t))
-    ((file-exists? (string-append docs-path-string "scribblings/math-quiz.html"))
-     (set! docs-path-string
-           (string-append docs-path-string "scribblings/math-quiz.html"))
-     (set! remote? #f))
-    (else (set! remote? #f)))) ; docs not available???
-
-(remote-pkg)
+(cond
+  ((file-exists? (string-append docs-path-string "/doc/math-quiz/index.html"))
+   (set! docs-path-string
+         (string-append docs-path-string "/doc/math-quiz/index.html")))
+  ((file-exists? (string-append docs-path-string "/scribblings/math-quiz.html"))
+   (set! docs-path-string
+         (string-append docs-path-string "/scribblings/math-quiz.html"))
+   (set! remote? #f)) ; not in installed package? 
+  (else
+   (string-append docs-path-string "math-quiz.html")
+   (set! remote? #f))) ; docs not available???
 
 (define menu-item-html (new menu-item%
                             [label "HTML Documentation"]

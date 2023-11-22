@@ -1,6 +1,4 @@
 #lang scribble/manual
-@;@require[@for-label[math-quiz racket/base]]
-@;@(require (for-label math-quiz))
 
 @author{Hrvoje Blazevic}
 
