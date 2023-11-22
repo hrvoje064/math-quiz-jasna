@@ -1209,7 +1209,7 @@ Restart program immediately after"]
 
 (define-runtime-path docs-path "scribblings")
 (define docs-path-string
-  (let* ((str (path->string docs-path))
+  (let* ((str (path->string (simplify-path docs-path)))
          (len (string-length str)))
     (substring str 0 (- len 12))))
 
