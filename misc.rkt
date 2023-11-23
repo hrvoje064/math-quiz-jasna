@@ -110,12 +110,15 @@
      (nth! (cdr before) (cdr lst) (sub1 n)))))
 
 (define (list-copy lst) ; utility procedure - copy the spine of list
-  (if (null? lst)
-      null
-      (cons (car lst) (list-copy (cdr lst)))))
+  (foldr cons null lst))
 
 (module+ test
-  (let ((TL (list 'handle 1 2 3)))
+  (let* ((tl (list 'handle 1 2 3))
+         (TL (list-copy tl)))
+    (check-equal?
+     (list-copy TL) '(handle 1 2 3))
+    (check-equal?
+     (list-copy '(1 2 3 (4 (5) 6) 7 8)) '(1 2 3 (4 (5) 6) 7 8))
     (check-equal?
      (nth! TL (cdr TL) 0) 1)
     (check-equal? TL '(handle 2 3))
@@ -124,7 +127,9 @@
     (check-equal? TL '(handle 2))
     (check-equal?
      (nth! TL (cdr TL) 0) 2)
-    (check-equal? TL '(handle))))
+    (check-equal? TL '(handle))
+    (check-equal?
+     (nth! (list-copy tl) (cdr (list-copy tl)) 0) 1)))
 
 ;;; Infix evaluator, with precedence and left/right associativity
 ;;; =============================================================
