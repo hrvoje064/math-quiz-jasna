@@ -2,7 +2,7 @@
 
 ;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Math Quiz, V4.2.2
+;;; Math Quiz, V4.2.3
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -15,6 +15,7 @@
 (require "logo-turtle.rkt") ; clock & fractions drawings
 (require "roman.rkt") ; Roman numerals conversion
 (require "sequence.rkt") ; sequence problems
+(require "html-fix.rkt") ; repairing secref hyperlinks in html docs
 
 (define *speed-factor* 1) ; reduce or increase allotted time
 (define *left-number* 700) ; Max size-1 of left number
@@ -1206,6 +1207,7 @@ Restart program immediately after"]
 ;;; ================================================================
 
 (define remote? #f)
+(define base-path "file:///home/hrvoje064/Projects/math-quiz/scribblings/math-quiz.html")
 
 (define-runtime-path docs-path "scribblings")
 (define docs-path-string
@@ -1221,10 +1223,14 @@ Restart program immediately after"]
 
 (define (find-docs docs-path-string)
   (let ((index-path (string-append docs-path-string "/doc/math-quiz/index.html"))
-        (mathq-path (string-append docs-path-string "/scribblings/math-quiz.html")))
+        (mathq-path (string-append docs-path-string "/scribblings/math-quiz.html"))
+        (check-path (string-append docs-path-string "/scribblings/fixed-secref.txt")))
     (cond
       ((file-exists? index-path) index-path)
-      ((file-exists? mathq-path) (set! remote? #f)  mathq-path)
+      ((file-exists? check-path) (set! remote? #f) mathq-path)
+      ((file-exists? mathq-path) (set! remote? #f)
+                                 (fix-html mathq-path base-path)
+                                 mathq-path)
       (else
        (string-append docs-path-string "/math-quiz.html")
        (set! remote? #f))))) ; docs not available???
