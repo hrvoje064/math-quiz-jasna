@@ -1276,13 +1276,23 @@ and leg a = ~a cm.~n
 
    (list "We are given a Right triangle with hypotenuse c = ~a cm, and \
 leg a = ~a cm.~n What is the length of leg b?"
-         '((10 20) (5 15))
+         '((10 25) (5 15))
          (lambda (c a) (> c (add1 a)))
          (lambda (c a)
            (let ((formula `(2,V (,c ^ 2 - ,a ^ 2))))
              (values formula formula))))
 
-   ))
+    (list "We are given a Right triangle with hypotenuse c = ~a cm, and \
+leg a = ~a cm.~n What is the area of that triangle?"
+         '((10 25) (5 15))
+         (lambda (c a) (> c (add1 a)))
+         (lambda (c a)
+           (let* ((b `(2,V (,c ^ 2 - ,a ^ 2)))
+                  (bv (evaluate b)))
+             (values (format "b    = ~a~narea = ~a" (list2string b)
+                             (list2string `(,a * b ,// 2)))
+                     `(,a * ,bv ,// 2)))))
+    ))
                                                           
 ;;; export
 ;;; ===========================================================
