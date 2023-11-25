@@ -1248,7 +1248,7 @@ Use 3.14 for pi"
            (let ((formula `(2,V (,a ^ 2 + ,b ^ 2))))
              (values formula formula))))
 
-   (list "We are given a circle with area = ~a cm^2.~n
+   (list "We are given a circle with area = ~a cm².~n
  What is the radius of the circle?~n
 Use 3.14 for pi"
          '((25 250))
@@ -1265,7 +1265,7 @@ Use 3.14 for pi"
            (let ((formula `(,a * ,b ,// 2)))
              (values formula formula))))
 
-   (list "We are given a Right triangle with area = ~a cm^2, \
+   (list "We are given a Right triangle with area = ~a cm², \
 and leg a = ~a cm.~n
  What is the length of leg b?"
          '((30 150) (5 20))

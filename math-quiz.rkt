@@ -847,7 +847,7 @@
 (define Carea-slider (new slider%
                           [label
                            (format
-                            "Perimeter/Area level: 1 C-easy, 2 C-hard, 3 C-mix, 4 A-easy")]
+                            "Perimeter/Area level: 1 P-easy, 2 P-hard, 3 P-mix, 4 Area")]
                           [min-value 1]
                           [max-value 4]
                           (parent slider-Carea-dialog)
