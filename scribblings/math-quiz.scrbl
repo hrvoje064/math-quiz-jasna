@@ -310,7 +310,7 @@ Exercise will report 4 possible errors:
 
 Just like with @(secref "cash"), input field will not be cleared on errors.
 
-@section{missing X Exercises}
+@section{Missing X Exercises}
 The missing X exercise is the missing arithmetic operand exercise. It presents the equation
 of the form @bold{X (+-*/) N = M}, or @bold{N (+-*/) X = M}.
 The student must answer with the value of @bold{X}. Erroneous answer prints out
