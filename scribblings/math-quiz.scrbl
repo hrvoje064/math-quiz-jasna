@@ -52,6 +52,8 @@
           (list " "          "________________________________________")
           (list "skip-count" @italic{Starts Negative Skip Counting exercises.})
           (list " "          "________________________________________")
+          (list "missing X"  @italic{Starts Find the missing Operand exercises.})
+          (list " "          "________________________________________")
           (list "GAPESA"     @italic{Given, Asked, Process, Equation, Solution, Answer})
           (list " "          "________________________________________")
           (list "Perimeter/Area" @italic{Starts circumference/area related exercises.}))]
@@ -308,6 +310,12 @@ Exercise will report 4 possible errors:
 
 Just like with @(secref "cash"), input field will not be cleared on errors.
 
+@section{missing X Exercises}
+The missing X exercise is the missing arithmetic operand exercise. It presents the equation
+of the form @bold{X (+-*/) N = M}, or @bold{N (+-*/) X = M}.
+The student must answer with the value of @bold{X}. Erroneous answer prints out
+the solution equation, just like @(secref "gapesa-error"), and Perimeter/Area exercises.
+
 @section[#:tag "gapesa"]{GAPESA Exercises}
 The GAPESA exercise is math problem given in words. It stands for Given, Asked, Process,
 Equation, Solution, and Answer.
@@ -334,7 +342,7 @@ set up for division precision) without rounding the number.
 However in existing set of exercises, only 2 problems require inexact (floating point)
 number. All the others are set up so, that the answer is always an integer.
 
-@subsection{GAPESA Error Reporting}
+@subsection[#:tag "gapesa-error"]{GAPESA Error Reporting}
 
 In case the student answers with wrong solution (wrong number), error message will be
 printed in red, but it will also show the correct equation for the solution.
@@ -413,6 +421,8 @@ default set by the program, set the slider back to 100%.
           @item{2 minutes for ABC-sort exercises}
           @item{2 minutes for skip+count exercises}
           @item{2.5 minutes for skip-count exercises}
+          @item{2 minutes for missing X level 1}
+          @item{3 minutes for missing X level 2 & 3}
           @item{3 minutes for GAPESA level 1}
           @item{3.5 minutes for GAPESA level 2 & 3}
           @item{4 minutes for GAPESA level 4 & 5}

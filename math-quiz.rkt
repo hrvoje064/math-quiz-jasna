@@ -2,7 +2,7 @@
 
 ;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Math Quiz, V4.2.4
+;;; Math Quiz, V4.3
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -39,6 +39,7 @@
 (define *max-skip-increment* 2) ; skip counting increment
 (define *gapesa-level* 1) ; default word problem level, addition only
 (define *Carea-level* 1) ; default circumference/area level
+(define *findX-level* 1) ; default level for finding missing operand
 (define *word-problem* #f) ; original word problem set
 (define word-problem #f) ; copy of word problem set
 
@@ -565,6 +566,13 @@
                                       (lambda (mi e)
                                         (send slider-Carea-dialog show #t))]))
 
+(define set-findX-level (new menu-item%
+                                     [label "Set missing Operand level"]
+                                     [parent setup-menu]
+                                     [callback
+                                      (lambda (mi e)
+                                        (send slider-findX-dialog show #t))]))
+
 (define slider-n-dialog (new dialog%
                              [label "Set"]
                              [parent main-window]
@@ -678,6 +686,14 @@
                                 [alignment '(right top)]))
 
 (define slider-Carea-dialog (new dialog%
+                                 [label "Set"]
+                                 [parent main-window]
+                                 [width 400]
+                                 [height 80]
+                                 [style '(close-button)]
+                                 [alignment '(right top)]))
+
+(define slider-findX-dialog (new dialog%
                                  [label "Set"]
                                  [parent main-window]
                                  [width 400]
@@ -844,17 +860,17 @@
                             (set! *gapesa-level* (send s get-value)))]
                          [style '(vertical-label horizontal)]))
 
-(define Carea-slider (new slider%
+(define findX-slider (new slider%
                           [label
                            (format
-                            "Perimeter/Area level: 1 P-easy, 2 P-hard, 3 P-mix, 4 Area")]
+                            "Missing operand level: 1 + -, 2 * /, 3 + - * /")]
                           [min-value 1]
-                          [max-value 4]
-                          (parent slider-Carea-dialog)
-                          [init-value *Carea-level*]
+                          [max-value 3]
+                          (parent slider-findX-dialog)
+                          [init-value *findX-level*]
                           [callback
                            (lambda (s e)
-                             (set! *Carea-level* (send s get-value)))]
+                             (set! *findX-level* (send s get-value)))]
                           [style '(vertical-label horizontal)]))
 
 (define clear-reports (new menu-item%
@@ -2654,6 +2670,18 @@ Restart program immediately after"]
                                    [callback
                                     (lambda (button event) (start-skip-neg))]))
 
+(define start-findX-button (new button%
+                                [parent v-start-popup]
+                                [label "missing X"]
+                                [font button-font]
+                                [min-width start-button-width]
+                                [min-height start-button-height]
+                                [enabled #t]
+                                [vert-margin 6]
+                                [horiz-margin 6]
+                                [callback
+                                 (lambda (button event) (start-findX))]))
+
 (define start-text-button (new button%
                                [parent v-start-popup]
                                [label "GAPESA"]
@@ -3045,6 +3073,35 @@ Restart program immediately after"]
   (send text-input enable #t)
   (start-quiz *n* 0))
 
+(define (start-findX)
+  (define ty #f)
+  (case *findX-level*
+    ((1) (set! *word-problem* (cons 'handle operand1))
+         (set! *time-factor* 2) (set! ty "level-1"))
+    ((2) (set! *word-problem* (cons 'handle operand2))
+         (set! *time-factor* 3) (set! ty "level-2"))
+    ((3) (set! *word-problem*
+               (cons 'handle (append-shuffle operand1 operand2)))
+         (set! *time-factor* 3) (set! ty "level-3"))
+    (else (error *findX-level*)))
+  (send text-lines insert
+        (format "--  Missing operand problems ~a exercise  --~n" ty))
+  (send text-dialog set-label "Missing operand questions")
+  (send show-text-window-menu set-label "Show Missing operand Window")
+  (send text-dialog create-status-line)
+  (send text-dialog set-status-text
+        (string-append
+         "Read the problem, understand the question, formulate the Equation,"
+         " calculate the result, and enter it into the input field."))
+  (set! equal= approx=)
+  (set! do-math do-math-text) ; set non arithmetic operation
+  (set! get-problem get-problem-text)
+  (set! setup setup-text) ; setup function
+  (set! word-problem (list-copy *word-problem*)) ; fresh copy
+  (send text-dialog show #t)
+  (send text-input enable #t)
+  (start-quiz *n* 0))
+
 ;;; ==============================================================
 
 (define (cents= n1 n2)
@@ -3163,7 +3220,7 @@ Restart program immediately after"]
                   start-clock-button start-a2r-button start-r2a-button
                   start-money-button start-money-p-button start-ABC-button
                   start-skip-button start-skip-neg-button start-text-button
-                  start-Carea-button)))
+                  start-Carea-button start-findX-button)))
 
 (define (disable/enable-set/font-menu t/f)
   (for-each (lambda (m) (send m enable t/f))
@@ -3174,7 +3231,8 @@ Restart program immediately after"]
                   set-input-font set-doc-font set-about-font set-report-font
                   set-button-font set-clock-level set-fraction-level
                   set-skip-increment set-text-level set-circumference-level
-                  menu-item-doc menu-item-about menu-item-update))
+                  menu-item-doc menu-item-about menu-item-update
+                  set-findX-level))
   (check-update-menu))
 
 (provide disable/enable-popup-window-menu)

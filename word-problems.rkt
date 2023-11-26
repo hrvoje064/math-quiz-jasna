@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v4.2.2
+;;; v4.3
 
 (require "misc.rkt")
 
@@ -1293,11 +1293,72 @@ leg a = ~a cm.~n What is the area of that triangle?"
                              (list2string `(,a * b ,// 2)))
                      `(,a * ,bv ,// 2)))))
     ))
+
+(define operand1
+  (list
+   (list "Find the missing operand:   ~a + X = ~a~n~n What is X?"
+         '((5 15) (11 40))
+         (lambda (y sum) (> sum (+ 2 y)))
+         (lambda (y sum)
+           (let ((formula `(,sum - ,y)))
+             (values formula formula))))
+
+   (list "Find the missing operand:   X + ~a = ~a~n~n What is X?"
+         '((5 15) (11 40))
+         (lambda (y sum) (> sum (+ 2 y)))
+         (lambda (y sum)
+           (let ((formula `(,sum - ,y)))
+             (values formula formula))))
+
+   (list "Find the missing operand:   X - ~a = ~a~n~n What is X?"
+         '((11 20) (5 25))
+         t-func
+         (lambda (y dif)
+           (let ((formula `(,y + ,dif)))
+             (values formula formula))))
+
+   (list "Find the missing operand:   ~a - X = ~a~n~n What is X?"
+         '((11 40) (5 25))
+         (lambda (y dif) (> y (+ 2 dif)))
+         (lambda (y dif)
+           (let ((formula `(,y - ,dif)))
+             (values formula formula))))   
+   ))
+
+(define operand2
+  (list
+   (list "Find the missing operand:   ~a * X = ~a~n~n What is X?"
+         '((5 10) (20 101))
+         (lambda (y prod) (and (> prod y) (zero? (modulo prod y))))
+         (lambda (y prod)
+           (let ((formula `(,prod ,// ,y)))
+             (values formula formula))))
+
+   (list "Find the missing operand:   ~a ÷ X = ~a~n~n What is X?"
+         '((20 101) (3 11))
+         (lambda (y quot) (zero? (modulo y quot)))
+         (lambda (y quot)
+           (let ((formula `(,y ,// ,quot)))
+             (values formula formula))))
+
+   (list "Find the missing operand:   X * ~a = ~a~n~n What is X?"
+         '((5 10) (20 101))
+         (lambda (y prod) (and (> prod y) (zero? (modulo prod y))))
+         (lambda (y prod)
+           (let ((formula `(,prod ,// ,y)))
+             (values formula formula))))
+
+   (list "Find the missing operand:   X ÷ ~a = ~a~n~n What is X?"
+         '((3 13) (3 11))
+         t-func
+         (lambda (y quot)
+           (let ((formula `(,y * ,quot)))
+             (values formula formula))))   
+   ))
                                                           
 ;;; export
 ;;; ===========================================================
 
 ;;; data
 (provide *dictionary* word+problems word-problems word+-problems word*problems
-         word/problems circumference1 circumference2 area1)
-
+         word/problems circumference1 circumference2 area1 operand1 operand2)
