@@ -2,7 +2,7 @@
 
 ;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Math Quiz, V4.2.3
+;;; Math Quiz, V4.2.4
 
 (require net/sendurl)
 (require racket/runtime-path)
