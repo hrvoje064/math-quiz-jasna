@@ -3093,7 +3093,7 @@ Restart program immediately after"]
         (string-append
          "Read the problem, understand the question, formulate the Equation,"
          " calculate the result, and enter it into the input field."))
-  (set! equal= approx=)
+  (set! equal= =)
   (set! do-math do-math-text) ; set non arithmetic operation
   (set! get-problem get-problem-text)
   (set! setup setup-text) ; setup function
