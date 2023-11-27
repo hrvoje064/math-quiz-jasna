@@ -26,7 +26,7 @@ There are also numerous  non arithmetic exercises;
     Alphabetic sorting of English words
     Skip counting with skip ranging from 2-10
     Skip counting with negative skip from 2-10
-    Missing X - find the X in simple arithmetic equations in 3 levels
+    Missing X - find operand in simple arithmetic equations in 3 levels
     GAPESA - Text given math problems in 8 levels (+, -, +-, *, /, */)
     Perimeter/Area problems in 4 levels
 

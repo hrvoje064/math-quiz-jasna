@@ -173,7 +173,7 @@
 (define plus (cons '+ +))
 (define minus (cons '- -))
 (define mult (cons '* *))
-(define div (cons '/ /))
+(define div (cons // /))
 (define comp> (cons '> >))
 (define comp< (cons '< <))
 (define comp= (cons '= =))

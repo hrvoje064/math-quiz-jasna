@@ -174,7 +174,7 @@
     "Precedence: (), ^(right assoc), V(left assoc),
     * or /(left assoc), + or -(left assoc)" 
     (cond
-      ((not (null? (filter pair? expr)))
+      ((findf pair? expr)
        (evaluate (handle-parens expr)))
       ((findf (lambda (x) (memq x `(^ ,V))) expr)
        (if (eq? '^ (findf (lambda (x) (memq x `(^ ,V))) expr))
