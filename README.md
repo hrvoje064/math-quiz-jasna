@@ -21,7 +21,7 @@ There are also numerous  non arithmetic exercises;
     Clock (5 levels)
     Arabic->Roman 
     Roman->Arabic
-    Money change USD and 
+    Money change USD
     Money change Philippine Peso
     Alphabetic sorting of English words
     Skip counting with skip ranging from 2-10
