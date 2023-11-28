@@ -860,6 +860,19 @@
                             (set! *gapesa-level* (send s get-value)))]
                          [style '(vertical-label horizontal)]))
 
+(define Carea-slider (new slider%
+                          [label
+                           (format
+                            "Perimeter/Area level: 1 P-easy, 2 P-hard, 3 P-mix, 4 Area")]
+                          [min-value 1]
+                          [max-value 4]
+                          (parent slider-Carea-dialog)
+                          [init-value *Carea-level*]
+                          [callback
+                           (lambda (s e)
+                             (set! *Carea-level* (send s get-value)))]
+                          [style '(vertical-label horizontal)]))
+
 (define findX-slider (new slider%
                           [label
                            (format
