@@ -160,7 +160,7 @@
     "Priming right associative operations (^)"
     (reverse (left-associative ops (reverse expr))))
 
-  (define (left-associative ops expr) ; left associative operations
+  (define (left-associative ops expr)
     "Dealing with left associative operations (V * // + -)"
     (if (null? expr)
         expr
@@ -172,20 +172,21 @@
 
   (define (evaluate expr)
     "Precedence: (), ^(right assoc), V(left assoc),
-    * or /(left assoc), + or -(left assoc)" 
-    (cond
-      ((findf pair? expr)
-       (evaluate (handle-parens expr)))
-      ((findf (lambda (x) (memq x `(^ ,V))) expr)
-       (if (eq? '^ (findf (lambda (x) (memq x `(^ ,V))) expr))
-           (evaluate (right-associative `(^) expr))
-           (evaluate (left-associative `(,V) expr))))
-      ((findf (lambda (x) (memq x `(* ,//))) expr)
-       (evaluate (left-associative `(* ,//) expr)))
-      ((findf (lambda (x) (memq x '(+ -))) expr)
-       (evaluate (left-associative '(+ -) expr)))
-      ((> (length expr) 1) (error "illegal expression in" 'evaluate expr))
-      (else (car expr))))
+    * or /(left assoc), + or -(left assoc)"
+    (if (findf pair? expr)
+        (evaluate (handle-parens expr))
+        (let ((pow/root (findf (lambda (x) (memq x `(^ ,V))) expr)))
+          (cond
+            (pow/root
+             (if (eq? '^ pow/root)
+                 (evaluate (right-associative '(^) expr))
+                 (evaluate (left-associative `(,V) expr))))
+            ((findf (lambda (x) (memq x `(* ,//))) expr)
+             (evaluate (left-associative `(* ,//) expr)))
+            ((findf (lambda (x) (memq x '(+ -))) expr)
+             (evaluate (left-associative '(+ -) expr)))
+            ((> (length expr) 1) (error "illegal expression in" 'evaluate expr))
+            (else (car expr))))))
 
   (evaluate expr))
 
@@ -230,7 +231,7 @@
            1 0.000001)
   (check-= (evaluate `(5,V 1024 ,// 2 ^ 10)) 0.00390625 0.00000001)
   (check-equal? (evaluate `(3,V 8 ,// 2,V (2 ^ 2))) 1.0)
-  (check-= (evaluate `(3,V 8 ,// 2,V 2 ^ 2)) 1 0.0000000001)
+  (check-= (evaluate `(3,V 8 ,// 2,V 2 ^ 2)) 1 0.00000000000001)
   )
 
 ;;; Exports
