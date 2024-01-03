@@ -3006,22 +3006,22 @@ Restart program immediately after"]
 (define (start-text)
   (define ty #f)
   (case *gapesa-level*
-    ((1) (set! *word-problem* (cons 'handle word+problems))
+    ((1) (set! *word-problem* (cons 'handle (shuffle word+problems)))
          (set! *time-factor* 3) (set! ty "     +    "))
-    ((2) (set! *word-problem* (cons 'handle word-problems))
+    ((2) (set! *word-problem* (cons 'handle (shuffle word-problems)))
          (set! *time-factor* 7/2) (set! ty "    -     "))
     ((3) (set! *word-problem*
                (cons 'handle (append-shuffle word+problems word-problems)))
          (set! *time-factor* 7/2) (set! ty "  + or -  "))
-    ((4) (set! *word-problem* (cons 'handle word+-problems))
+    ((4) (set! *word-problem* (cons 'handle (shuffle word+-problems)))
          (set! *time-factor* 4) (set! ty "    +-    "))
     ((5) (set! *word-problem*
                (cons 'handle (append-shuffle word+problems word-problems
                                              word+-problems)))
          (set! *time-factor* 4) (set! ty "mix + +- -"))
-    ((6) (set! *word-problem* (cons 'handle word*problems))
+    ((6) (set! *word-problem* (cons 'handle (shuffle word*problems)))
          (set! *time-factor* 5) (set! ty "    *     "))
-    ((7) (set! *word-problem* (cons 'handle word/problems))
+    ((7) (set! *word-problem* (cons 'handle (shuffle word/problems)))
          (set! *time-factor* 6) (set! ty "    /     ")
          (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
     ((8) (set! *word-problem*
@@ -3051,14 +3051,14 @@ Restart program immediately after"]
 (define (start-Carea)
   (define ty #f)
   (case *Carea-level*
-    ((1) (set! *word-problem* (cons 'handle circumference1))
+    ((1) (set! *word-problem* (cons 'handle (shuffle circumference1)))
          (set! *time-factor* 3) (set! ty "level-1"))
-    ((2) (set! *word-problem* (cons 'handle circumference2))
+    ((2) (set! *word-problem* (cons 'handle (shuffle circumference2)))
          (set! *time-factor* 4) (set! ty "level-2"))
     ((3) (set! *word-problem*
                (cons 'handle (append-shuffle circumference1 circumference2)))
          (set! *time-factor* 4) (set! ty "level-3"))
-    ((4) (set! *word-problem* (cons 'handle area1))
+    ((4) (set! *word-problem* (cons 'handle (shuffle area1)))
          (set! *time-factor* 4) (set! ty "level-4 "))
     (else (error *Carea-level*)))
   (case *Carea-level*
@@ -3089,9 +3089,9 @@ Restart program immediately after"]
 (define (start-findX)
   (define ty #f)
   (case *findX-level*
-    ((1) (set! *word-problem* (cons 'handle operand1))
+    ((1) (set! *word-problem* (cons 'handle (shuffle operand1)))
          (set! *time-factor* 2) (set! ty "level-1"))
-    ((2) (set! *word-problem* (cons 'handle operand2))
+    ((2) (set! *word-problem* (cons 'handle (shuffle operand2)))
          (set! *time-factor* 3) (set! ty "level-2"))
     ((3) (set! *word-problem*
                (cons 'handle (append-shuffle operand1 operand2)))
@@ -3810,7 +3810,8 @@ Restart program immediately after"]
                                             *exponent*)) ; for quick checking
                 )))))
     (when (= len 1) ; last problem consumed
-      (set! word-problem (list-copy *word-problem*))) ; restore problem set
+      (set! word-problem
+            (cons 'handle (list-copy (shuffle (cdr *word-problem*)))))) ; restore problem set
     (get-inputs)))
 
 ;;; ==========================================================

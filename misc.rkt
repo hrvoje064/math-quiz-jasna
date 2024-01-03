@@ -15,13 +15,13 @@
 ;;; ================================================================
 (define (append-shuffle L . Lists)
   "Append with shuffle"
-  (define (shuffle L1 L2)
+  (define (shuffle2 L1 L2)
     (cond
       ((null? L2) L1)
       ((null? L1) L2)
       (else
-       (cons (car L1) (cons (car L2) (shuffle (cdr L1) (cdr L2)))))))
-  (foldl (lambda (L R) (shuffle L R)) L Lists))
+       (cons (car L1) (cons (car L2) (shuffle2 (cdr L1) (cdr L2)))))))
+  (shuffle (foldl (lambda (L R) (shuffle2 L R)) L Lists)))
 
 ;;; for clock & fractions
 ;;; ================================================================
@@ -94,8 +94,6 @@
   (check-equal? (approx=ndp 9.9999999 9.9991234 3) "9.999")
   (check-equal? (approx=ndp .1001999 0.10012345 4) "0.1001")
   (check-false (approx=ndp 9.9998999 9.9999999 4))
-  (check-equal? (append-shuffle '(1 2 3 4 5) '(10 20 30) '(100 200 300 400 500))
-                '(100 10 200 1 300 20 400 2 500 30 3 4 5))
   (check-equal? (strip-spaces "  123   / 456 : 005 ") "123/456:005")
   )
 
