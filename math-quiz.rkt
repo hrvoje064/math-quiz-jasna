@@ -2467,6 +2467,18 @@ Restart program immediately after"]
                            [callback
                             (lambda (button event) (start/))]))
 
+(define start/quot-button (new button%
+                           [parent v-start-arithmetic]
+                           [label "integer /"]
+                           [font button-font]
+                           [min-width start-button-width]	 
+                           [min-height start-button-height]
+                           [enabled #t]
+                           [vert-margin 6]
+                           [horiz-margin 6]
+                           [callback
+                            (lambda (button event) (start/quot))]))
+
 (define start100/-button (new button%
                               [parent v-start-arithmetic]
                               [label "100/10"]
@@ -2797,6 +2809,18 @@ Restart program immediately after"]
   (set! setup setup-arithmetic) ; setup function
   (set! *used-numbers* '())
   (set! equal= approx=) ; setting approximation equal to 3 decimals
+  (send number-input enable #t)
+  (start-quiz *n* 0))
+
+(define (start/quot)
+  (set! *time-factor* 2) ; minutes per problem
+  (send text-lines insert
+        (format "--------   integer division exercises   --------~n"))
+  (set! do-math do-math+) ; set arithmetic operation
+  (set! get-problem get-problem/quot)
+  (set! setup setup-arithmetic) ; setup function
+  (set! *used-numbers* '())
+  (set! equal= =) ; setting approximation equal to 3 decimals
   (send number-input enable #t)
   (start-quiz *n* 0))
 
@@ -3227,7 +3251,7 @@ Restart program immediately after"]
 (define (disable/enable-start-buttons t/f)
   (for-each (lambda (b) (send b enable t/f))
             (list start+-button start10*-button start*-button
-                  start100/-button start/-button start<=>button
+                  start100/-button start/-button start/quot-button start<=>button
                   start-odd/even-button start-sequence-button
                   start-bba-button start-pvalue-button start-fraction-button
                   start-clock-button start-a2r-button start-r2a-button
@@ -3684,6 +3708,15 @@ Restart program immediately after"]
                 (quotient y1 2)
                 y1)))
     (check-used x op y)))
+
+(define (get-problem/quot)
+  (let* ((op div)
+         (q (random 2 22))
+         (y (random 11 40))
+         (x (* q y)))
+    (if (<= x *left-number*)
+        (check-used x op y)
+        (get-problem/quot))))
 
 (define (get-problem<=>)
   (let* ((op comp<=>) ; not a real operation

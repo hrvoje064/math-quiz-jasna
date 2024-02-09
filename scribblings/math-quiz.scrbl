@@ -16,6 +16,8 @@
           (list " "          " ")
           (list "/"          @italic{Starts 3 digit division exercises.})
           (list " "          "________________________________________")
+          (list "integer /"  @italic{Starts division with integer result.})
+          (list " "          "________________________________________")
           (list "100/10"     @italic{Starts division table exercises (up to 100/10).})
           (list " "          "________________________________________")
           (list "*"          @italic{Starts 3 digit multiplication exercises.})
@@ -70,8 +72,8 @@ Likewise, while a set of exercises is running, all start exercise buttons are di
 
 @section{Arithmetic Exercises}
 
-Once you start the arithmetic (+ - * / 10*10 100/10) exercises, enter the result of
-requested exercise in the text field, and click @bold{Calculate} button. Instead of
+Once you start the arithmetic (+ -, *, integer /, /, 10*10, 100/10) exercises, enter the
+result of requested exercise in the text field, and click @bold{Calculate} button. Instead of
 clicking the @bold{Calculate} button, you can also hit @bold{enter} key on keyboard.
 If the result was correct, the confirmation will be printed in black in the panel below.
 If, on the other hand, the result was not correct, the same line will be printed in red.

@@ -4,10 +4,11 @@ Math quiz/training for grade 1,2,3, ... (elementary school)
 
 This program came into being when my daughter started pre-school 2 years ago. Now she's 7 years old and is attending grade 2. Consequently the program has been extended by many new exercises, all as per material she has been learning in school. Several exercises, (mostly those at the end of the list), through multiple levels, go beyond 2nd grade, probably ending up in high school territory.
 
-The program now contains 5 arithmetic exercises; 
+The program now contains 6 arithmetic exercises; 
 
     +/- (in 4 levels), 
-    multiplication/division  table (adjustable from 5*5 to 12*12), 
+    multiplication/division  table (adjustable from 5*5 to 12*12),
+    division where the result is always integer,
     3 digit multiplication and division.
 
 There are also numerous  non arithmetic exercises; 

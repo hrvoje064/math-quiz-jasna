@@ -11,6 +11,8 @@
 _______________________________________________________________
 /               Starts 3 digit division exercises.
 _______________________________________________________________
+integer /       Starts division with integer result.
+_______________________________________________________________
 100/10          Starts division table exercises (up to 100/10).
 _______________________________________________________________
 *               Starts 3 digit multiplication exercises.
@@ -61,7 +63,7 @@ When one of the exercises is started, the \"Setup\" menu is disabled until the e
 
 Default maximum factor (for both multiplication and division tables) is set to 10, but for a beginner student, this can be changed with \"Setup->Set max factor for * / table\" to 5-12.
 
-Once you start the arithmetic (+ - * / 10*10 100/10) exercises, enter the result of requested exercise in the text field, and click \"Calculate\" button. Instead of clicking the \"Calculate\" button, you can also hit \"enter\" key on keyboard. If the result was correct, the confirmation will be printed in black in the panel below. If, on the other hand, the result was not correct, the same line will be printed in red.
+Once you start the arithmetic (+ -, *, /, integer /, 10*10, 100/10) exercises, enter the result of requested exercise in the text field, and click \"Calculate\" button. Instead of clicking the \"Calculate\" button, you can also hit \"enter\" key on keyboard. If the result was correct, the confirmation will be printed in black in the panel below. If, on the other hand, the result was not correct, the same line will be printed in red.
 
 Important note. All arithmetic exercises require exact (integer) results. Only exception is division (/) that requires almost always inexact, (real -- floating point) numbers, but limited only to 3 digits after the decimal point. No need to enter more - excess digits will be discarded!
 You can change the default setting of 3 digits after decimal point in \"Setup->Set division precision\" menu. The pop-up slider allows 0-7 digit setting.
