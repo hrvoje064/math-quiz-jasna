@@ -85,6 +85,10 @@ and level 3 is 3 digit unlimited addition/subtraction.
 Latest addition is level 0. It is mixed addition/subtraction, of numbers up to 18,
 designed to teach kids fast calculation without using fingers for counting.
 
+Integer division exercises start by default at level 1; one digit divisor.
+This can be changed with @bold{Setup->Set integer / difficulty level} sub-menu.
+Level 2 is two digit divisor, but observing the max allowed dividend (as set by
+@bold{max size of numbers} sub-menu). Level 3 uses 2 digit divisor, but will exceed the max size of numbers.
 
 @subsection{Numeric Precision}
 
@@ -403,7 +407,11 @@ default set by the program, set the slider back to 100%.
           @item{20 seconds per exercise for (+ -) level 1}
           @item{30 seconds per exercise for (+ -) level 2}
           @item{1.5 minutes per exercise for (+ -) level 3}
-          @item{2 minutes per exercise for (* /)}
+          @item{2 minutes per exercise for (*)}
+          @item{2 minutes for integer / level 1}
+          @item{2.5 minutes for integer / level 2}
+          @item{3 minutes for integer / level 3}
+          @item{3 minutes per exercise for (/)}
           @item{30 seconds per exercise for multiplication/division tables}
           @item{20 seconds for integer comparison exercises}
           @item{30 seconds for fraction comparison exercises}

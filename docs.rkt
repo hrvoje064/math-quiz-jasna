@@ -161,6 +161,8 @@ Move the slider to desired value and close the slider window by clicking X in th
 Plus and minus exercises start by default at level 1; two digit addition only, with no carry over. This can be changed with \"Setup->Set + - difficulty level\" sub-menu. Level 1 is 2 digit limited addition, level 2 is 2 digit limited mixed addition/subtraction, and level 3 is 3 digit unlimited addition/subtraction.
 Latest addition is level 0. It is mixed addition/subtraction, of numbers up to 18, designed to teach kids fast calculation without using fingers for counting.
 
+Integer division exercises start by default at level 1; one digit divisor. This can be changed with \"Setup->Set integer / difficulty level\" sub-menu. Level 2 is 2 digit divisor, but observing the max allowed dividend (as set by \"max size of numbers\" sub-menu). Level 3 uses 2 digit divisor, but will exceed the max size of numbers.
+
 The same goes for changing the maximum factor for multiplication/division tables. Slider will go from 5 (5*5) to 12 (12*12), but the default value is 10.
 If you set it to 12, then consequently, division table works from 144/12.
 The rationale for starting with (5*5), is for a young student to start easy, and then gradually increase difficulty by changing up to (12*12).
@@ -176,7 +178,11 @@ ________________________________________________________
 20 seconds per exercise for (+ -) level 1
 30 seconds per exercise for (+ -) level 2
 1.5 minutes per exercise for (+ -) level 3
-2 minutes per exercise for (* /)
+2 minutes per exercise for (*)
+2 minutes for integer / level 1
+2.5 minutes for integer / level 2
+3 minutes for integer / level 3
+3 minutes per exercise for (/)
 30 seconds per exercise for multiplication/division tables
 20 seconds for integer comparison exercises
 30 seconds for fraction comparison exercises

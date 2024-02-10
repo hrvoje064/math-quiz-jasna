@@ -33,6 +33,7 @@
 (define *sequence-difficulty* 1) ; difficulty level for sequence missing number
 (define *cheat-flag* #f) ; set if cheat button used for sequence level 3(4)
 (define *level+-* 1) ; (1 2d limited +) (2 2d limited +-) (3 3d unlimited +-)
+(define *level/quot* 1) ; (1, 1d divisor) (2, 2d divisor)
 (define *comparison-level* 1) ; (1 integers) (2 limited fractions up to 12)
 (define *clock-level* 1) ; (1 reading clock) (2 before/after 60, 30, 20, 15 minutes)
 (define *fraction-level* 1) ; 1 reading fractions, 2 comparing fractions graphically
@@ -481,6 +482,13 @@
                             (lambda (mi e)
                               (send slider-10*-dialog show #t))]))
 
+(define set-/quot-level (new menu-item%
+                         [label "Set integer / difficulty level"]
+                         [parent setup-menu]
+                         [callback
+                          (lambda (mi e)
+                            (send slider-/quot-dialog show #t))]))
+
 (define set-left-number (new menu-item%
                              [label "Set max size of numbers"]
                              [parent setup-menu]
@@ -582,6 +590,14 @@
                              [alignment '(right top)]))
 
 (define slider-+-dialog (new dialog%
+                             [label "Set"]
+                             [parent main-window]
+                             [width 250]
+                             [height 80]
+                             [style '(close-button)]
+                             [alignment '(right top)]))
+
+(define slider-/quot-dialog (new dialog%
                              [label "Set"]
                              [parent main-window]
                              [width 250]
@@ -721,6 +737,17 @@
                             [callback
                              (lambda (s e)
                                (set! *level+-* (send s get-value)))]
+                            [style '(vertical-label horizontal)]))
+
+(define level-/quot-slider (new slider%
+                            [label "difficulty level of integer / exercises"]
+                            [min-value 1]
+                            [max-value 3]
+                            [parent slider-/quot-dialog]
+                            [init-value *level/quot*]
+                            [callback
+                             (lambda (s e)
+                               (set! *level/quot* (send s get-value)))]
                             [style '(vertical-label horizontal)]))
 
 (define max-table-slider (new slider%
@@ -2801,7 +2828,7 @@ Restart program immediately after"]
   (start-quiz *n* 0))
 
 (define (start/)
-  (set! *time-factor* 2) ; minutes per problem
+  (set! *time-factor* 3) ; minutes per problem
   (send text-lines insert
         (format "------------   division exercises   ------------~n"))
   (set! do-math do-math+) ; set arithmetic operation
@@ -2813,11 +2840,21 @@ Restart program immediately after"]
   (start-quiz *n* 0))
 
 (define (start/quot)
-  (set! *time-factor* 2) ; minutes per problem
-  (send text-lines insert
-        (format "--------   integer division exercises   --------~n"))
+  (case *level/quot*
+    ((1) (set! *time-factor* 2) ; minutes per problem
+         (send text-lines insert
+               (format "-------   integer division exercises l1  -------~n"))
+         (set! get-problem get-problem/quot1))
+    ((2) (set! *time-factor* 5/2) ;minutes per problem
+         (send text-lines insert
+               (format "-------   integer division exercises l2  -------~n"))         
+         (set! get-problem get-problem/quot2))
+    ((3) (set! *time-factor* 3) ;minutes per problem
+         (send text-lines insert
+               (format "-------   integer division exercises l3  -------~n"))         
+         (set! get-problem get-problem/quot3))
+    (else (error "quotient-level")))     
   (set! do-math do-math+) ; set arithmetic operation
-  (set! get-problem get-problem/quot)
   (set! setup setup-arithmetic) ; setup function
   (set! *used-numbers* '())
   (set! equal= =) ; setting approximation equal to 3 decimals
@@ -3262,7 +3299,7 @@ Restart program immediately after"]
 (define (disable/enable-set/font-menu t/f)
   (for-each (lambda (m) (send m enable t/f))
             (list set-n-exercises set-+-level set-max-table set-left-number
-                  set-speed-% set-/-precision set-sequence-level
+                  set-speed-% set-/-precision set-sequence-level set-/quot-level
                   set-fraction-slices clear-reports set-max-roman-number
                   set-all-fonts set-comparison-level set-status-msg-font
                   set-input-font set-doc-font set-about-font set-report-font
@@ -3709,14 +3746,30 @@ Restart program immediately after"]
                 y1)))
     (check-used x op y)))
 
-(define (get-problem/quot)
+(define (get-problem/quot1)
+  (let* ((op div)
+         (q (random 3 22))
+         (y (random 2 10))
+         (x (* q y)))
+    (if (<= x *left-number*)
+        (check-used x op y)
+        (get-problem/quot1))))
+
+(define (get-problem/quot2)
   (let* ((op div)
          (q (random 2 22))
          (y (random 11 40))
          (x (* q y)))
     (if (<= x *left-number*)
         (check-used x op y)
-        (get-problem/quot))))
+        (get-problem/quot2))))
+
+(define (get-problem/quot3)
+  (let* ((op div)
+         (q (random 3 42))
+         (y (random 15 50))
+         (x (* q y)))
+    (check-used x op y)))
 
 (define (get-problem<=>)
   (let* ((op comp<=>) ; not a real operation
