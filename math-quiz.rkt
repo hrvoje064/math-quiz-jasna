@@ -476,14 +476,14 @@
                             (send slider-+-dialog show #t))]))
 
 (define set-max-table (new menu-item%
-                           [label "Set max factor for */ table"]
+                           [label "Set max factor for * ÷ table"]
                            [parent setup-menu]
                            [callback
                             (lambda (mi e)
                               (send slider-10*-dialog show #t))]))
 
 (define set-/quot-level (new menu-item%
-                         [label "Set integer / difficulty level"]
+                         [label "Set integer ÷ difficulty level"]
                          [parent setup-menu]
                          [callback
                           (lambda (mi e)
@@ -740,7 +740,7 @@
                             [style '(vertical-label horizontal)]))
 
 (define level-/quot-slider (new slider%
-                            [label "difficulty level of integer / exercises"]
+                            [label "difficulty level of integer ÷ exercises"]
                             [min-value 1]
                             [max-value 3]
                             [parent slider-/quot-dialog]
@@ -2484,7 +2484,7 @@ Restart program immediately after"]
                             
 (define start/-button (new button%
                            [parent v-start-arithmetic]
-                           [label " / "]
+                           [label " ÷ "]
                            [font button-font]
                            [min-width start-button-width]	 
                            [min-height start-button-height]
@@ -2496,7 +2496,7 @@ Restart program immediately after"]
 
 (define start/quot-button (new button%
                            [parent v-start-arithmetic]
-                           [label "integer /"]
+                           [label "integer ÷"]
                            [font button-font]
                            [min-width start-button-width]	 
                            [min-height start-button-height]

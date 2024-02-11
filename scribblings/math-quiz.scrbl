@@ -14,9 +14,9 @@
          (list
           (list @bold{Button} @bold{Description})
           (list " "          " ")
-          (list "/"          @italic{Starts 3 digit division exercises.})
+          (list "÷"          @italic{Starts 3 digit division exercises.})
           (list " "          "________________________________________")
-          (list "integer /"  @italic{Starts division with integer result.})
+          (list "integer ÷"  @italic{Starts division with integer result.})
           (list " "          "________________________________________")
           (list "100/10"     @italic{Starts division table exercises (up to 100/10).})
           (list " "          "________________________________________")
@@ -72,7 +72,7 @@ Likewise, while a set of exercises is running, all start exercise buttons are di
 
 @section{Arithmetic Exercises}
 
-Once you start the arithmetic (+ -, *, integer /, /, 10*10, 100/10) exercises, enter the
+Once you start the arithmetic (+ -, *, integer ÷, ÷, 10*10, 100/10) exercises, enter the
 result of requested exercise in the text field, and click @bold{Calculate} button. Instead of
 clicking the @bold{Calculate} button, you can also hit @bold{enter} key on keyboard.
 If the result was correct, the confirmation will be printed in black in the panel below.
@@ -86,13 +86,13 @@ Latest addition is level 0. It is mixed addition/subtraction, of numbers up to 1
 designed to teach kids fast calculation without using fingers for counting.
 
 Integer division exercises start by default at level 1; one digit divisor.
-This can be changed with @bold{Setup->Set integer / difficulty level} sub-menu.
+This can be changed with @bold{Setup->Set integer ÷ difficulty level} sub-menu.
 Level 2 is two digit divisor, but observing the max allowed dividend (as set by
 @bold{max size of numbers} sub-menu). Level 3 uses 2 digit divisor, but will exceed the max size of numbers.
 
 @subsection{Numeric Precision}
 
-All arithmetic exercises require exact (integer) results. Only exception is division (/)
+All arithmetic exercises require exact (integer) results. Only exception is division (÷)
 that requires almost always inexact, (real -- floating point) numbers, but limited only
 to 3 digits after the decimal point. No need to enter more - excess digits will be discarded!
 You can change the default setting of 3 digits after decimal point in
@@ -104,7 +104,7 @@ than 3 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is oka
 @subsection{Maximum Factor}
 
 Default maximum factor (for both multiplication and division tables) is set to 10, but
-for a beginner student, this can be changed with @bold{Setup->Set max factor for * / table}.
+for a beginner student, this can be changed with @bold{Setup->Set max factor for * ÷ table}.
 Slider will go from 5 (5*5) to 12 (12*12), but the default value is 10. If you set it to 12,
 then consequently, division table works from 144/12.
 The rationale for starting with (5*5), is for a young student to start easy, and then
