@@ -3748,7 +3748,7 @@ Restart program immediately after"]
 
 (define (get-problem/quot1)
   (let* ((op div)
-         (q (random 3 22))
+         (q (random 5 100))
          (y (random 2 10))
          (x (* q y)))
     (if (<= x *left-number*)
@@ -3757,7 +3757,7 @@ Restart program immediately after"]
 
 (define (get-problem/quot2)
   (let* ((op div)
-         (q (random 2 22))
+         (q (random 5 100))
          (y (random 11 40))
          (x (* q y)))
     (if (<= x *left-number*)
