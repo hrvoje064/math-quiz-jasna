@@ -171,10 +171,16 @@
 
 ;;; ==============================================================
 ;;; built in operations, print form and exec form
+;;; quot/rem ; just avoiding multiple values problem
+(define (quot/rem x y)
+  (let-values ([(res rem) (quotient/remainder x y)])
+    (list res rem)))
+
 (define plus (cons '+ +))
 (define minus (cons '- -))
 (define mult (cons '* *))
 (define div (cons // /))
+(define divr (cons // quot/rem))
 (define comp> (cons '> >))
 (define comp< (cons '< <))
 (define comp= (cons '= =))
@@ -740,9 +746,9 @@
                             [style '(vertical-label horizontal)]))
 
 (define level-/quot-slider (new slider%
-                            [label "difficulty level of integer ÷ exercises"]
+                            [label "level of integer ÷ exe; even levels with remainder"]
                             [min-value 1]
-                            [max-value 3]
+                            [max-value 6]
                             [parent slider-/quot-dialog]
                             [init-value *level/quot*]
                             [callback
@@ -2844,20 +2850,38 @@ Restart program immediately after"]
     ((1) (set! *time-factor* 2) ; minutes per problem
          (send text-lines insert
                (format "-------   integer division exercises l1  -------~n"))
+         (set! equal= =)
          (set! get-problem get-problem/quot1))
-    ((2) (set! *time-factor* 5/2) ;minutes per problem
+    ((2) (set! *time-factor* 2) ; minutes per problem
          (send text-lines insert
-               (format "-------   integer division exercises l2  -------~n"))         
-         (set! get-problem get-problem/quot2))
-    ((3) (set! *time-factor* 3) ;minutes per problem
+               (format "------   integer division + remainder l2  ------~n"))
+         (set! equal= rem=)
+         (set! get-problem get-problem/quotr2))
+    ((3) (set! *time-factor* 5/2) ;minutes per problem
          (send text-lines insert
-               (format "-------   integer division exercises l3  -------~n"))         
+               (format "-------   integer division exercises l3  -------~n"))
+         (set! equal= =)
          (set! get-problem get-problem/quot3))
+    ((4) (set! *time-factor* 5/2) ; minutes per problem
+         (send text-lines insert
+               (format "------   integer division + remainder l4  ------~n"))
+         (set! equal= rem=)
+         (set! get-problem get-problem/quotr4))
+    ((5) (set! *time-factor* 3) ;minutes per problem
+         (send text-lines insert
+               (format "-------   integer division exercises l5  -------~n"))
+         (set! equal= =)
+         (set! get-problem get-problem/quot5))
+    ((6) (set! *time-factor* 3) ; minutes per problem
+         (send text-lines insert
+               (format "------   integer division + remainder l6  ------~n"))
+         (set! equal= rem=)
+         (set! get-problem get-problem/quotr6))
     (else (error "quotient-level")))     
   (set! do-math do-math+) ; set arithmetic operation
   (set! setup setup-arithmetic) ; setup function
   (set! *used-numbers* '())
-  (set! equal= =) ; setting approximation equal to 3 decimals
+  ;(set! equal= =) ; setting approximation equal to 3 decimals
   (send number-input enable #t)
   (start-quiz *n* 0))
 
@@ -3755,21 +3779,50 @@ Restart program immediately after"]
         (check-used x op y)
         (get-problem/quot1))))
 
-(define (get-problem/quot2)
+(define (get-problem/quotr2)
+  (let* ((op divr)
+         (q (random 5 100))
+         (y (random 2 10))
+         (x (* q y))
+         (r (+ x (random 1 y))))
+    (if (<= r *left-number*)
+        (check-used r op y)
+        (get-problem/quotr2))))
+
+(define (get-problem/quot3)
   (let* ((op div)
          (q (random 5 100))
          (y (random 11 40))
-         (x (* q y)))
+         (x (* q y))
+         (r (+ x (random 1 y))))
     (if (<= x *left-number*)
         (check-used x op y)
-        (get-problem/quot2))))
+        (get-problem/quot3))))
 
-(define (get-problem/quot3)
+(define (get-problem/quotr4)
+  (let* ((op divr)
+         (q (random 5 100))
+         (y (random 11 40))
+         (x (* q y))
+         (r (+ x (random 1 y))))
+    (if (<= r *left-number*)
+        (check-used r op y)
+        (get-problem/quotr4))))
+
+(define (get-problem/quot5)
   (let* ((op div)
          (q (random 3 42))
          (y (random 15 50))
          (x (* q y)))
     (check-used x op y)))
+
+(define (get-problem/quotr6)
+  (let* ((op divr)
+         (q (random 3 42))
+         (y (random 15 50))
+         (x (* q y))
+         (r (+ x (random 1 y))))
+    (check-used r op y)))
 
 (define (get-problem<=>)
   (let* ((op comp<=>) ; not a real operation
@@ -3998,6 +4051,16 @@ Restart program immediately after"]
   (set-problem-op! *problem* op)
   (set-problem-y! *problem* y))
 
+;;; rem= equal with remainder
+(define (rem= input calc)
+  (cond
+    ((not (list? input)) #f)
+    ((< (length input) 2) #f)
+    (else
+     (let ((res (string->number (string-trim (first input))))
+           (rem (string->number (string-trim (second input)))))
+       (and (= (first calc) res) (= (second calc) rem))))))
+
 ;;; approx=ndp - result equal to number of decimal places (ndp)
 (define (approx= input calc)
   (approx=ndp input calc *exponent*))
@@ -4005,8 +4068,19 @@ Restart program immediately after"]
 (define (clock= hour minute h m)
   (and (= hour h) (= minute m)))
 
+(define (mq-string->number string op)
+  (let ((num (string->number string)))
+    (if num
+        num
+        (if (list? ((run op) 2 2))
+            (let ((numr (string-split string "r")))
+              (if (= (length numr) 2)
+                  numr
+                  #f))
+            #f))))
+
 (define (do-math+ string x op y out) 
-  (let* ((num (string->number string))
+  (let* ((num (mq-string->number string op))
          (result (and num (equal= num ((run op) x y)))))
     (cond
       (result

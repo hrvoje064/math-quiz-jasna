@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v4.3.1
+;;; v4.4.1
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -65,7 +65,8 @@ Default maximum factor (for both multiplication and division tables) is set to 1
 
 Once you start the arithmetic (+ -, *, ÷, integer ÷, 10*10, 100/10) exercises, enter the result of requested exercise in the text field, and click \"Calculate\" button. Instead of clicking the \"Calculate\" button, you can also hit \"enter\" key on keyboard. If the result was correct, the confirmation will be printed in black in the panel below. If, on the other hand, the result was not correct, the same line will be printed in red.
 
-Important note. All arithmetic exercises require exact (integer) results. Only exception is division (÷) that requires almost always inexact, (real -- floating point) numbers, but limited only to 3 digits after the decimal point. No need to enter more - excess digits will be discarded!
+Important note. All arithmetic exercises require exact (integer) results. Only two exceptions are division (÷) that requires almost always inexact, (real -- floating point) numbers, but limited only to 3 digits after the decimal point. No need to enter more - excess digits will be discarded! The other is integer division (÷) where all even levels (2 4 6) require result to be entered as: 12r3 (where the problem was stated as 63÷5).
+
 You can change the default setting of 3 digits after decimal point in \"Setup->Set division precision\" menu. The pop-up slider allows 0-7 digit setting.
 Having said that, of-course, if division exercise actually gives an integer result (as in 10 / 2 = 5) entering only 5 as a result is fine. Likewise if result has less than 3 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is okay.
 
@@ -161,7 +162,7 @@ Move the slider to desired value and close the slider window by clicking X in th
 Plus and minus exercises start by default at level 1; two digit addition only, with no carry over. This can be changed with \"Setup->Set + - difficulty level\" sub-menu. Level 1 is 2 digit limited addition, level 2 is 2 digit limited mixed addition/subtraction, and level 3 is 3 digit unlimited addition/subtraction.
 Latest addition is level 0. It is mixed addition/subtraction, of numbers up to 18, designed to teach kids fast calculation without using fingers for counting.
 
-Integer division exercises start by default at level 1; one digit divisor. This can be changed with \"Setup->Set integer / difficulty level\" sub-menu. Level 2 is 2 digit divisor, but observing the max allowed dividend (as set by \"max size of numbers\" sub-menu). Level 3 uses 2 digit divisor, but will exceed the max size of numbers.
+Integer division exercises start by default at level 1; one digit divisor. This can be changed with \"Setup->Set integer / difficulty level\" sub-menu. Level 2 is 1 digit divisor with remainder, level 3 is 2 digit divisor, but observing the max allowed dividend (as set by \"max size of numbers\" sub-menu). Level 4 uses 2 digit divisor, but requires remainder, level 5 uses 2 digit divisor, but will exceed the max size of numbers. Level 6 requires remainder.
 
 The same goes for changing the maximum factor for multiplication/division tables. Slider will go from 5 (5*5) to 12 (12*12), but the default value is 10.
 If you set it to 12, then consequently, division table works from 144/12.
@@ -179,9 +180,9 @@ ________________________________________________________
 30 seconds per exercise for (+ -) level 2
 1.5 minutes per exercise for (+ -) level 3
 2 minutes per exercise for (*)
-2 minutes for integer / level 1
-2.5 minutes for integer / level 2
-3 minutes for integer / level 3
+2 minutes for integer / level 1 & 2
+2.5 minutes for integer / level 3 & 4
+3 minutes for integer / level 5 & 6
 3 minutes per exercise for (/)
 30 seconds per exercise for multiplication/division tables
 20 seconds for integer comparison exercises

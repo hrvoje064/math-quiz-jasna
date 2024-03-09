@@ -87,12 +87,13 @@ designed to teach kids fast calculation without using fingers for counting.
 
 Integer division exercises start by default at level 1; one digit divisor.
 This can be changed with @bold{Setup->Set integer ÷ difficulty level} sub-menu.
-Level 2 is two digit divisor, but observing the max allowed dividend (as set by
-@bold{max size of numbers} sub-menu). Level 3 uses 2 digit divisor, but will exceed the max size of numbers.
+Level 2 is 1 digit divisor with remainder. Level 3 is 2 digit divisor, but observing the max allowed dividend (as set by
+@bold{max size of numbers} sub-menu). Level 4 uses 2 digit divisor, but requires remainder.
+Level 5 uses 2 digit divisor, but will exceed the max size of numbers. Level 6 requires remainder.
 
 @subsection{Numeric Precision}
 
-All arithmetic exercises require exact (integer) results. Only exception is division (÷)
+All arithmetic exercises require exact (integer) results. Only exceptions are division (÷)
 that requires almost always inexact, (real -- floating point) numbers, but limited only
 to 3 digits after the decimal point. No need to enter more - excess digits will be discarded!
 You can change the default setting of 3 digits after decimal point in
@@ -100,6 +101,8 @@ You can change the default setting of 3 digits after decimal point in
 Having said that, of-course, if division exercise actually gives an integer result
 (as in 10 / 2 = 5) entering only 5 as a result is fine. Likewise if result has less
 than 3 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is okay.
+The other is integer division (÷) where all even levels (2 4 6) require result to be entered
+as: 12r3 (where the problem was stated as 63÷5).
 
 @subsection{Maximum Factor}
 
@@ -408,9 +411,9 @@ default set by the program, set the slider back to 100%.
           @item{30 seconds per exercise for (+ -) level 2}
           @item{1.5 minutes per exercise for (+ -) level 3}
           @item{2 minutes per exercise for (*)}
-          @item{2 minutes for integer / level 1}
-          @item{2.5 minutes for integer / level 2}
-          @item{3 minutes for integer / level 3}
+          @item{2 minutes for integer / level 1 & 2}
+          @item{2.5 minutes for integer / level 3 & 4}
+          @item{3 minutes for integer / level 5 & 6}
           @item{3 minutes per exercise for (/)}
           @item{30 seconds per exercise for multiplication/division tables}
           @item{20 seconds for integer comparison exercises}
