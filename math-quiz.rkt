@@ -34,6 +34,7 @@
 (define *cheat-flag* #f) ; set if cheat button used for sequence level 3(4)
 (define *level+-* 1) ; (1 2d limited +) (2 2d limited +-) (3 3d unlimited +-)
 (define *level/quot* 1) ; (1, 1d divisor) (2, 2d divisor)
+(define *level** 2) ; (1 multiples of 10, 2 ordinary multiplication)
 (define *comparison-level* 1) ; (1 integers) (2 limited fractions up to 12)
 (define *clock-level* 1) ; (1 reading clock) (2 before/after 60, 30, 20, 15 minutes)
 (define *fraction-level* 1) ; 1 reading fractions, 2 comparing fractions graphically
@@ -488,12 +489,19 @@
                             (lambda (mi e)
                               (send slider-10*-dialog show #t))]))
 
+(define set-*-level (new menu-item%
+                           [label "Set * level: 1, multiples of 10; -> 2, 3d*"]
+                           [parent setup-menu]
+                           [callback
+                            (lambda (mi e)
+                              (send slider-100*-dialog show #t))]))
+
 (define set-/quot-level (new menu-item%
-                         [label "Set integer ÷ difficulty level"]
-                         [parent setup-menu]
-                         [callback
-                          (lambda (mi e)
-                            (send slider-/quot-dialog show #t))]))
+                             [label "Set integer ÷ difficulty level"]
+                             [parent setup-menu]
+                             [callback
+                              (lambda (mi e)
+                                (send slider-/quot-dialog show #t))]))
 
 (define set-left-number (new menu-item%
                              [label "Set max size of numbers"]
@@ -581,11 +589,11 @@
                                         (send slider-Carea-dialog show #t))]))
 
 (define set-findX-level (new menu-item%
-                                     [label "Set missing Operand level"]
-                                     [parent setup-menu]
-                                     [callback
-                                      (lambda (mi e)
-                                        (send slider-findX-dialog show #t))]))
+                             [label "Set missing Operand level"]
+                             [parent setup-menu]
+                             [callback
+                              (lambda (mi e)
+                                (send slider-findX-dialog show #t))]))
 
 (define slider-n-dialog (new dialog%
                              [label "Set"]
@@ -604,14 +612,22 @@
                              [alignment '(right top)]))
 
 (define slider-/quot-dialog (new dialog%
-                             [label "Set"]
-                             [parent main-window]
-                             [width 250]
-                             [height 80]
-                             [style '(close-button)]
-                             [alignment '(right top)]))
+                                 [label "Set"]
+                                 [parent main-window]
+                                 [width 250]
+                                 [height 80]
+                                 [style '(close-button)]
+                                 [alignment '(right top)]))
 
 (define slider-10*-dialog (new dialog%
+                               [label "Set"]
+                               [parent main-window]
+                               [width 250]
+                               [height 80]
+                               [style '(close-button)]
+                               [alignment '(right top)]))
+
+(define slider-100*-dialog (new dialog%
                                [label "Set"]
                                [parent main-window]
                                [width 250]
@@ -746,15 +762,15 @@
                             [style '(vertical-label horizontal)]))
 
 (define level-/quot-slider (new slider%
-                            [label "level of integer ÷ exe; even levels with remainder"]
-                            [min-value 1]
-                            [max-value 6]
-                            [parent slider-/quot-dialog]
-                            [init-value *level/quot*]
-                            [callback
-                             (lambda (s e)
-                               (set! *level/quot* (send s get-value)))]
-                            [style '(vertical-label horizontal)]))
+                                [label "level of integer ÷ exe; even levels with remainder"]
+                                [min-value 1]
+                                [max-value 6]
+                                [parent slider-/quot-dialog]
+                                [init-value *level/quot*]
+                                [callback
+                                 (lambda (s e)
+                                   (set! *level/quot* (send s get-value)))]
+                                [style '(vertical-label horizontal)]))
 
 (define max-table-slider (new slider%
                               [label "max factor * / table"]
@@ -765,6 +781,17 @@
                               [callback
                                (lambda (s e)
                                  (set! *max*table* (send s get-value)))]
+                              [style '(vertical-label horizontal)]))
+
+(define 100-*-slider (new slider%
+                              [label "* level: 1, by multiples of 10, -> 2, 3d*"]
+                              [min-value 1]
+                              [max-value 2]
+                              [parent slider-100*-dialog]
+                              [init-value 2]
+                              [callback
+                               (lambda (s e)
+                                 (set! *level** (send s get-value)))]
                               [style '(vertical-label horizontal)]))
 
 (define left-slider (new slider%
@@ -2501,16 +2528,16 @@ Restart program immediately after"]
                             (lambda (button event) (start/))]))
 
 (define start/quot-button (new button%
-                           [parent v-start-arithmetic]
-                           [label "integer ÷"]
-                           [font button-font]
-                           [min-width start-button-width]	 
-                           [min-height start-button-height]
-                           [enabled #t]
-                           [vert-margin 6]
-                           [horiz-margin 6]
-                           [callback
-                            (lambda (button event) (start/quot))]))
+                               [parent v-start-arithmetic]
+                               [label "integer ÷"]
+                               [font button-font]
+                               [min-width start-button-width]	 
+                               [min-height start-button-height]
+                               [enabled #t]
+                               [vert-margin 6]
+                               [horiz-margin 6]
+                               [callback
+                                (lambda (button event) (start/quot))]))
 
 (define start100/-button (new button%
                               [parent v-start-arithmetic]
@@ -2809,11 +2836,18 @@ Restart program immediately after"]
   (start-quiz *n* 0))
 
 (define (start*)
-  (set! *time-factor* 2) ; minutes per problem
-  (send text-lines insert
-        (format "---------   multiplication exercises   ---------~n"))
+  (case *level**
+    ((1)
+     (set! *time-factor* 1/2) ; minutes per problem
+     (send text-lines insert
+           (format "-----   * with multiples of 10 exercises   -----~n"))
+     (set! get-problem get-problem*10))
+    ((2)
+     (set! *time-factor* 2) ; minutes per problem
+     (send text-lines insert
+           (format "---------   multiplication exercises   ---------~n"))
+     (set! get-problem get-problem*)))
   (set! do-math do-math+) ; set arithmetic operation
-  (set! get-problem get-problem*)
   (set! setup setup-arithmetic) ; setup function
   (set! *used-numbers* '())
   (set! equal= =) ; setting simple equality test
@@ -3748,6 +3782,16 @@ Restart program immediately after"]
   (let ((op mult)
         (x (random 2 *left-number*)) ; range between 2 to *left-number* - 1
         (y (random 2 *left-number*))) ; range between 2 to *left-number* - 1
+    (check-used x op y)))
+
+(define (get-problem*10)
+  "Multiplying with multiples of 10"
+  (let* ((op mult)
+         (x (random 2 *left-number*)) ; range between 2 to *left-number* - 1
+         (ys (list 10 20 30 40 50 10
+                   100 200 300 400 100
+                   1000 2000 3000 10 100 1000 10000))
+         (y (list-ref ys (random (length ys)))))
     (check-used x op y)))
 
 (define (get-problem100/10)

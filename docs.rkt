@@ -162,6 +162,8 @@ Move the slider to desired value and close the slider window by clicking X in th
 Plus and minus exercises start by default at level 1; two digit addition only, with no carry over. This can be changed with \"Setup->Set + - difficulty level\" sub-menu. Level 1 is 2 digit limited addition, level 2 is 2 digit limited mixed addition/subtraction, and level 3 is 3 digit unlimited addition/subtraction.
 Latest addition is level 0. It is mixed addition/subtraction, of numbers up to 18, designed to teach kids fast calculation without using fingers for counting.
 
+Multiplication exercises start by default at level 2, which is 3 digit by 3 digit multiplication. This can be changed with \"Setup->Set * level: 1, multiples of 10; -> 2, 3d*\". This then uses multiples of 10 as a factor.
+
 Integer division exercises start by default at level 1; one digit divisor. This can be changed with \"Setup->Set integer / difficulty level\" sub-menu. Level 2 is 1 digit divisor with remainder, level 3 is 2 digit divisor, but observing the max allowed dividend (as set by \"max size of numbers\" sub-menu). Level 4 uses 2 digit divisor, but requires remainder, level 5 uses 2 digit divisor, but will exceed the max size of numbers. Level 6 requires remainder.
 
 The same goes for changing the maximum factor for multiplication/division tables. Slider will go from 5 (5*5) to 12 (12*12), but the default value is 10.
@@ -179,7 +181,8 @@ ________________________________________________________
 20 seconds per exercise for (+ -) level 1
 30 seconds per exercise for (+ -) level 2
 1.5 minutes per exercise for (+ -) level 3
-2 minutes per exercise for (*)
+30 seconds per exercise for (*) level 1
+2 minutes per exercise for (*) level 2
 2 minutes for integer / level 1 & 2
 2.5 minutes for integer / level 3 & 4
 3 minutes for integer / level 5 & 6
@@ -236,7 +239,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.4.1
+  "Jasna's Math Quiz, v4.4.2
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

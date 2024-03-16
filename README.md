@@ -8,8 +8,9 @@ The program now contains 6 arithmetic exercises;
 
     +/- (in 4 levels), 
     multiplication/division  table (adjustable from 5*5 to 12*12),
-    division where the result is always integer (in 3 levels),
-    3 digit multiplication and division.
+    division where the result is always integer with or without 
+    remainder (in 6 levels),
+    3 digit multiplication (in 2 levels), and division.
 
 There are also numerous  non arithmetic exercises; 
 
@@ -37,7 +38,7 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 4.4
+Current version of math-quiz is 4.4.2
 
 math-quiz is written/tested in Scheme (Racket compiler v8.12)
 
