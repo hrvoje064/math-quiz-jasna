@@ -490,11 +490,11 @@
                               (send slider-10*-dialog show #t))]))
 
 (define set-*-level (new menu-item%
-                           [label "Set * level: 1, multiples of 10; -> 2, 3d*"]
-                           [parent setup-menu]
-                           [callback
-                            (lambda (mi e)
-                              (send slider-100*-dialog show #t))]))
+                         [label "Set * level: 1, multiples of 10; -> 2, 3d*"]
+                         [parent setup-menu]
+                         [callback
+                          (lambda (mi e)
+                            (send slider-100*-dialog show #t))]))
 
 (define set-/quot-level (new menu-item%
                              [label "Set integer ÷ difficulty level"]
@@ -606,7 +606,7 @@
 (define slider-+-dialog (new dialog%
                              [label "Set"]
                              [parent main-window]
-                             [width 250]
+                             [width 280]
                              [height 80]
                              [style '(close-button)]
                              [alignment '(right top)]))
@@ -628,12 +628,12 @@
                                [alignment '(right top)]))
 
 (define slider-100*-dialog (new dialog%
-                               [label "Set"]
-                               [parent main-window]
-                               [width 250]
-                               [height 80]
-                               [style '(close-button)]
-                               [alignment '(right top)]))
+                                [label "Set"]
+                                [parent main-window]
+                                [width 250]
+                                [height 80]
+                                [style '(close-button)]
+                                [alignment '(right top)]))
 
 (define slider-left-dialog (new dialog%
                                 [label "Set"]
@@ -751,9 +751,9 @@
                               [style '(vertical-label horizontal)]))
 
 (define level-+-slider (new slider%
-                            [label "difficulty level of + - exercises"]
+                            [label "+ - exercises; 0-3 only positive, 4 negative, 5-6 fractions"]
                             [min-value 0]
-                            [max-value 3]
+                            [max-value 6]
                             [parent slider-+-dialog]
                             [init-value *level+-*]
                             [callback
@@ -784,15 +784,15 @@
                               [style '(vertical-label horizontal)]))
 
 (define 100-*-slider (new slider%
-                              [label "* level: 1, by multiples of 10, -> 2, 3d*"]
-                              [min-value 1]
-                              [max-value 2]
-                              [parent slider-100*-dialog]
-                              [init-value 2]
-                              [callback
-                               (lambda (s e)
-                                 (set! *level** (send s get-value)))]
-                              [style '(vertical-label horizontal)]))
+                          [label "* level: 1, by multiples of 10, -> 2, 3d*"]
+                          [min-value 1]
+                          [max-value 2]
+                          [parent slider-100*-dialog]
+                          [init-value 2]
+                          [callback
+                           (lambda (s e)
+                             (set! *level** (send s get-value)))]
+                          [style '(vertical-label horizontal)]))
 
 (define left-slider (new slider%
                          [label "max size of numbers"]
@@ -2814,7 +2814,19 @@ Restart program immediately after"]
     ((3) (set! *time-factor* 3/2)
          (set! get-problem get-problem+-) ; setting the function         
          (send text-lines insert
-               (format "-----------   plus minus exercises   -----------~n"))))
+               (format "-------   plus minus exercises positive  -------~n")))
+    ((4) (set! *time-factor* 3/2)
+         (set! get-problem get-problem--) ; setting the function         
+         (send text-lines insert
+               (format "---------   minus exercises negative   ---------~n")))
+    ((5) (set! *time-factor* 1/2)
+         (set! get-problem get-problem-f1) ; setting the function         
+         (send text-lines insert
+               (format "------   (+ -) exercises simple fractions   -----~n")))
+    ((6) (set! *time-factor* 3/2)
+         (set! get-problem get-problem-f2) ; setting the function         
+         (send text-lines insert
+               (format "------   (+ -) exercises simple fractions   -----~n"))))   
   (set! do-math do-math+) ; set arithmetic operation
   (set! setup setup-arithmetic) ; setup function
   (set! equal= =) ; setting simple equality test
@@ -3772,6 +3784,36 @@ Restart program immediately after"]
                  (get-right-number- x (random 1 x)))))
       (check-used x op y))))
 
+(define (get-problem--)
+  (let* ((op minus)
+         (x (get-left-number (random 13 *left-number*) op))) ; min 2 for (-)
+    (let ((y (+ x (random 1 100))))
+      (check-used x op y))))
+
+(define (get-problem-f1)
+  (let* ((op-list (list minus plus minus plus minus))
+         (op (list-ref op-list (random (length op-list)))) ; minus weighted 3/5
+         (xn (random 1 13))
+         (xd (random 2 13)))
+    (if (> (gcd xn xd) 1)
+        (check-used 3/5 op 2/5 30) ; avoiding Scheme simpifying fractions
+        (let ((yd xd) (yn (random 1 13)))
+          (if (> (gcd yn yd) 1)
+              (check-used 3/5 op 2/5 30) ; avoiding Scheme simpifying fractions
+              (check-used (/ xn xd) op (/ yn yd) 30))))))
+          
+(define (get-problem-f2)
+  (let* ((op-list (list minus plus minus plus minus))
+         (op (list-ref op-list (random (length op-list)))) ; minus weighted 3/5
+         (xn (random 1 13))
+         (xd (random 2 13)))
+    (if (> (gcd xn xd) 1)
+        (check-used 3/5 op 2/3 30) ; avoiding Scheme simpifying fractions
+        (let ((yn (random 1 13)) (yd (random 2 13)))
+          (if (> (gcd yn yd) 1)
+              (check-used 3/5 op 2/3 30) ; avoiding Scheme simpifying fractions
+              (check-used (/ xn xd) op (/ yn yd) 30))))))
+        
 (define (get-problem10*10)
   (let ((op mult)
         (x (add1 (random 1 *max*table*))) ; range between 2 to *max*table*

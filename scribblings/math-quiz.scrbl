@@ -81,8 +81,9 @@ If, on the other hand, the result was not correct, the same line will be printed
 Plus and minus exercises start by default at level 1; two digit addition only, with no
 carry over. This can be changed with @bold{Setup->Set + - difficulty level} sub-menu.
 Level 1 is 2 digit limited addition, level 2 is 2 digit limited mixed addition/subtraction,
-and level 3 is 3 digit unlimited addition/subtraction.
-Latest addition is level 0. It is mixed addition/subtraction, of numbers up to 18,
+level 3 is 3 digit unlimited addition/subtraction, level 4 is subtraction with negative result,
+level 5 is simple fraction (equal denominators) addition/subtraction, and level 6 is unlimited
+fraction addition/subtraction. Level 0 is mixed addition/subtraction, of numbers up to 18,
 designed to teach kids fast calculation without using fingers for counting.
 
 Multiplication exercises start by default at level 2, which is 3 digit by 3 digit multiplication.
@@ -412,8 +413,8 @@ default set by the program, set the slider back to 100%.
 
 @itemlist[@item{15 seconds per exercise for (+ -) level 0}
           @item{20 seconds per exercise for (+ -) level 1}
-          @item{30 seconds per exercise for (+ -) level 2}
-          @item{1.5 minutes per exercise for (+ -) level 3}
+          @item{30 seconds per exercise for (+ -) level 2 & 5}
+          @item{1.5 minutes per exercise for (+ -) level 3 4 & 6}
           @item{30 seconds per exercise for (*) level 1}
           @item{2 minutes per exercise for (*) level 2}
           @item{2 minutes for integer / level 1 & 2}
