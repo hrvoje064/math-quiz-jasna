@@ -490,7 +490,7 @@
                               (send slider-10*-dialog show #t))]))
 
 (define set-*-level (new menu-item%
-                         [label "Set * level: 1, multiples of 10; -> 2, 3d*"]
+                         [label "Set * level: 1, multiples of 10; 2, 3d*; 3, fractions"]
                          [parent setup-menu]
                          [callback
                           (lambda (mi e)
@@ -784,9 +784,9 @@
                               [style '(vertical-label horizontal)]))
 
 (define 100-*-slider (new slider%
-                          [label "* level: 1, by multiples of 10, -> 2, 3d*"]
+                          [label "* level: 1, multiples of 10; 2, 3d*; 3, fractions"]
                           [min-value 1]
-                          [max-value 2]
+                          [max-value 3]
                           [parent slider-100*-dialog]
                           [init-value 2]
                           [callback
@@ -2858,7 +2858,12 @@ Restart program immediately after"]
      (set! *time-factor* 2) ; minutes per problem
      (send text-lines insert
            (format "---------   multiplication exercises   ---------~n"))
-     (set! get-problem get-problem*)))
+     (set! get-problem get-problem*))
+    ((3)
+     (set! *time-factor* 2) ; minutes per problem
+     (send text-lines insert
+           (format "---------   * exercises with fractions  ---------~n"))
+     (set! get-problem get-problem*f)))    
   (set! do-math do-math+) ; set arithmetic operation
   (set! setup setup-arithmetic) ; setup function
   (set! *used-numbers* '())
@@ -3825,6 +3830,17 @@ Restart program immediately after"]
         (x (random 2 *left-number*)) ; range between 2 to *left-number* - 1
         (y (random 2 *left-number*))) ; range between 2 to *left-number* - 1
     (check-used x op y)))
+
+(define (get-problem*f)
+  (let ((op mult)
+        (xn (random 1 13))
+        (xd (random 2 20)))
+    (if (> (gcd xn xd) 1)
+        (check-used 3/5 op 2/3 40) ; avoiding Scheme simpifying fractions
+        (let ((yn (random 1 13)) (yd (random 2 20)))
+          (if (> (gcd yn yd) 1)
+              (check-used 3/5 op 2/3 40) ; avoiding Scheme simpifying fractions
+              (check-used (/ xn xd) op (/ yn yd) 40))))))
 
 (define (get-problem*10)
   "Multiplying with multiples of 10"
