@@ -497,7 +497,7 @@
                             (send slider-100*-dialog show #t))]))
 
 (define set-/quot-level (new menu-item%
-                             [label "Set integer ÷ difficulty level"]
+                             [label "Set integer/fraction ÷ difficulty level"]
                              [parent setup-menu]
                              [callback
                               (lambda (mi e)
@@ -614,7 +614,7 @@
 (define slider-/quot-dialog (new dialog%
                                  [label "Set"]
                                  [parent main-window]
-                                 [width 250]
+                                 [width 320]
                                  [height 80]
                                  [style '(close-button)]
                                  [alignment '(right top)]))
@@ -761,16 +761,17 @@
                                (set! *level+-* (send s get-value)))]
                             [style '(vertical-label horizontal)]))
 
-(define level-/quot-slider (new slider%
-                                [label "level of integer ÷ exe; even levels with remainder"]
-                                [min-value 1]
-                                [max-value 6]
-                                [parent slider-/quot-dialog]
-                                [init-value *level/quot*]
-                                [callback
-                                 (lambda (s e)
-                                   (set! *level/quot* (send s get-value)))]
-                                [style '(vertical-label horizontal)]))
+(define level-/quot-slider
+  (new slider%
+       [label "level of integer/fraction ÷ exe; all even levels with remainder; l7 fractions"]
+       [min-value 1]
+       [max-value 7]
+       [parent slider-/quot-dialog]
+       [init-value *level/quot*]
+       [callback
+        (lambda (s e)
+          (set! *level/quot* (send s get-value)))]
+       [style '(vertical-label horizontal)]))
 
 (define max-table-slider (new slider%
                               [label "max factor * / table"]
@@ -2529,7 +2530,7 @@ Restart program immediately after"]
 
 (define start/quot-button (new button%
                                [parent v-start-arithmetic]
-                               [label "integer ÷"]
+                               [label "int or fract ÷"]
                                [font button-font]
                                [min-width start-button-width]	 
                                [min-height start-button-height]
@@ -2928,6 +2929,11 @@ Restart program immediately after"]
                (format "------   integer division + remainder l6  ------~n"))
          (set! equal= rem=)
          (set! get-problem get-problem/quotr6))
+    ((7) (set! *time-factor* 2) ; minutes per problem
+         (send text-lines insert
+               (format "-------   fraction division exercises l7  -------~n"))
+         (set! equal= =)
+         (set! get-problem get-problem/quotf7))         
     (else (error "quotient-level")))     
   (set! do-math do-math+) ; set arithmetic operation
   (set! setup setup-arithmetic) ; setup function
@@ -3381,7 +3387,7 @@ Restart program immediately after"]
                   set-button-font set-clock-level set-fraction-level
                   set-skip-increment set-text-level set-circumference-level
                   menu-item-doc menu-item-about menu-item-update
-                  set-findX-level))
+                  set-findX-level set-*-level))
   (check-update-menu))
 
 (provide disable/enable-popup-window-menu)
@@ -3926,6 +3932,17 @@ Restart program immediately after"]
          (r (+ x (random 1 y))))
     (check-used r op y)))
 
+(define (get-problem/quotf7)
+  (let ((op div)
+        (xn (random 1 13))
+        (xd (random 2 20)))
+    (if (> (gcd xn xd) 1)
+        (check-used 3/5 op 2/3 40) ; avoiding Scheme simpifying fractions
+        (let ((yn (random 1 13)) (yd (random 2 20)))
+          (if (> (gcd yn yd) 1)
+              (check-used 3/5 op 2/3 40) ; avoiding Scheme simpifying fractions
+              (check-used (/ xn xd) op (/ yn yd) 40))))))
+  
 (define (get-problem<=>)
   (let* ((op comp<=>) ; not a real operation
          (x (random 13 *left-number*))

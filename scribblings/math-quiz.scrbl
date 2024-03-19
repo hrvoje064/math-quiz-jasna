@@ -16,7 +16,7 @@
           (list " "          " ")
           (list "÷"          @italic{Starts 3 digit division exercises.})
           (list " "          "________________________________________")
-          (list "integer ÷"  @italic{Starts division with integer result.})
+          (list "int or fract ÷"  @italic{Starts division with exact (int/fract) result.})
           (list " "          "________________________________________")
           (list "100/10"     @italic{Starts division table exercises (up to 100/10).})
           (list " "          "________________________________________")
@@ -90,11 +90,12 @@ Multiplication exercises start by default at level 2, which is 3 digit by 3 digi
 This can be changed with @bold{Setup->Set * level: 1, multiplies of 10; 2, 3d*; 3, fractions}
 sub-menu. Level 1, uses multiples of 10 as a factor, and level 3 multiplies fractions.
 
-Integer division exercises start by default at level 1; one digit divisor.
-This can be changed with @bold{Setup->Set integer ÷ difficulty level} sub-menu.
+Integer/fraction division exercises start by default at level 1; one digit divisor.
+This can be changed with @bold{Setup->Set integer/fraction ÷ difficulty level} sub-menu.
 Level 2 is 1 digit divisor with remainder. Level 3 is 2 digit divisor, but observing the max allowed dividend (as set by
 @bold{max size of numbers} sub-menu). Level 4 uses 2 digit divisor, but requires remainder.
-Level 5 uses 2 digit divisor, but will exceed the max size of numbers. Level 6 requires remainder.
+Level 5 uses 2 digit divisor, but will exceed the max size of numbers. Level 6 requires
+remainder. Level 7 is fraction division.
 
 @subsection{Numeric Precision}
 
@@ -417,10 +418,10 @@ default set by the program, set the slider back to 100%.
           @item{1.5 minutes per exercise for (+ -) level 3 4 & 6}
           @item{30 seconds per exercise for (*) level 1}
           @item{2 minutes per exercise for (*) level 2 & 3}
-          @item{2 minutes for integer / level 1 & 2}
-          @item{2.5 minutes for integer / level 3 & 4}
-          @item{3 minutes for integer / level 5 & 6}
-          @item{3 minutes per exercise for (/)}
+          @item{2 minutes for integer/fraction ÷ level 1 2 & 7}
+          @item{2.5 minutes for integer/fraction ÷ level 3 & 4}
+          @item{3 minutes for integer/fraction ÷ level 5 & 6}
+          @item{3 minutes per exercise for (÷)}
           @item{30 seconds per exercise for multiplication/division tables}
           @item{20 seconds for integer comparison exercises}
           @item{30 seconds for fraction comparison exercises}

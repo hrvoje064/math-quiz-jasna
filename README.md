@@ -8,9 +8,10 @@ The program now contains 6 arithmetic exercises;
 
     +/- (in 6 levels) including negative result, and fractions, 
     multiplication/division  table (adjustable from 5*5 to 12*12),
-    division where the result is always integer with or without 
-    remainder (in 6 levels),
-    3 digit multiplication (in 2 levels), and division.
+    division of integers/fractions where the result is always integer 
+    with or without remainder, or a fraction (in 7 levels),
+    3 digit multiplication (in 2 levels) with level 3 fractions, 
+    and division.
 
 There are also numerous  non arithmetic exercises; 
 
@@ -38,10 +39,10 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 4.4.4
+Current version of math-quiz is 4.4.5
 
 math-quiz is written/tested in Scheme (Racket compiler v8.12)
 
 Hrvoje Blazevic
 
-Provided here is source code (several Racket modules), developed using Racket 8.10/11. The program can be run directly from DrRacket, providing that all source files are placed in the same directory, but the easiest way is to install it as a Racket package. Open a DrRacket window, and click on File->Package Manager... menu. Input math-quiz into the search-field and click install button.
+Provided here is source code (several Racket modules). The program can be run directly from DrRacket, providing that all source files are placed in the same directory, but the easiest way is to install it as a Racket package. Open a DrRacket window, and click on File->Package Manager... menu. Input math-quiz into the search-field and click install button.

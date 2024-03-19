@@ -11,7 +11,7 @@
 _______________________________________________________________
 ÷               Starts 3 digit division exercises.
 _______________________________________________________________
-integer ÷       Starts division with integer result.
+int or fract ÷  Starts division with exact (int/fract) result.
 _______________________________________________________________
 100/10          Starts division table exercises (up to 100/10).
 _______________________________________________________________
@@ -163,7 +163,7 @@ Plus and minus exercises start by default at level 1; two digit addition only, w
 
 Multiplication exercises start by default at level 2, which is 3 digit by 3 digit multiplication. This can be changed with \"Setup->Set * level: 1, multiples of 10; 2, 3d*; 3, fractions\". Level 1 uses multiples of 10 as a factor, and level 3 multiplies fractions.
 
-Integer division exercises start by default at level 1; one digit divisor. This can be changed with \"Setup->Set integer / difficulty level\" sub-menu. Level 2 is 1 digit divisor with remainder, level 3 is 2 digit divisor, but observing the max allowed dividend (as set by \"max size of numbers\" sub-menu). Level 4 uses 2 digit divisor, but requires remainder, level 5 uses 2 digit divisor, but will exceed the max size of numbers. Level 6 requires remainder.
+Integer/fraction division exercises start by default at level 1; one digit divisor. This can be changed with \"Setup->Set integer/fraction ÷ difficulty level\" sub-menu. Level 2 is 1 digit divisor with remainder, level 3 is 2 digit divisor, but observing the max allowed dividend (as set by \"max size of numbers\" sub-menu). Level 4 uses 2 digit divisor, but requires remainder, level 5 uses 2 digit divisor, but will exceed the max size of numbers. Level 6 requires remainder. Level 7 is fraction division.
 
 The same goes for changing the maximum factor for multiplication/division tables. Slider will go from 5 (5*5) to 12 (12*12), but the default value is 10.
 If you set it to 12, then consequently, division table works from 144/12.
@@ -182,10 +182,10 @@ ________________________________________________________
 1.5 minutes per exercise for (+ -) level 3 4 & 6
 30 seconds per exercise for (*) level 1
 2 minutes per exercise for (*) level 2 & 3
-2 minutes for integer / level 1 & 2
-2.5 minutes for integer / level 3 & 4
-3 minutes for integer / level 5 & 6
-3 minutes per exercise for (/)
+2 minutes for integer/fraction ÷ level 1 2 & 7
+2.5 minutes for integer/fraction ÷ level 3 & 4
+3 minutes for integer/fraction ÷ level 5 & 6
+3 minutes per exercise for (÷)
 30 seconds per exercise for multiplication/division tables
 20 seconds for integer comparison exercises
 30 seconds for fraction comparison exercises
@@ -238,7 +238,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.4.4
+  "Jasna's Math Quiz, v4.4.5
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
