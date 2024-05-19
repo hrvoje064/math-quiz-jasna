@@ -203,15 +203,16 @@ The default max size of pie-chart is 10 slices, but that can be changed with
 
 @subsection{Fraction Exercise Levels}
 
-Fractions exercise works in 3 levels. Level 1 (reading the fraction, described above)
+Fractions exercise works in 4 levels. Level 1 (reading the fraction, described above)
 is the default level. This can be changed with
 @bold{Setup->Set fraction level: read or compare} sub-menu to display and compare 2 fractions.
 Level 2 works in a similar way to @(secref "comparison") (fractions level). Student should
 enter @bold{<, =, >} into the middle input field to indicate weather the left fraction
 pie-chart is smaller, equal, or greater than the right one.
-Level 3 works almost the same, except that all 3 input fields are active, and all 3 require
+Level 3 and 4 work almost the same, except that all 3 input fields are active, and all 3 require
 input. Enter left fraction (as in 1/3) into the left field, right fraction into the
-right field, and @bold{<, =, >} into the middle field.
+right field, and @bold{<, =, >} into the middle field. Level 4 is tougher, because both
+numerators and denominators will be different.
 
 @subsection{Fraction Error Reporting}
 
@@ -434,6 +435,7 @@ default set by the program, set the slider back to 100%.
           @item{20 seconds for Fractions level 1}
           @item{40 seconds for Fractions level 2}
           @item{1 minute for Fractions level 3}
+          @item{1.5 minutes for Fractions level 4}
           @item{30 seconds for Clock}
           @item{1.5 minutes for Clock before/after time}
           @item{30 seconds for Roman numbers}

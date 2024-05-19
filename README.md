@@ -20,7 +20,7 @@ There are also numerous  non arithmetic exercises;
     Sequence (3 levels)
     Before, Between, After
     Position Value
-    Graphical Fractions (3 levels)
+    Graphical Fractions (4 levels)
     Clock (5 levels)
     Arabic->Roman 
     Roman->Arabic
@@ -39,7 +39,7 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 4.4.5
+Current version of math-quiz is 4.4.6
 
 math-quiz is written/tested in Scheme (Racket compiler v8.12)
 

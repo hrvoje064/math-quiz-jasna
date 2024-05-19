@@ -864,9 +864,9 @@
                              [style '(vertical-label horizontal)]))
 
 (define fraction<>slider (new slider%
-                              [label "1 < read <-> compare > 2 > 3"]
+                              [label "1 read, 2-3 easy compare, 4 compare"]
                               [min-value 1]
-                              [max-value 3]
+                              [max-value 4]
                               (parent slider-fraction<>dialog)
                               [init-value *fraction-level*]
                               [callback
@@ -3296,9 +3296,9 @@ Restart program immediately after"]
   (disable/enable-input-fields #f)
   (case *fraction-level*
     ((1) (set! *time-factor* 1/3) ; minutes per problem
-         (send text-lines insert
-               (format "------------   fraction exercises   ------------~n"))
          (set! equal= =)
+         (send text-lines insert
+               (format "-----------   fraction exercises l1  -----------~n"))
          (set! *max-used-pairs* (kombinations *max-slices* 2))
          (set! do-math do-math-fraction) ; set fraction reading operation
          (send fraction-dialog set-status-text
@@ -3315,7 +3315,6 @@ Restart program immediately after"]
                   (format "-------   fraction comparison exercises l2  -----~n"))
             (send fraction-dialog set-status-text
                   " enter one of < = > into the middle input field")
-            ;(set! equal= =)
             (set! do-math do-math>) ; set fraction comparing operation
             (send fraction-input enable #t))
        ((3) (set! *time-factor* 1) ; minutes per problem
@@ -3325,7 +3324,19 @@ Restart program immediately after"]
                   " enter: left fraction,  < = >,\
   right fraction, into input fields")         
             (set! do-math do-math-fract>) ; set fraction comparing operation
-            (disable/enable-input-fields #t)))))
+            (disable/enable-input-fields #t))))
+    ((4)
+     (set! *time-factor* 3/2) ; minutes per problem
+     (send text-lines insert
+           (format "-------   fraction comparison exercises l4  -----~n"))
+     (send fraction-dialog set-status-text
+           " enter: left fraction,  < = >,\
+  right fraction, into input fields")         
+     (set! get-problem get-problem-fraction-full<=>)
+     (set! *max-used-pairs*
+           (quotient (kombinations (sub1 *max-slices*) 3) 10))
+     (set! do-math do-math-fract>) ; set fraction comparing operation
+     (disable/enable-input-fields #t)))
   (send fraction-dialog show #t)
   (set! setup setup-fraction) ; setup function
   (set! *used-numbers* '())
@@ -3433,7 +3444,7 @@ Restart program immediately after"]
       (case *fraction-level*
         ((1) (send fraction-input-left enable #t))
         ((2) (send fraction-input enable #t)) ; middle
-        ((3) (for-each (lambda (input) (send input enable #t)) fields))
+        ((3 4) (for-each (lambda (input) (send input enable #t)) fields))
         (else (error 'fraction-inputs))))))
 
 ;;; Math quiz part
@@ -4100,6 +4111,22 @@ Restart program immediately after"]
          (numerator (random 1 denominator))
          (op fract))
     (check-used-pairs numerator op denominator)))
+
+(define (get-problem-fraction-full<=>)
+  (let* ((op comp<=>) ; not a real operation
+         ;; making sure fractions are close by in value
+         (max (add1 *max-slices*))
+         (n1 (random 1 max)) ;  numerator1
+         (n2 (min (add1 n1) *max-slices*)) ;  numerator2
+         (d1 (random n1 max)) ;  denominator1
+         (d2 (min (+ 2 d1) *max-slices*))) ; denominator2
+    (if (and (= 1 (/ n1 d1)) (= 1 (/ n2 d2)))
+        (get-problem-fraction-full<=>)
+        (let ((x (string-append (number->string n1) "/" (number->string d1)))
+              (y (string-append (number->string n2) "/" (number->string d2))))
+          (if (zero? (random 2)) ; making sure left is not always greater
+              (check-used-pairs x op y)
+              (check-used-pairs y op x))))))
 
 (define (get-problem-fraction<=>)
   (let* ((op comp<=>) ; not a real operation
@@ -5041,7 +5068,7 @@ but limited by *max-penalty-exercises*"
                    (send a-text erase) ; why only here?
                    (send fraction-input set-value input-label)
                    (math-quiz-type (strip-spaces input))))
-            ((3)
+            ((3 4)
              (let* ((inputs (list
                              fraction-input-left
                              fraction-input
@@ -5054,7 +5081,8 @@ but limited by *max-penalty-exercises*"
                (for-each (lambda (x) (send x set-value input-label))
                          inputs)
                (math-quiz-type
-                (map (lambda (x) (strip-spaces x)) input))))))]))
+                (map (lambda (x) (strip-spaces x)) input))))
+            (else (error 'fraction-level))))]))
                                                                            
 ;;; =================================================================
 ;;; Clock problems

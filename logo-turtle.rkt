@@ -87,7 +87,7 @@
     ((1) (send dc draw-bitmap
                (pict->bitmap (turtles-pict
                               (get-turtles *used-numbers* x y))) 80 55))
-    ((2 3) (send dc draw-bitmap
+    ((2 3 4) (send dc draw-bitmap
                  (pict->bitmap (turtles-pict
                                 (get-turtles-left *used-numbers* x))) 80 55)
            (send dc draw-bitmap

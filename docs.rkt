@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v4.4.1
+;;; v4.4.6
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -90,10 +90,10 @@ The Position value exercise pops up the window with 4 radio buttons labeled ones
 
 The Fractions exercise pops up the window with pie-chart drawn in it, containing a random number of red and black slices. The student should enter in input field red-slices/all-slices, as in: 3/5 (if the drawing contained 3 red and 2 black slices). No need to enter spaces as in 3 / 5 , but the program can handle that as well.
 The default max size of pie-chart is 10 slices, but that can be changed with \"Setup->Set number of fraction slices\" sub-menu. Slider goes from 5-12 slices.
-Fractions exercise works in 3 levels. Level 1 (reading the fraction, described above) is the default level. This can be changed with \"Setup->Set fraction level: read or compare\" sub-menu to display and compare 2 fractions.
+Fractions exercise works in 4 levels. Level 1 (reading the fraction, described above) is the default level. This can be changed with \"Setup->Set fraction level: read or compare\" sub-menu to display and compare 2 fractions.
 Level 2 works in a similar way to comparison (fractions level) exercise. Student should enter <, =, or > into the middle input field to indicate weather the left fraction of pie-chart is smaller, equal, or greater than the right one.
-Level 3 works almost the same, except that all 3 input fields are active, and all 3 require input. Enter left fraction (as in 1/3) into the left field, right fraction into the right field, and < = or > into the middle field.
-Error reporting for level 3 is complicated and can be confusing. Program can report wrong fraction (in either left or right input fields), then wrong comparison input, and finally if any of the fields has been left blank, the non counting missing input error.
+Level 3 and 4 work almost the same, except that all 3 input fields are active, and all 3 require input. Enter left fraction (as in 1/3) into the left field, right fraction into the right field, and < = or > into the middle field. Level 4 is tougher, because both numerators and denominators will be different.
+Error reporting for level 3 and 4 is complicated and can be confusing. Program can report wrong fraction (in either left or right input fields), then wrong comparison input, and finally if any of the fields has been left blank, the non counting missing input error.
 
 The Clock exercise pops up the window with clock face drawn in it. The student should enter hr:mn in the input field, and click Check, or hit enter key.
 There are 5 levels of clock exercises, that can be changed with \"Setup->Set clock level: tell time or before/after time\". Default is tell time (level 1). In level 2-5 (before/after) the student should first read the time on the clock face, and then enter before or after time, as requested by the prompt.
@@ -198,6 +198,7 @@ ________________________________________________________
 20 seconds for Fractions level 1
 40 seconds for Fractions level 2
 1 minute for Fractions level 3
+1.5 minutes for Fractions level 4
 30 seconds for Clock
 1.5 minutes for Clock before/after time
 30 seconds for Roman numbers
@@ -238,7 +239,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.4.5
+  "Jasna's Math Quiz, v4.4.6
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
@@ -247,7 +248,7 @@ Most of the exercises have several levels of difficulty, with level one being ap
 
 I intend to continue updating the program with new exercises (and/or new levels of existing exercises), as per material she is learning at school.
 
-The program is written in Racket (Scheme) compiler v8.12
+The program is written in Racket (Scheme) compiler v8.8 (and latest v8.13)
 It was developed on x86 based PC, and on Orange pi 5 plus, both running Linux OS.
 Windows version was tested and compiled on Windows 11. 
 Raspberry pi version was compiled and tested on raspberry pi 4B.
