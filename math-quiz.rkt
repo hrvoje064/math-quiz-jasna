@@ -831,9 +831,9 @@
                               [style '(vertical-label horizontal)]))
 
 (define comparison-slider (new slider%
-                               [label "1 Integer <-> Fraction 2"]
+                               [label "1 Integer <-> Fraction 2 easy, 3 hard"]
                                [min-value 1]
-                               [max-value 2]
+                               [max-value 3]
                                (parent slider-comparison-dialog)
                                [init-value *comparison-level*]
                                [callback
@@ -2950,10 +2950,16 @@ Restart program immediately after"]
          (set! get-problem get-problem<=>))
     ((2) (set! *time-factor* 1/2) ; minutes per problem
          (send text-lines insert
-               (format "-------   comparison fraction exercises   ------~n"))
+               (format "-----   comparison fraction exercises easy  ----~n"))
          (set! get-problem get-problem<=>fract)
          (set! *max-used-pairs*
-               (quotient (kombinations (sub1 *comparison-fract-max*) 3) 10))))  
+               (quotient (kombinations (sub1 *comparison-fract-max*) 3) 10)))
+    ((3) (set! *time-factor* 3/2) ; minutes per problem
+         (send text-lines insert
+               (format "-----   comparison fraction exercises hard  ----~n"))
+         (set! get-problem get-problem<=>fract1)
+         (set! *max-used-pairs*
+               (quotient (kombinations (sub1 *comparison-fract-max*) 3) 10))))         
   (set! *used-numbers* '())    
   (set! do-math do-math>) ; set non arithmetic operation
   (set! setup setup-comparison) ; setup function
@@ -3965,6 +3971,22 @@ Restart program immediately after"]
                         (random 13 *left-number*)))
          (y (list-ref rn-list (random 0 (length rn-list)))))
     (check-used x op y)))
+
+(define (get-problem<=>fract1)
+  (let* ((op comp<=>) ; not a real operation
+         ;; possible 3 same numbers. giving "=" a chance
+         (max (add1 *comparison-fract-max*))
+         (n1 (random 1 max)) ; numerator1
+         (n2 (min (add1 n1) *comparison-fract-max*)) ; numerator2
+         (d1 (random 2 max)) ; denominator1
+         (d2 (min (+ 2 d1) *comparison-fract-max*))) ; denominator2
+    (if (and (= 1 (/ n1 d1)) (= 1 (/ n2 d2))) ; skip if both 1
+        (get-problem<=>fract1)
+        (let ((x (string-append (number->string n1) "/" (number->string d1)))
+              (y (string-append (number->string n2) "/" (number->string d2))))
+          (if (zero? (random 2)) ; making sure left is not always smaller
+              (check-used-pairs x op y)
+              (check-used-pairs y op x))))))
 
 (define (get-problem<=>fract)
   (let* ((op comp<=>) ; not a real operation

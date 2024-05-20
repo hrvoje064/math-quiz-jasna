@@ -71,7 +71,7 @@ You can change the default setting of 3 digits after decimal point in \"Setup->S
 Having said that, of-course, if division exercise actually gives an integer result (as in 10 / 2 = 5) entering only 5 as a result is fine. Likewise if result has less than 3 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is okay.
 
 The comparison exercise (<=>), works slightly differently. It opens a separate input window, and of-course does not require numerical result. Student is asked to input one of comparison symbols ( > = < ) depending on the two numbers shown to the left and the right of the input field, as in: 133  [     ]  211 . In this case the student should type < in the input field, as 133 is smaller than 211.
-Comparison exercise works in two levels. Level one (integer comparison, described above) is the default level. This can be changed with \"Setup->Set comparison type: integer or fraction\" menu to compare fractions, as in 3/4 [ ] 3/5.
+Comparison exercise works in 3 levels. Level one (integer comparison, described above) is the default level. This can be changed with \"Setup->Set comparison type: integer or fraction\" menu to compare fractions, as in 3/4 [ ] 3/5. Level 2 is easy fractions (having the same numerators or denominators). Level 3 is using different numerators and denominators.
 In case that the student accidentally closes the comparison input window (clicking the X on the title-bar of the window), before the set of exercises is completed, then click on the \"Lost and Found->Show Comparison Window\" menu, and the window will pop up again in the same state it was closed. 
 
 All of the exercises described below, also have an entry in the \"Lost and Found->Show ****** Window\" menu, so this will not be mentioned again.
@@ -188,7 +188,8 @@ ________________________________________________________
 3 minutes per exercise for (÷)
 30 seconds per exercise for multiplication/division tables
 20 seconds for integer comparison exercises
-30 seconds for fraction comparison exercises
+30 seconds for fraction comparison exercises level 2
+1.5 minutes for fraction comparison exercises level 3
 12 seconds for odd/even exercises
 1 minute for sequence level 1
 2 minutes for sequence level 2
@@ -239,7 +240,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.4.6
+  "Jasna's Math Quiz, v4.4.7
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
@@ -248,7 +249,7 @@ Most of the exercises have several levels of difficulty, with level one being ap
 
 I intend to continue updating the program with new exercises (and/or new levels of existing exercises), as per material she is learning at school.
 
-The program is written in Racket (Scheme) compiler v8.8 (and latest v8.13)
+The program is written in Racket (Scheme) compiler v8.8 - v8.13.
 It was developed on x86 based PC, and on Orange pi 5 plus, both running Linux OS.
 Windows version was tested and compiled on Windows 11. 
 Raspberry pi version was compiled and tested on raspberry pi 4B.

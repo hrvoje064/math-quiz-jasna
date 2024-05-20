@@ -15,7 +15,7 @@ The program now contains 6 arithmetic exercises;
 
 There are also numerous  non arithmetic exercises; 
 
-    Comparison (>, =, <) in two levels - integers and fractions 
+    Comparison (>, =, <) in 3 levels - integers, easy, and hard fractions 
     Odd, Even
     Sequence (3 levels)
     Before, Between, After
@@ -39,9 +39,9 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 4.4.6
+Current version of math-quiz is 4.4.7
 
-math-quiz is written/tested in Scheme (Racket compiler v8.12)
+math-quiz is written/tested in Scheme (Racket compiler v8.8 - v8.13)
 
 Hrvoje Blazevic
 

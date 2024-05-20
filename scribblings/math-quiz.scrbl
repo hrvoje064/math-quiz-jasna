@@ -133,14 +133,15 @@ The comparison exercise @bold{<=>}, works slightly differently. It opens a separ
 and of-course does not require numerical result. Student is asked to input one of comparison
 symbols @bold{> = <} depending on the two numbers shown to the left and the right of the input
 field, as in: 133  [     ]  211 . In this case the student should type @bold{<} in the input
-field, as 133 is smaller than 211.
+field, as 133 is smaller than 211. 
 
 @subsection{Comparison Levels}
 
-Comparison exercise works in two levels. Level one (integer comparison, described above)
+Comparison exercise works in 3 levels. Level one (integer comparison, described above)
 is the default level. This can be changed with
 @bold{Setup->Set comparison type: integer or fraction} menu to compare fractions,
-as in 3/4 [ ] 3/5.
+as in 3/4 [ ] 3/5. Level 2 is easy fractions (having the same numerators or
+denominators). Level 3 is using different numerators and denominators.
 
 @subsection{Restoring the Accidentally Closed or Hidden Window}
 
@@ -425,7 +426,8 @@ default set by the program, set the slider back to 100%.
           @item{3 minutes per exercise for (÷)}
           @item{30 seconds per exercise for multiplication/division tables}
           @item{20 seconds for integer comparison exercises}
-          @item{30 seconds for fraction comparison exercises}
+          @item{30 seconds for fraction comparison exercises level 2}
+          @item{1.5 minutes for fraction comparison exercises level 3}
           @item{12 seconds for odd/even exercises}
           @item{1 minute for sequence level 1}
           @item{2 minutes for sequence level 2}
