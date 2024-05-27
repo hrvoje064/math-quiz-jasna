@@ -911,9 +911,9 @@
                          [label
                           (format
                            "GAPESA level: 1+ ,  2- ,  3+ or - ,  4+- , 5mix +- ,  \
-6* ,  7~a ,  8*~a" // //)]
+6* , 7~a easy , 8~a ,  9*~a" // // //)]
                          [min-value 1]
-                         [max-value 8]
+                         [max-value 9]
                          (parent slider-text-dialog)
                          [init-value *gapesa-level*]
                          [callback
@@ -3169,10 +3169,12 @@ Restart program immediately after"]
          (set! *time-factor* 4) (set! ty "mix + +- -"))
     ((6) (set! *word-problem* (cons 'handle (shuffle word*problems)))
          (set! *time-factor* 5) (set! ty "    *     "))
-    ((7) (set! *word-problem* (cons 'handle (shuffle word/problems)))
+    ((7) (set! *word-problem* (cons 'handle (shuffle word/problems-easy)))
+         (set! *time-factor* 5) (set! ty " / easy   "))
+    ((8) (set! *word-problem* (cons 'handle (shuffle word/problems)))
          (set! *time-factor* 6) (set! ty "    /     ")
          (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
-    ((8) (set! *word-problem*
+    ((9) (set! *word-problem*
                (cons 'handle (append-shuffle word*problems word/problems)))
          (set! *time-factor* 6) (set! ty "    */    ")
          (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
@@ -3186,7 +3188,7 @@ Restart program immediately after"]
         (string-append
          "Read the problem, understand the question, formulate the Equation,"
          " calculate the result, and enter it into the input field."))
-  (unless (> *gapesa-level* 6)
+  (unless (> *gapesa-level* 7)
     (set! equal= =))
   (set! do-math do-math-text) ; set non arithmetic operation
   (set! get-problem get-problem-text)

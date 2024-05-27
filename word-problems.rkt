@@ -882,6 +882,58 @@ and were paid ~a php for each bottle.~n~n\
              (values formula formula))))         
    ))
 
+(define word/problems-easy ; one digit division problems
+  (list
+   (list "We rode our bike today ~a kilometers and the bike consumed ~a liters of \
+gasoline.~n~n\
+ How many kilometers is our bike making per one liter of gas?"
+         '((120 300) (5 11))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a ,// ,b)))
+             (values formula formula))))
+
+   (list "There are ~a cookies in a jar. Divide them evenly among ~a kids.~n~n\
+ How many cookies each kid gets?"
+         '((15 100) (3 11))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a ,// ,b)))
+             (values formula formula))))
+
+   (list "Jasna has ~a stockings.~n~n\
+ How many pairs of stockings does she have?"
+         '((15 100))
+         (lambda (a) (even? a))
+         (lambda (a)
+           (let ((formula `(,a ,// 2)))
+             (values formula formula))))
+
+   (list "There are ~a pages in the book. If Tina reads ~a pages every day,~n\
+how many days does she need to read the whole book?"
+         '((25 120) (4 11))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a ,// ,b)))
+             (values formula formula))))
+
+   (list "Ana swam ~a laps in the swimming pool in ~a seconds.~n~n\
+ How many seconds did one lap take?"
+         '((2 11) (120 600))
+         (lambda (a b) (zero? (modulo b a)))
+         (lambda (a b)
+           (let ((formula `(,b ,// ,a)))
+             (values formula formula))))
+
+   (list "We have ~a seats in our classroom. They are placed in ~a rows.~n~n\
+ How many seats are in each row?"
+         '((25 100) (3 11))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a ,// ,b)))
+             (values formula formula))))         
+   ))
+         
 (define word/problems ; division problems
   (list
    (list "When we started our drive in the morning, we first drove ~a kilometers to \
@@ -1361,4 +1413,5 @@ leg a = ~a cm.~n What is the area of that triangle?"
 
 ;;; data
 (provide *dictionary* word+problems word-problems word+-problems word*problems
-         word/problems circumference1 circumference2 area1 operand1 operand2)
+         word/problems circumference1 circumference2 area1 operand1 operand2
+         word/problems-easy)

@@ -30,7 +30,7 @@ There are also numerous  non arithmetic exercises;
     Skip counting with skip ranging from 2-10
     Skip counting with negative skip from 2-10
     Missing X - find operand in simple arithmetic equations in 3 levels
-    GAPESA - Text given math problems in 8 levels (+, -, +-, *, /, */)
+    GAPESA - Text given math problems in 9 levels (+, -, +-, *, / easy, /, */)
     Perimeter/Area problems in 4 levels
 
 Program is very simple to operate, and very easy for parent to control later what was the child up to. Each exercise set (min 1, max 30 exercises) is allotted certain amount of time, and when exercises are completed, if time was exceeded, penalty (again certain number of exercises) is given. After that if there were any mistakes, again additional exercises are given.
@@ -39,7 +39,7 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 4.4.7
+Current version of math-quiz is 4.4.8
 
 math-quiz is written/tested in Scheme (Racket compiler v8.8 - v8.13)
 
