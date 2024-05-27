@@ -308,7 +308,7 @@ How many stamps did Charmien collect?"
            (let ((formula `(,a - ,b - ,c)))
              (values formula formula))))
 
-   (list "There are ~a buttons in the box. ~a of then are round, and the rest \
+   (list "There are ~a buttons in the box. ~a of them are round, and the rest \
 are square.~n~n How many more square buttons than round ones are there?"
          '((500 700) (180 230))
          t-func
