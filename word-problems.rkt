@@ -931,7 +931,40 @@ how many days does she need to read the whole book?"
          (lambda (a b) (zero? (modulo a b)))
          (lambda (a b)
            (let ((formula `(,a ,// ,b)))
-             (values formula formula))))         
+             (values formula formula))))
+
+   (list "Maria has ~a raisins. She divided them equally into ~a piles.~n~n\
+ How many raisins are in each pile?"
+         '((25 150) (5 11))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a ,// ,b)))
+             (values formula formula))))
+
+   (list "Our class run a country cross track. We totally covered ~a kilometers.~n~n\
+ If a track is ~a km long, how many pupils are in our class?"
+         '((55 155) (3 11))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a ,// ,b)))
+             (values formula formula))))
+
+   (list "Henry was sick last month and was missing from school a long time.~n~n\
+ If he was not in school for totally ~a hours, and school is 6 hours per day,\
+ how many days was that?"
+         '((18 181))
+         (lambda (a) (zero? (modulo a 6)))
+         (lambda (a)
+           (let ((formula `(,a ,// 6)))
+             (values formula formula))))
+
+   (list "Missy made ~a ribbons from a ~a centimeters long ribbon tape.~n~n\
+ How long was each ribbon?"
+         '((3 11) (75 333))
+         (lambda (a b) (zero? (modulo b a)))
+         (lambda (a b)
+           (let ((formula `(,b ,// ,a)))
+             (values formula formula))))       
    ))
          
 (define word/problems ; division problems
