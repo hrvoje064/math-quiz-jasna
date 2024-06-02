@@ -108,7 +108,7 @@ silver coins, and ~a copper coins.~n~n How many coins has he found altogether?"
            (let ((formula `(,a + ,b)))
              (values formula formula))))
    
-   (list "Lila has ~a dollars in her wallet, Ben has ~a dollars, and Symone has ~a \
+   (list "Lila has ~a dollars in her wallet, Ben has ~a dollars, and Simone has ~a \
 dollars in her purse.~n~n How much money do they have altogether?"
          '((100 1000) (100 1000) (100 1000))
          t-func
@@ -345,9 +345,9 @@ How long is rope C?"
            (let ((formula `(,a + ,b - ,c)))
              (values formula formula))))
 
-   (list "Jasna Elise, and Symone went collecting seashells on the beach. \
+   (list "Jasna Elise, and Simone went collecting seashells on the beach. \
 Jasna collected ~a more shells than Elise. Elise collected ~a shells fewer than \
-Symone. Symone collected ~a shells.~n~n \
+Simone. Simone collected ~a shells.~n~n \
 How many shells did Jasna collect?"
          '((10 25) (5 15) (20 30))
          t-func
@@ -1000,7 +1000,7 @@ If all the polygons have the same side length, and the total length of their sid
            (let ((formula `(,g ,// (,a * ,b + ,c * ,d + ,e * ,f))))
              (values formula formula))))
 
-   (list "Symone has ~a php in her purse. She wants to buy a lot of chocolate bars.~n~n\
+   (list "Simone has ~a php in her purse. She wants to buy a lot of chocolate bars.~n~n\
 How many can she buy, if each one costs ~a php?"
          '((1000 2000) (35 85))
          (lambda (a b) (zero? (modulo a b)))
