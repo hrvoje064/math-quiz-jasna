@@ -130,8 +130,8 @@ There are 3 levels for \"missing X\" exercise. Level 1 (+ -), level 2 (* /), and
 
 The GAPESA exercise is math problem given in words. It stands for Given, Asked, Process, Equation, Solution, and Answer.
 It pops a window with the text of a problem. The student must write the equation on a scratch-pad, calculate the solution and answer it in the input field.
-There are 9 levels of this exercise. Level 1 (the default) is addition only, level 2 is subtraction only. Level 3 is a mix of addition and subtraction problems, chosen at random. Level 4 is addition and subtraction combined in one exercise, level 5 is all levels of (+ - +-) combined.
-Level 6 is multiplication problems, level 7 is easy (1 digit) division problems, level 8 is division problems, and level 9 is multiplication and division combined.
+There are 10 levels of this exercise. Level 1 (the default) is addition only, level 2 is subtraction only. Level 3 is a mix of addition and subtraction problems, chosen at random. Level 4 is addition and subtraction combined in one exercise, level 5 is all levels of (+ - +-) combined.
+Level 6 is multiplication problems, level 7 is easy (1 digit) division problems, level 8 is a mix of multiplication and easy division problems, level 9 is division problems, and level 10 is multiplication and division combined.
 This can be set with \"Setup->Set GAPESA level\" sub-menu.
 If the student is working on division exercises, then precision of the answer becomes an issue. Just like in arithmetic division problems, the number of significant (taken into account) decimal places can be set with \"Setup->Set Division Precision\" sub-menu. Default is 3 places.
 Do not round up the answer, just give 3 decimal digits (or whatever is set-up for division precision) without rounding the number.
@@ -212,8 +212,8 @@ ________________________________________________________
 3 minutes for GAPESA level 1
 3.5 minutes for GAPESA level 2 & 3
 4 minutes for GAPESA level 4 & 5
-5 minutes for GAPESA level 6 & 7
-6 minutes for GAPESA level 8 & 9
+5 minutes for GAPESA level 6 7 & 8
+6 minutes for GAPESA level 9 & 10
 3 minutes for Circumference level 1
 4 minutes for Circumference level 2 & 3
 ___________________________________________________________
@@ -240,7 +240,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.4.8
+  "Jasna's Math Quiz, v4.4.9
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

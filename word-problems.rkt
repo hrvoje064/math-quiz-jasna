@@ -760,9 +760,9 @@ she paid ~a php. Rice costs ~a php per kilo, and potatoes cost ~a php per kilo.\
              (values formula formula))))
 
    (list "Jasna went to the supermarket with her family. Father placed ~a cartons of milk \
-in the shopping cart. Mother placed ~a packets with Nescafe 3 in 1 sachets in the \
+in the shopping cart. Mother placed ~a packets with Nescafe sachets in the \
 cart, and Jasna placed ~a ice-creams in the cart. A carton of milk has ~a boxes of milk, \
-and a packet of 3 in 1 Nescafe has ~a sachets in it.~n~n\
+and a packet of Nescafe has ~a sachets in it.~n~n\
  How many individual items did they have in the cart?"
          '((2 7) (3 8) (5 10) (6 13) (6 11))
          t-func
@@ -941,7 +941,8 @@ how many days does she need to read the whole book?"
            (let ((formula `(,a ,// ,b)))
              (values formula formula))))
 
-   (list "Our class run a country cross track. We totally covered ~a kilometers.~n~n\
+   (list "Our class joined a country cross track competition yesterday. We covered\
+ totally ~a kilometers.~n~n\
  If a track is ~a km long, how many pupils are in our class?"
          '((55 155) (3 11))
          (lambda (a b) (zero? (modulo a b)))

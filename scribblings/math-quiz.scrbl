@@ -341,12 +341,13 @@ scratch-pad, calculate the solution and answer it in the input field.
 
 @subsection{GAPESA Levels}
 
-There are 9 levels of this exercise. Level 1 (the default) is addition only, level 2 is
+There are 10 levels of this exercise. Level 1 (the default) is addition only, level 2 is
 subtraction only. Level 3 is a mix of addition and subtraction problems, chosen at random.
 Level 4 is addition and subtraction combined in one exercise, level 5 is all levels
 of (+ - +-) combined.
-Level 6 is multiplication problems, level 7 is easy (1 digit) division problems, level 8
-is division problems, and level 9 is multiplication and division combined.
+Level 6 is multiplication problems, level 7 is easy (1 digit) division problems,
+level 8 is a mix of multiplication and easy division problems, 
+level 9 is division problems, and level 10 is multiplication and division combined.
 This can be set with @bold{Setup->Set GAPESA level} sub-menu.
 
 @subsection{GAPESA Precision}
@@ -450,8 +451,8 @@ default set by the program, set the slider back to 100%.
           @item{3 minutes for GAPESA level 1}
           @item{3.5 minutes for GAPESA level 2 & 3}
           @item{4 minutes for GAPESA level 4 & 5}
-          @item{5 minutes for GAPESA level 6 & 7}
-          @item{6 minutes for GAPESA level 8 & 9}
+          @item{5 minutes for GAPESA level 6 7 & 8}
+          @item{6 minutes for GAPESA level 9 & 10}
           @item{3 minutes for Circumference level 1}
           @item{4 minutes for Circumference level 2 & 3}]
 

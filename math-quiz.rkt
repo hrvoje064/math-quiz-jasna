@@ -911,9 +911,9 @@
                          [label
                           (format
                            "GAPESA level: 1+ ,  2- ,  3+ or - ,  4+- , 5mix +- ,  \
-6* , 7~a easy , 8~a ,  9*~a" // // //)]
+6* , 7~a easy , 8*~a easy, 9~a ,  10*~a" // // // //)]
                          [min-value 1]
-                         [max-value 9]
+                         [max-value 10]
                          (parent slider-text-dialog)
                          [init-value *gapesa-level*]
                          [callback
@@ -3171,13 +3171,16 @@ Restart program immediately after"]
          (set! *time-factor* 5) (set! ty "    *     "))
     ((7) (set! *word-problem* (cons 'handle (shuffle word/problems-easy)))
          (set! *time-factor* 5) (set! ty " / easy   "))
-    ((8) (set! *word-problem* (cons 'handle (shuffle word/problems)))
+    ((8) (set! *word-problem*
+               (cons 'handle (append-shuffle word/problems-easy word*problems)))
+         (set! *time-factor* 5) (set! ty " */ easy  "))    
+    ((9) (set! *word-problem* (cons 'handle (shuffle word/problems)))
          (set! *time-factor* 6) (set! ty "    /     ")
          (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
-    ((9) (set! *word-problem*
-               (cons 'handle (append-shuffle word*problems word/problems)))
-         (set! *time-factor* 6) (set! ty "    */    ")
-         (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
+    ((10) (set! *word-problem*
+                (cons 'handle (append-shuffle word*problems word/problems)))
+          (set! *time-factor* 6) (set! ty "    */    ")
+          (set! equal= approx=)) ; division precision set to 3 decimals, no rounding
     (else (error *gapesa-level*)))
   (send text-dialog set-label "GAPESA questions")
   (send show-text-window-menu set-label "Show GAPESA Window")
@@ -3188,7 +3191,7 @@ Restart program immediately after"]
         (string-append
          "Read the problem, understand the question, formulate the Equation,"
          " calculate the result, and enter it into the input field."))
-  (unless (> *gapesa-level* 7)
+  (unless (> *gapesa-level* 8)
     (set! equal= =))
   (set! do-math do-math-text) ; set non arithmetic operation
   (set! get-problem get-problem-text)
