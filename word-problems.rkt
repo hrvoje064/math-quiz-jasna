@@ -965,7 +965,35 @@ how many days does she need to read the whole book?"
          (lambda (a b) (zero? (modulo b a)))
          (lambda (a b)
            (let ((formula `(,b ,// ,a)))
-             (values formula formula))))       
+             (values formula formula))))
+
+   (list "Jack has ~a pesos in his wallet. He has ~a times as many pesos as Bill.~n~n\
+  How many more pesos does Jack have than Bill?"
+         '((80 250) (3 10))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a - ,a ,// ,b)))
+             (values formula formula))))
+
+   (list "Jasmin has ~a stamps. She has ~a times as many stamps as Frank.~n~n\
+   How many stamps does Jasmin have to give Frank, so that they have the same number\
+ of stamps?"
+         '((120 280) (3 10))
+         (lambda (a b) (and (zero? (modulo a b)) (even? (+ a (quotient a b)))))
+         (lambda (a b)
+           (let ((frank `(,a ,// ,b))
+                 (frankv (/ a b)))
+             (values (format "frank  = ~a~nresult = ~a" (list2string frank)
+                             (list2string `((,a + frank) ,// 2 - frank)))
+                     `((,a + ,frankv) ,// 2 - ,frankv)))))
+
+   (list "A school has ~a pupils. There are ~a times as many boys as there are girls.~n~n\
+  How many boys are there in the school?"
+         '((450 1000) (3 10))
+         (lambda (a b) (zero? (modulo a (add1 b))))
+         (lambda (a b)
+           (let ((formula `(,a ,// (,b + 1) * ,b)))
+             (values formula formula))))
    ))
          
 (define word/problems ; division problems
@@ -1368,7 +1396,7 @@ leg a = ~a cm.~n What is the length of leg b?"
            (let ((formula `(2,V (,c ^ 2 - ,a ^ 2))))
              (values formula formula))))
 
-    (list "We are given a Right triangle with hypotenuse c = ~a cm, and \
+   (list "We are given a Right triangle with hypotenuse c = ~a cm, and \
 leg a = ~a cm.~n What is the area of that triangle?"
          '((10 25) (5 15))
          (lambda (c a) (> c (add1 a)))
@@ -1378,7 +1406,7 @@ leg a = ~a cm.~n What is the area of that triangle?"
              (values (format "b    = ~a~narea = ~a" (list2string b)
                              (list2string `(,a * b ,// 2)))
                      `(,a * ,bv ,// 2)))))
-    ))
+   ))
 
 (define operand1
   (list
