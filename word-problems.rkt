@@ -994,6 +994,14 @@ how many days does she need to read the whole book?"
          (lambda (a b)
            (let ((formula `(,a ,// (,b + 1) * ,b)))
              (values formula formula))))
+
+   (list "Jerry and Nina have ~a coins together. If Nina has ~a coins more than Jerry,\
+ then how many coins does Jerry have?"
+         '((50 120) (5 30))
+         (lambda (a b) (even? (- a b)))
+         (lambda (a b)
+           (let ((formula `((,a - ,b) ,// 2)))
+             (values formula formula))))
    ))
          
 (define word/problems ; division problems
