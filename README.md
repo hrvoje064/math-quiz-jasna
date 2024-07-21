@@ -2,7 +2,7 @@ math-quiz
 =========
 Math quiz/training for grade 1,2,3, ... (elementary school)
 
-This program came into being when my daughter started pre-school 2 years ago. Now she's 7 years old and is attending grade 2. Consequently the program has been extended by many new exercises, all as per material she has been learning in school. Several exercises, (mostly those at the end of the list), through multiple levels, go beyond 2nd grade, probably ending up in high school territory.
+This program came into being when my daughter started pre-school 4 years ago. Now she's 8 years old and is attending grade 3. Consequently the program has been extended by many new exercises, all as per material she has been learning in school. Several exercises, (mostly those at the end of the list), through multiple levels, go beyond 3rd grade, probably ending up in high school territory.
 
 The program now contains 6 arithmetic exercises; 
 
@@ -20,6 +20,7 @@ There are also numerous  non arithmetic exercises;
     Sequence (3 levels)
     Before, Between, After
     Position Value
+    Rounding numbers
     Graphical Fractions (4 levels)
     Clock (5 levels)
     Arabic->Roman 
@@ -39,9 +40,9 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 4.4.10
+Current version of math-quiz is 4.5
 
-math-quiz is written/tested in Scheme (Racket compiler v8.8 - v8.13)
+math-quiz is written/tested in Scheme (Racket compiler v8.7 - v8.13)
 
 Hrvoje Blazevic
 

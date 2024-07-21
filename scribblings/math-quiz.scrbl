@@ -36,6 +36,8 @@
           (list " "          "________________________________________")
           (list "PosVal"     @italic{Starts Position Value exercises.})
           (list " "          "________________________________________")
+          (list "Round"      @italic{Starts number rounding exercises.})
+          (list " "          "________________________________________")
           (list "fractions"  @italic{Starts Fractions exercises.})
           (list " "          "________________________________________")
           (list "clock"      @italic{Starts Clock exercises.})
@@ -189,6 +191,12 @@ The Position value exercise pops up the window with 4 radio buttons labeled ones
 tens, hundreds, and thousands. At the same time one four digit number is displayed with
 one of the digits being red. Corresponding to that digit position, the student should
 click the appropriate radio button.
+
+@section{Rounding Exercise}
+
+The Rounding exercise pops up the window showing one multi-digit number.
+One of the digits is red, and the student should round this number on the
+red digit position.
 
 @section{Fractions Exercises}
 
@@ -435,6 +443,7 @@ default set by the program, set the slider back to 100%.
           @item{3 minutes for sequence level 3 & 4}
           @item{30 seconds for Before Between After exercises}
           @item{12 seconds for Position Value}
+          @item{30 seconds for Rounding numbers}
           @item{20 seconds for Fractions level 1}
           @item{40 seconds for Fractions level 2}
           @item{1 minute for Fractions level 3}

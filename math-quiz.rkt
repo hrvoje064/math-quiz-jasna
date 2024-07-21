@@ -2,7 +2,7 @@
 
 ;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Math Quiz, v4.4.10
+;;; Math Quiz, v4.5
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -16,6 +16,7 @@
 (require "roman.rkt") ; Roman numerals conversion
 (require "sequence.rkt") ; sequence problems
 (require "html-fix.rkt") ; repairing secref hyperlinks in html docs
+(require "rounding.rkt") ; rounding numbers on random position
 
 (define *speed-factor* 1) ; reduce or increase allotted time
 (define *left-number* 700) ; Max size-1 of left number
@@ -1264,6 +1265,14 @@ Restart program immediately after"]
                                         (when (eq? *exec-button* pvalue-button)
                                           (send pvalue-dialog show #t)))]))
 
+(define show-round-window-menu (new menu-item%
+                                    [label "Show round Window"]
+                                    [parent retrieve-menu]
+                                    [callback
+                                     (lambda (mi e)
+                                       (when (eq? *exec-button* round-button)
+                                         (send round-dialog show #t)))]))
+
 (define show-fraction-window-menu (new menu-item%
                                        [label "Show fractions Window"]
                                        [parent retrieve-menu]
@@ -2426,6 +2435,85 @@ Restart program immediately after"]
                                 (math-quiz-type (number->string input))))]))
 
 ;;; ==================================================================
+;;; Round problems
+;;; ==================================================================
+
+(define round-dialog (new frame%
+                          [label "Rounding number questions"]
+                          [parent main-window]
+                          [width 500]
+                          [height 120]
+                          [border 10]
+                          [style '(no-resize-border)]
+                          [alignment '(left center)]))
+
+(define round-pane (new horizontal-pane%
+                        [parent round-dialog]
+                        [vert-margin 10]
+                        [horiz-margin 10]
+                        [alignment '(center center)]
+                        [stretchable-width #t]
+                        [stretchable-height #t]))
+
+(define round-head-prompt (new message%
+                               [parent round-pane]
+                               [font message-bold-font]
+                               [label " "]
+                               [vert-margin 10]
+                               [horiz-margin 0]
+                               [stretchable-width #f]
+                               [stretchable-height #f]
+                               [auto-resize #t]))
+
+(define round-digit-prompt (new message%
+                                [parent round-pane]
+                                [font message-bold-font]
+                                [label " "]
+                                [vert-margin 10]
+                                [horiz-margin 0]
+                                [stretchable-width #f]
+                                [stretchable-height #f]
+                                [auto-resize #t]))
+
+(define round-tail-prompt (new message%
+                               [parent round-pane]
+                               [font message-bold-font]
+                               [label " "]
+                               [vert-margin 10]
+                               [horiz-margin 0]
+                               [stretchable-width #f]
+                               [stretchable-height #f]
+                               [auto-resize #t]))
+
+(define round-input (new text-field%
+                         [parent round-pane]
+                         [font message-bold-font]
+                         [label " "]
+                         [init-value input-label]
+                         [enabled #f]
+                         [min-width 150]
+                         [min-height 30]
+                         [vert-margin 6]
+                         [horiz-margin 10]
+                         [stretchable-width #f]
+                         [stretchable-height #f]))
+
+(define round-button (new button%
+                          [parent round-pane]
+                          [label "Check"]
+                          [font button-font]
+                          [min-height start-button-height]
+                          [enabled #f]
+                          [vert-margin 10]
+                          [horiz-margin 30]
+                          [style '(border)]
+                          [callback
+                           (lambda (button event)
+                             (let ((input (send round-input get-value)))
+                               (send round-input set-value "")
+                               (math-quiz-type (string-trim input))))]))
+
+;;; ==================================================================
 
 (define no-mouse-canvas%
   (class editor-canvas% ; The base class is editor-canvas%
@@ -2647,6 +2735,18 @@ Restart program immediately after"]
                                  [horiz-margin 6]
                                  [callback
                                   (lambda (button event) (start-pvalue))]))
+
+(define start-round-button (new button%
+                                [parent v-start-popup]
+                                [label "Round"]
+                                [font button-font]
+                                [min-width start-button-width]
+                                [min-height start-button-height]
+                                [enabled #t]
+                                [vert-margin 6]
+                                [horiz-margin 6]
+                                [callback
+                                 (lambda (button event) (start-round))]))
 
 (define start-fraction-button (new button%
                                    [parent v-start-popup]
@@ -3302,6 +3402,22 @@ Restart program immediately after"]
   (send pvalue-dialog show #t)
   (start-quiz *n* 0))
 
+(define (start-round)
+  (set! *time-factor* 1/2) ; minutes per problem
+  (send text-lines insert
+        (format "-----------   round number exercises   ----------~n"))
+  (send round-dialog create-status-line)
+  (send round-dialog set-status-text
+        "Round on RED digit.    Rules: next digit >= 5, round up!")
+  (set! equal= =)
+  (set! do-math do-math-round) ; set non arithmetic operation
+  (set! get-problem get-problem-rounding)
+  (set! setup setup-round) ; setup function
+  (set! *used-numbers* '())
+  (set! *max-used-pairs* 90)
+  (send round-dialog show #t)
+  (start-quiz *n* 0))
+
 (define (start-fraction)
   (send fraction-dialog create-status-line)
   (disable/enable-input-fields #f)
@@ -3397,7 +3513,7 @@ Restart program immediately after"]
                   start-clock-button start-a2r-button start-r2a-button
                   start-money-button start-money-p-button start-ABC-button
                   start-skip-button start-skip-neg-button start-text-button
-                  start-Carea-button start-findX-button)))
+                  start-Carea-button start-findX-button start-round-button)))
 
 (define (disable/enable-set/font-menu t/f)
   (for-each (lambda (m) (send m enable t/f))
@@ -3421,19 +3537,19 @@ Restart program immediately after"]
                   show-clock-window-menu show-a2r-window-menu
                   show-r2a-window-menu show-money-window-menu
                   show-ABC-window-menu show-skip-window-menu
-                  show-text-window-menu)))
+                  show-text-window-menu show-round-window-menu)))
 
 (define (disable/enable-dialog-show t/f)
   (for-each (lambda (window) (send window show t/f))
             (list odd-even-dialog input-dialog sequence-dialog bba-dialog
-                  pvalue-dialog fraction-dialog clock-dialog
+                  pvalue-dialog round-dialog fraction-dialog clock-dialog
                   a2r-dialog r2a-dialog money-dialog ABC-dialog skip-dialog
                   text-dialog)))
 
 (define (disable/enable-input-fields t/f)
   (for-each (lambda (input) (send input enable t/f))
             (list comparison-input sequence-input bba-input clock-input
-                  a2r-input r2a-input skip-input text-input))
+                  a2r-input r2a-input skip-input text-input round-input))
   (enable-disable-sequence-cheat-button t/f)
   (enable-disable-ABC-inputs t/f)
   (enable-disable-fraction-inputs t/f)
@@ -3663,6 +3779,28 @@ Restart program immediately after"]
     ((ones)
      (send pvalue-on-prompt set-color "red"))
     (else (error 'setup-pvalue))))
+
+(define (setup-round)
+  (set! *exec-button* round-button)
+  (send show-round-window-menu enable #t)
+  (send round-button enable #t)
+  (send round-head-prompt set-color "black")
+  (send round-digit-prompt set-color "black")
+  (send round-tail-prompt set-color "black")
+  (send number-input enable #f)
+  (send round-input enable #t)
+  (send prompt-msg set-label
+        (msg3 (state-question *state*) (state-problems *state*) (running-time)))
+  (get-problem)
+  (let ((hdt (problem-x *problem*)))
+    #|(let* ((h-d-t (map number->string (problem-x *problem*)))
+         (hdt (if (string=? (car h-d-t) "0")
+                  (cons "" (cdr h-d-t))
+                  h-d-t))) |#        
+    (send round-head-prompt set-label (first hdt))
+    (send round-digit-prompt set-label (second hdt))
+    (send round-tail-prompt set-label (third hdt)))
+  (send round-digit-prompt set-color "red"))
 
 (define (setup-fraction)
   (set! *exec-button* fraction-button)
@@ -4131,6 +4269,13 @@ Restart program immediately after"]
   (let* ((x (map number->string (get-pvalue-number 4 '())))
          (y (random (length x)))
          (op (choose-pvalue-op y))) ; for show
+    (check-used-sequence x op y)))
+
+(define (get-problem-rounding)
+  (let* ((problem-set (get-problem-round))
+         (x (first problem-set))
+         (op (second problem-set))
+         (y (third problem-set)))
     (check-used-sequence x op y)))
 
 (define (get-problem-fraction)
@@ -4633,6 +4778,29 @@ Restart program immediately after"]
        (send text-lines change-style style-delta-black))))
   (send out set-editor text-lines))
 
+(define (do-math-round string x op y out)
+  (let* ((reply-input (string->number string))
+         (result
+          (and reply-input (equal= reply-input y))))
+    (cond
+      (result
+       (send text-lines insert (msg-round result string))
+       (set-state-question! *state* (add1 (state-question *state*)))
+       (when (<= (state-question *state*) (state-problems *state*))
+         (setup-round))) ; continue with next exercise
+      (reply-input
+       (bell)
+       (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
+       (send text-lines change-style style-delta-red)
+       (send text-lines insert (msg-round result string))
+       (send text-lines change-style style-delta-black))
+      (else
+       (bell)
+       (send text-lines change-style style-delta-green)
+       (send text-lines insert (msg9 string))
+       (send text-lines change-style style-delta-black))))
+  (send out set-editor text-lines))
+
 (define (do-math-fraction string x op y out)
   (let* ((fraction-input (string->number string))
          (fraction-number ((run op) x y))
@@ -4981,6 +5149,17 @@ but limited by *max-penalty-exercises*"
                 (show (choose-pvalue-op (string->number input)))
                 (pad-pos (list-ref x (- 3 (cadr (problem-op *problem*))))
                          (problem-y *problem*))))))
+
+(define (msg-round result input)
+  (let* ((x (problem-x *problem*))
+         #;(x (if (= (first x0) 0)
+                  (cons "" (cdr x0))
+                  x0)))
+    (if result
+        (format "number ~a~a~a rounded on ~a is ~a~n"
+                (first x) (second x) (third x) (second x) input)
+        (format "number ~a~a~a rounded on ~a is not ~a~n"
+                (first x) (second x) (third x) (second x) input))))
 
 (define (msg7 x op y result [z ""]) ; z is for BA-clock
   (format "~a ~a ~a  ~a \\= ~a~n" x (show op) y z result))

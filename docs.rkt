@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v4.4.10
+;;; v4.5
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -30,6 +30,8 @@ _______________________________________________________________
 B B A           Starts Before Between After number exercises.
 _______________________________________________________________
 PosVal          Starts Position Value exercises.
+_______________________________________________________________
+Round           Starts number rounding exercises.
 _______________________________________________________________
 fractions       Starts Fractions exercises.
 _______________________________________________________________
@@ -87,6 +89,8 @@ Every time that the \"Cheat\" button is used, this will be confirmed in report p
 The (B B A) Before, Between, After, exercise pops the window which allows the input of the requested number. As a help to the student the status line on the bottom of the window displays what is expected, as in; before, or between, or after.
 
 The Position value exercise pops up the window with 4 radio buttons labeled ones, tens, hundreds, and thousands. At the same time one four digit number is displayed with one of the digits being red. Corresponding to that digit position, the student should click the appropriate radio button.
+
+The Rounding exercise pops up the window showing one multidigit number. One of the digits is red, and the student should round this number on the red digit position.
 
 The Fractions exercise pops up the window with pie-chart drawn in it, containing a random number of red and black slices. The student should enter in input field red-slices/all-slices, as in: 3/5 (if the drawing contained 3 red and 2 black slices). No need to enter spaces as in 3 / 5 , but the program can handle that as well.
 The default max size of pie-chart is 10 slices, but that can be changed with \"Setup->Set number of fraction slices\" sub-menu. Slider goes from 5-12 slices.
@@ -196,6 +200,7 @@ ________________________________________________________
 3 minutes for sequence level 3 & 4
 30 seconds for Before Between After exercises
 12 seconds for Position Value
+30 seconds for Rounding numbers
 20 seconds for Fractions level 1
 40 seconds for Fractions level 2
 1 minute for Fractions level 3
@@ -240,7 +245,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.4.10
+  "Jasna's Math Quiz, v4.5
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
@@ -249,7 +254,7 @@ Most of the exercises have several levels of difficulty, with level one being ap
 
 I intend to continue updating the program with new exercises (and/or new levels of existing exercises), as per material she is learning at school.
 
-The program is written in Racket (Scheme) compiler v8.8 - v8.13.
+The program is written in Racket (Scheme) compiler v8.7 - v8.13.
 It was developed on x86 based PC, and on Orange pi 5 plus, both running Linux OS.
 Windows version was tested and compiled on Windows 11. 
 Raspberry pi version was compiled and tested on raspberry pi 4B.
