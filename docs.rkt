@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v4.5
+;;; v4.6
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -32,6 +32,8 @@ _______________________________________________________________
 PosVal          Starts Position Value exercises.
 _______________________________________________________________
 Round           Starts number rounding exercises.
+_______________________________________________________________
+Ordinals        Starts ordinal number spelling exercises.
 _______________________________________________________________
 fractions       Starts Fractions exercises.
 _______________________________________________________________
@@ -91,6 +93,10 @@ The (B B A) Before, Between, After, exercise pops the window which allows the in
 The Position value exercise pops up the window with 4 radio buttons labeled ones, tens, hundreds, and thousands. At the same time one four digit number is displayed with one of the digits being red. Corresponding to that digit position, the student should click the appropriate radio button.
 
 The Rounding exercise pops up the window showing one multidigit number. One of the digits is red, and the student should round this number on the red digit position.
+
+The Ordinal number exercise pops up the window showing one (up to 3 digit)
+cardinal number. The student should enter the ordinal number of the same 
+number, as in 5 enter 5th, 122 enter 122nd.
 
 The Fractions exercise pops up the window with pie-chart drawn in it, containing a random number of red and black slices. The student should enter in input field red-slices/all-slices, as in: 3/5 (if the drawing contained 3 red and 2 black slices). No need to enter spaces as in 3 / 5 , but the program can handle that as well.
 The default max size of pie-chart is 10 slices, but that can be changed with \"Setup->Set number of fraction slices\" sub-menu. Slider goes from 5-12 slices.
@@ -201,6 +207,7 @@ ________________________________________________________
 30 seconds for Before Between After exercises
 12 seconds for Position Value
 30 seconds for Rounding numbers
+15 seconds for Ordinal numbers
 20 seconds for Fractions level 1
 40 seconds for Fractions level 2
 1 minute for Fractions level 3
@@ -245,7 +252,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.5
+  "Jasna's Math Quiz, v4.6
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

@@ -38,6 +38,8 @@
           (list " "          "________________________________________")
           (list "Round"      @italic{Starts number rounding exercises.})
           (list " "          "________________________________________")
+          (list "Ordinals"   @italic{Starts ordinal number spelling exercises.})
+          (list " "          "________________________________________")
           (list "fractions"  @italic{Starts Fractions exercises.})
           (list " "          "________________________________________")
           (list "clock"      @italic{Starts Clock exercises.})
@@ -197,6 +199,12 @@ click the appropriate radio button.
 The Rounding exercise pops up the window showing one multi-digit number.
 One of the digits is red, and the student should round this number on the
 red digit position.
+
+@section{Ordinals Exercise}
+
+The Ordinal number exercise pops up the window showing one (up to 3 digit)
+cardinal number. The student should enter the ordinal number of the same 
+number, as in 5 enter 5th, 122 enter 122nd. 
 
 @section{Fractions Exercises}
 
@@ -444,6 +452,7 @@ default set by the program, set the slider back to 100%.
           @item{30 seconds for Before Between After exercises}
           @item{12 seconds for Position Value}
           @item{30 seconds for Rounding numbers}
+          @item{15 seconds for Ordinal numbers}
           @item{20 seconds for Fractions level 1}
           @item{40 seconds for Fractions level 2}
           @item{1 minute for Fractions level 3}
