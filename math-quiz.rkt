@@ -2,7 +2,7 @@
 
 ;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Math Quiz, v4.6
+;;; Math Quiz, v4.6.1
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -5070,17 +5070,7 @@ then additional problems are given."
   (send text-lines insert (msg-separator)) ; keeping records af all exercises
   (send prompt-msg set-label prompt-msg-label-again)
   (send operation-msg set-label op-start-label)
-  (send number-input set-value input-label)
-  ; other input fields
-  (send comparison-input set-value input-label)
-  (send sequence-input set-value input-label)
-  (send bba-input set-value input-label)
-  (send fraction-input-left set-value input-label)
-  (send fraction-input-right set-value input-label)
-  (send fraction-input set-value input-label)
-  (send clock-input set-value input-label)
-  (send a2r-input set-value input-label)
-  (send r2a-input set-value input-label)
+  (blank-input-fields) ; erase any residual inputs
   (clear-money-inputs)
   (clear-ABC-inputs)
   (send number-input enable #f)
@@ -5094,6 +5084,13 @@ then additional problems are given."
   (disable/enable-popup-window-menu #f)
   (disable/enable-dialog-show #f)
   (send stop-button enable #f))
+
+(define (blank-input-fields)
+  (let ((input-fields
+         (list comparison-input sequence-input bba-input fraction-input-left
+               fraction-input-right fraction-input clock-input a2r-input r2a-input
+               round-input ord-input text-input number-input)))
+    (for-each (lambda (input) (send input set-value input-label)) input-fields)))
 
 (define (check-<=> string)
   (case string
