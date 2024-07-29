@@ -3,9 +3,10 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v4.6
+;;; v4.7
 
 (require "misc.rkt")
+(require "time.rkt")
 
 (define *dictionary*
   '(*handle* ability able above accepted access acid added address adult advice after age
@@ -1416,7 +1417,9 @@ leg a = ~a cm.~n What is the area of that triangle?"
                      `(,a * ,bv ,// 2)))))
    ))
 
-(define operand1
+;;; missing operand exercises
+;;; =============================================================
+(define operand+-
   (list
    (list "Find the missing operand:   ~a + X = ~a~n~n What is X?"
          '((5 15) (11 40))
@@ -1447,7 +1450,7 @@ leg a = ~a cm.~n What is the area of that triangle?"
              (values formula formula))))   
    ))
 
-(define operand2
+(define operand*/
   (list
    (list "Find the missing operand:   ~a * X = ~a~n~n What is X?"
          '((5 10) (20 101))
@@ -1477,11 +1480,44 @@ leg a = ~a cm.~n What is the area of that triangle?"
            (let ((formula `(,y * ,quot)))
              (values formula formula))))   
    ))
+
+;;; Time exercises
+;;; ===========================================================
+
+(define time-passed
+  (list
+   (list "Bus departed station A at ~a and arrived at station B at ~a.~n~n
+ How many hours and minutes was it travelling?"
+         '((0 310) (311 720))
+         (lambda (at bt) (> (- bt at) 30)) ; trip > 30 minutes
+         (lambda (at bt)
+           (let ((formula `(,bt - ,at)))
+             (values formula formula))))
+
+   (list "We took a train ride yesterday. Train left Naga at ~a and arrived \
+to Legazpi city at ~a. Then we took a tricycle to the bus terminal, where we \
+boarded a bus for Sorsogon city. Bus departed at ~a and arrived to Sorsogon \
+city at ~a.~n
+ How long did combined train and bus ride take?"
+         '((0 210) (211 430) (450 520) (620 720))
+         (lambda (ta tb ba bb) (and (> (- tb ta) 60) (> (- bb ba) 60)))
+         (lambda (ta tb ba bb)
+           (let ((formula `(,tb - ,ta + ,bb - ,ba)))
+             (values formula formula))))
+
+   (list "Jasna walked to school today. She started at ~a and arrived at ~a.~n~n
+ How many minutes was the walk?"
+         '((421 480) (481 541))
+         (lambda (at bt) (< (- bt at) 60))
+         (lambda (at bt)
+           (let ((formula `(,bt - ,at)))
+             (values formula formula))))
+   ))
                                                           
 ;;; export
 ;;; ===========================================================
 
 ;;; data
 (provide *dictionary* word+problems word-problems word+-problems word*problems
-         word/problems circumference1 circumference2 area1 operand1 operand2
-         word/problems-easy)
+         word/problems circumference1 circumference2 area1 operand+- operand*/
+         word/problems-easy time-passed)

@@ -60,6 +60,8 @@
           (list " "          "________________________________________")
           (list "missing X"  @italic{Starts Find the missing Operand exercises.})
           (list " "          "________________________________________")
+          (list "time"       @italic{Starts elapsed time exercises.})
+          (list " "          "________________________________________")
           (list "GAPESA"     @italic{Given, Asked, Process, Equation, Solution, Answer})
           (list " "          "________________________________________")
           (list "Perimeter/Area" @italic{Starts circumference/area related exercises.}))]
@@ -349,6 +351,12 @@ of the form @bold{X (+-*/) N = M}, or @bold{N (+-*/) X = M}.
 The student must answer with the value of @bold{X}. Erroneous answer prints out
 the solution equation, just like @(secref "gapesa-error"), and Perimeter/Area exercises.
 
+@section{Time Exercises}
+The time exercise is about finding the elapsed time between two or more points.
+Requires answer in the form: @bold{5h 23m} (if elapsed time is 323min).
+If hour is zero, it still has to be entered as @bold{0h}. No spaces between
+5 and h or m are allowed.
+
 @section[#:tag "gapesa"]{GAPESA Exercises}
 The GAPESA exercise is math problem given in words. It stands for Given, Asked, Process,
 Equation, Solution, and Answer.
@@ -466,6 +474,7 @@ default set by the program, set the slider back to 100%.
           @item{2.5 minutes for skip-count exercises}
           @item{2 minutes for missing X level 1}
           @item{3 minutes for missing X level 2 & 3}
+          @item{3 minutes for time exercises}
           @item{3 minutes for GAPESA level 1}
           @item{3.5 minutes for GAPESA level 2 & 3}
           @item{4 minutes for GAPESA level 4 & 5}

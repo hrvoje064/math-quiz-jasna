@@ -18,6 +18,7 @@
 (require "html-fix.rkt") ; repairing secref hyperlinks in html docs
 (require "rounding.rkt") ; rounding numbers on random position
 (require "ordinal.rkt") ; spelling ordinal numbers
+(require "time.rkt") ; time conversions
 
 (define *speed-factor* 1) ; reduce or increase allotted time
 (define *left-number* 700) ; Max size-1 of left number
@@ -44,6 +45,7 @@
 (define *gapesa-level* 1) ; default word problem level, addition only
 (define *Carea-level* 1) ; default circumference/area level
 (define *findX-level* 1) ; default level for finding missing operand
+(define *time-level* 1) ; default level for time exercises
 (define *word-problem* #f) ; original word problem set
 (define word-problem #f) ; copy of word problem set
 
@@ -60,6 +62,7 @@
 (define *wiwi-start* #f)
 (define *wiwi* #f) ; pause switch
 (define *exec-button* #f) ; calc/comp button switch
+(define *time-flag* #f) ; elapsed time flag for text exercises
 (define *peso* #f) ; distinguishing between USD & Peso exercises
 (define *before/after-clock* #f) ; time increments for before/after clock
 
@@ -2121,6 +2124,8 @@ Restart program immediately after"]
                          [callback
                           (lambda (button event)
                             (let ((input (string-trim (send text-input get-value))))
+                              (when (and *time-flag* (result->min input))
+                                (set! input (number->string (result->min input))))
                               (send text-input set-value "")
                               (math-quiz-type input)))]))
 
@@ -2948,6 +2953,18 @@ Restart program immediately after"]
                                 [callback
                                  (lambda (button event) (start-findX))]))
 
+(define start-time-button (new button%
+                               [parent v-start-popup]
+                               [label "time"]
+                               [font button-font]
+                               [min-width start-button-width]
+                               [min-height start-button-height]
+                               [enabled #t]
+                               [vert-margin 6]
+                               [horiz-margin 6]
+                               [callback
+                                (lambda (button event) (start-time))]))
+
 (define start-text-button (new button%
                                [parent v-start-popup]
                                [label "GAPESA"]
@@ -3422,12 +3439,12 @@ Restart program immediately after"]
 (define (start-findX)
   (define ty #f)
   (case *findX-level*
-    ((1) (set! *word-problem* (cons 'handle (shuffle operand1)))
+    ((1) (set! *word-problem* (cons 'handle (shuffle operand+-)))
          (set! *time-factor* 2) (set! ty "level-1"))
-    ((2) (set! *word-problem* (cons 'handle (shuffle operand2)))
+    ((2) (set! *word-problem* (cons 'handle (shuffle operand*/)))
          (set! *time-factor* 3) (set! ty "level-2"))
     ((3) (set! *word-problem*
-               (cons 'handle (append-shuffle operand1 operand2)))
+               (cons 'handle (append-shuffle operand+- operand*/)))
          (set! *time-factor* 3) (set! ty "level-3"))
     (else (error *findX-level*)))
   (send text-lines insert
@@ -3439,6 +3456,36 @@ Restart program immediately after"]
         (string-append
          "Read the problem, understand the question, formulate the Equation,"
          " calculate the result, and enter it into the input field."))
+  (set! equal= =)
+  (set! do-math do-math-text) ; set non arithmetic operation
+  (set! get-problem get-problem-text)
+  (set! setup setup-text) ; setup function
+  (set! word-problem (list-copy *word-problem*)) ; fresh copy
+  (send text-dialog show #t)
+  (send text-input enable #t)
+  (start-quiz *n* 0))
+
+(define (start-time)
+  (set! *time-flag* #t)
+  (define ty #f)
+  (case *time-level*
+    ((1) (set! *word-problem* (cons 'handle (shuffle time-passed)))
+         (set! *time-factor* 3) (set! ty "level-1"))
+    ;;     ((2) (set! *word-problem* (cons 'handle (shuffle operand*/)))
+    ;;          (set! *time-factor* 3) (set! ty "level-2"))
+    ;;     ((3) (set! *word-problem*
+    ;;                (cons 'handle (append-shuffle operand+- operand*/)))
+    ;;          (set! *time-factor* 3) (set! ty "level-3"))
+    (else (error *time-level*)))
+  (send text-lines insert
+        (format "---   Time elapsed problems ~a exercise  ---~n" ty))
+  (send text-dialog set-label "Time elapsed questions")
+  (send show-text-window-menu set-label "Show Time elapsed Window")
+  (send text-dialog create-status-line)
+  (send text-dialog set-status-text
+        (string-append
+         "Read the problem, calculate the result, and enter it into the input field."
+         "  Example input: 5h 15m. Do not put spaces between 5 and h or 15 and m."))
   (set! equal= =)
   (set! do-math do-math-text) ; set non arithmetic operation
   (set! get-problem get-problem-text)
@@ -3609,7 +3656,8 @@ Restart program immediately after"]
                   start-clock-button start-a2r-button start-r2a-button
                   start-money-button start-money-p-button start-ABC-button
                   start-skip-button start-skip-neg-button start-text-button
-                  start-Carea-button start-findX-button start-round-button)))
+                  start-Carea-button start-findX-button start-round-button
+                  start-time-button)))
 
 (define (disable/enable-set/font-menu t/f)
   (for-each (lambda (m) (send m enable t/f))
@@ -4336,18 +4384,20 @@ Restart program immediately after"]
         (let*-values
             ([(formula-show formula-calc) (apply equation inputs)]
              [(result) (evaluate formula-calc)])
-          (if (< result 0) ; avoiding negative result
-              (get-inputs)
-              (let ((problem (apply format text inputs)))
-                (set-problem-x! *problem* problem)
-                (set-problem-y! *problem*
-                                (if (integer? result)
-                                    result
-                                    (exact->inexact result)))
-                (set-problem-op! *problem* formula-show)
-                #;(println (truncate-result (problem-y *problem*)
-                                            *exponent*)) ; for quick checking
-                )))))
+          (cond
+            ((< result 0) (get-inputs))
+            (else
+             (when *time-flag* (set! inputs (map min->time inputs))); changing to hh:mm
+             (let ((problem (apply format text inputs)))
+               (set-problem-x! *problem* problem)
+               (set-problem-y! *problem*
+                               (if (integer? result)
+                                   result
+                                   (exact->inexact result)))
+               (set-problem-op! *problem* formula-show)
+               #;(println (truncate-result (problem-y *problem*)
+                                           *exponent*)) ; for quick checking
+               ))))))
     (when (= len 1) ; last problem consumed
       (set! word-problem
             (cons 'handle (list-copy (shuffle (cdr *word-problem*)))))) ; restore problem set
@@ -5060,7 +5110,8 @@ then additional problems are given."
          (send *exec-button* enable #f)
          (disable/enable-popup-window-menu #f)
          (disable/enable-dialog-show #f)
-         (send stop-button enable #f))))))
+         (send stop-button enable #f)
+         (set! *time-flag* #f))))))
 
 (define (reset)
   "Stopping the set of exercises and resetting"
@@ -5070,6 +5121,7 @@ then additional problems are given."
   (send text-lines insert (msg-separator)) ; keeping records af all exercises
   (send prompt-msg set-label prompt-msg-label-again)
   (send operation-msg set-label op-start-label)
+  (set! *time-flag* #f) ; setting text problems for normal operation
   (blank-input-fields) ; erase any residual inputs
   (clear-money-inputs)
   (clear-ABC-inputs)
@@ -5206,11 +5258,15 @@ but limited by *max-penalty-exercises*"
   (format "~a ~a is not ~a~n" x (show op) result))
 
 (define (msg-text x op y result)
-  (calc-stub x "=" (truncate-result (string->number result) *exponent*)))
+  (if *time-flag*
+      (calc-stub x "=" (minstr->hmstr result)) 
+      (calc-stub x "=" (truncate-result (string->number result) *exponent*))))
 
 (define (msg-text-error x op y result)
   (let ((line2 (format "~n~a \\=" (if (string? op) op (list2string op)))))
-    (calc-stub x line2 (truncate-result (string->number result) *exponent*))))
+    (if *time-flag*
+        (calc-stub x line2 (minstr->hmstr result))
+        (calc-stub x line2 (truncate-result (string->number result) *exponent*)))))
 
 (define (calc-stub text content result)
   "Printing first line of the problem, making sure that it is not longer than

@@ -55,6 +55,8 @@ skip-count      Starts Negative Skip Counting exercises.
 _______________________________________________________________
 missing X       Starts Find the missing Operand exercises.
 _______________________________________________________________
+time            Starts elapsed time exercises
+_______________________________________________________________
 GAPESA          Given, Asked, Process, Equation, Solution, Answer
 _______________________________________________________________
 Perimeter/Area  Starts circumference/area related exercises.
@@ -137,6 +139,9 @@ Just like with cash exercises, input field will not be cleared on errors.
 The missing X exercise is the missing arithmetic operand exercise. It shows the equation of the form \"X (+-*/) N = M\", or \"N (+-*/) X = M.
 The student must answer with value of X. Erroneous answer prints out the solution equation, just like GAPESA and Perimeter/Area exercises.
 There are 3 levels for \"missing X\" exercise. Level 1 (+ -), level 2 (* /), and level 3 mix of 1 & 2.
+
+The time exercise is about finding the elapsed time between two or more points. Requires answer in the form: 5h 23m (if elapsed time is 323min).
+If hour is zero, it still has to be entered as 0h. No spaces between 5 and h or m are allowed.
 
 The GAPESA exercise is math problem given in words. It stands for Given, Asked, Process, Equation, Solution, and Answer.
 It pops a window with the text of a problem. The student must write the equation on a scratch-pad, calculate the solution and answer it in the input field.
@@ -221,6 +226,7 @@ ________________________________________________________
 2.5 minutes for skip-count exercises
 2 minutes for missing X level 1
 3 minutes for missing X level 2 & 3
+3 minutes for time exercises
 3 minutes for GAPESA level 1
 3.5 minutes for GAPESA level 2 & 3
 4 minutes for GAPESA level 4 & 5
@@ -252,7 +258,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.6.1
+  "Jasna's Math Quiz, v4.7
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

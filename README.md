@@ -32,6 +32,7 @@ There are also numerous  non arithmetic exercises;
     Skip counting with skip ranging from 2-10
     Skip counting with negative skip from 2-10
     Missing X - find operand in simple arithmetic equations in 3 levels
+    Time - finding elapsed time
     GAPESA - Text given math problems in 10 levels (+, -, + or -, +-, *, / easy, */easy, /, */)
     Perimeter/Area problems in 4 levels
 
@@ -41,7 +42,7 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 4.6.1
+Current version of math-quiz is 4.7
 
 math-quiz is written/tested in Scheme (Racket compiler v8.7 - v8.13)
 
