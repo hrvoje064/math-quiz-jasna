@@ -17,13 +17,19 @@
     (+ (* h 60) m)))
 
 (define (result->min hmstr)
-  (let ((hml (map (lambda (s) (substring s 0 (sub1 (string-length s))))
-                  (string-split hmstr))))
+  (let ((hlml (map string->list (string-split hmstr))))
     (cond
-      ((not (= (length hml) 2)) #f)
+      ((not (= (length hlml) 2)) #f)
+      ((not (and (or (char=? (last (first hlml)) #\h)
+                     (char=? (last (first hlml)) #\H))
+                 (or (char=? (last (second hlml)) #\m)
+                     (char=? (last (second hlml)) #\M))))
+       #f)
       (else
-       (let ((h (string->number (first hml)))
-             (m (string->number (second hml))))
+       (let* ((hml (map (lambda (s) (substring s 0 (sub1 (string-length s))))
+                        (string-split hmstr)))
+              (h (string->number (first hml)))
+              (m (string->number (second hml))))
          (and (number? h) (number? m) (+ (* h 60) m)))))))
 
 (define (minstr->hmstr mstr)
@@ -43,6 +49,7 @@
   (check-equal? (result->min "11h 9m") 669)
   (check-equal? (result->min "1 9m") #f)
   (check-equal? (result->min "1 15") #f)
+  (check-equal? (result->min "2m 12h") #f)
   (check-equal? (minstr->hmstr "7") "0h 7m")
   (check-equal? (minstr->hmstr "347") "5h 47m")
   (check-equal? (minstr->hmstr "683") "11h 23m")  

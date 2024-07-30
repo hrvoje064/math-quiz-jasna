@@ -2,7 +2,7 @@
 
 ;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
 
-;;; Math Quiz, v4.6.1
+;;; Math Quiz, v4.7.1
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -2124,8 +2124,11 @@ Restart program immediately after"]
                          [callback
                           (lambda (button event)
                             (let ((input (string-trim (send text-input get-value))))
-                              (when (and *time-flag* (result->min input))
-                                (set! input (number->string (result->min input))))
+                              (cond
+                                ((and *time-flag* (result->min input))
+                                 (set! input (number->string (result->min input))))
+                                (*time-flag* (set! input (string-append " " input " ")))
+                                (else void))
                               (send text-input set-value "")
                               (math-quiz-type input)))]))
 
@@ -3484,8 +3487,8 @@ Restart program immediately after"]
   (send text-dialog create-status-line)
   (send text-dialog set-status-text
         (string-append
-         "Read the problem, calculate the result, and enter it into the input field."
-         "  Example input: 5h 15m. Do not put spaces between 5 and h or 15 and m."))
+         "Read the problem, calculate result, and enter it into the input field."
+         "  Example input: 5h 15m. No spaces between 5 h or 15 m!"))
   (set! equal= =)
   (set! do-math do-math-text) ; set non arithmetic operation
   (set! get-problem get-problem-text)

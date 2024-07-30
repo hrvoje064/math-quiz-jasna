@@ -143,7 +143,8 @@
   (define operations
     (list (cons '^ (lambda (x y) (expt y x)))
           (cons V (lambda (x y) (expt y (/ 1 x))))
-          (cons '* *) (cons // /) (cons '+ +) (cons '- -)))
+          (cons '* *) (cons // /) (cons '+ +) (cons '- -)
+          (cons 'min min) (cons 'max max))) ; minimum & maximum functions
   (define (get-op sym) (cdr (assq sym operations)))
 
   (define (handle-parens expr)
@@ -159,7 +160,7 @@
     (reverse (left-associative ops (reverse expr))))
 
   (define (left-associative ops expr)
-    "Dealing with left associative operations (V * // + -)"
+    "Dealing with left associative operations (V * // + - min max)"
     (if (null? expr)
         expr
         (let ((op (memq (second expr) ops)))
@@ -170,7 +171,7 @@
 
   (define (evaluate expr)
     "Precedence: (), ^(right assoc), V(left assoc),
-    * or /(left assoc), + or -(left assoc)"
+    * or /(left assoc), + or -(left assoc) min or max(left assoc)"
     (if (findf pair? expr)
         (evaluate (handle-parens expr))
         (let ((pow/root (findf (lambda (x) (memq x `(^ ,V))) expr)))
@@ -183,6 +184,8 @@
              (evaluate (left-associative `(* ,//) expr)))
             ((findf (lambda (x) (memq x '(+ -))) expr)
              (evaluate (left-associative '(+ -) expr)))
+            ((findf (lambda (x) (memq x '(min max))) expr)
+             (evaluate (left-associative '(min max) expr)))
             ((> (length expr) 1) (error "illegal expression in" 'evaluate expr))
             (else (car expr))))))
 
@@ -230,6 +233,11 @@
   (check-= (evaluate `(5,V 1024 ,// 2 ^ 10)) 0.00390625 0.00000001)
   (check-equal? (evaluate `(3,V 8 ,// 2,V (2 ^ 2))) 1.0)
   (check-= (evaluate `(3,V 8 ,// 2,V 2 ^ 2)) 1 0.00000000000001)
+  (check-equal? (evaluate `(2 min 1 min 3)) 1)
+  (check-equal? (evaluate `(2 max 1 min 3)) 2)
+  (check-equal? (evaluate `((1 + 2) min (3 - 1) max (2 + 2) min (6 ,// 2))) 3)
+  (check-equal? (evaluate `(1 + 2 min 3 - 1 max 2 + 2 min 6 ,// 2)) 3)
+  (check-equal? (evaluate `((1 + 2 min 3 - 1 - 0) max (2 + 2 min 6 ,// 2))) 3)
   )
 
 ;;; Exports

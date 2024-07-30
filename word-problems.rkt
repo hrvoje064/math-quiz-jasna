@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v4.7
+;;; v4.7.1
 
 (require "misc.rkt")
 (require "time.rkt")
@@ -1512,8 +1512,38 @@ city at ~a.~n
          (lambda (at bt)
            (let ((formula `(,bt - ,at)))
              (values formula formula))))
+
+   (list "During cross country race, team A started at ~a and completed the race at ~a. \
+ Team B started at ~a and completed at ~a, and team C started at ~a and finished at ~a.~n
+ What was the fastest time (answer in hours and minutes)?"
+         '((480 510) (600 660) (510 540) (630 690) (540 570) (660 720))
+         (lambda (a1 a2 b1 b2 c1 c2) (not (= (- a2 a1) (- b2 b1) (- c2 c1))))
+         (lambda (a1 a2 b1 b2 c1 c2)
+           (let ((display `((,a2 - ,a1) min (,b2 - ,b1) min (,c2 - ,c1)))
+                 (calculate `(,a2 - ,a1 min ,b2 - ,b1 min ,c2 - ,c1)))
+             (values display calculate))))
+
+   (list "Mary was traveling from Naga to Legazpi by train from ~a to ~a o'clock, \
+and then from Legazpi to Sorsogon city by bus from ~a to ~a o'clock.~n~n
+ What was the longer traveling time (answer in hours and minutes)?"
+         '((420 460) (620 700) (720 750) (920 1000))
+         (lambda (t1 t2 b1 b2) (not (= (- t2 t1) (- b2 b1))))
+         (lambda (t1 t2 b1 b2)
+           (let ((display `((,t2 - ,t1) max (,b2 - ,b1)))
+                 (calculate `(,t2 - ,t1 max ,b2 - ,b1)))
+             (values display calculate))))
+   
+   (list "Missy and Clara went to the beach to collect seashells. They were competing who can \
+collect 100 shells in shortest time. Missy started at ~a and completed at ~a, and Clara \
+started at ~a and completed at ~a.~n
+ How many minutes was Clara faster than Missy (answer in hours and minutes)?"
+         '((421 450) (723 800) (445 475) (640 700))
+         (lambda (m1 m2 c1 c2) (> (- m2 m1) (- c2 c1) 60))
+         (lambda (m1 m2 c1 c2)
+           (let ((formula `(,m2 - ,m1 - (,c2 - ,c1))))
+             (values formula formula))))    
    ))
-                                                          
+                                                                
 ;;; export
 ;;; ===========================================================
 
