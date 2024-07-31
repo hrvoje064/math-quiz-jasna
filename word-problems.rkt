@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v4.7.1
+;;; v4.7.2
 
 (require "misc.rkt")
 (require "time.rkt")
@@ -1484,16 +1484,53 @@ leg a = ~a cm.~n What is the area of that triangle?"
 ;;; Time exercises
 ;;; ===========================================================
 
-(define time-passed
+(define time-passed1 ; easy
   (list
    (list "Bus departed station A at ~a and arrived at station B at ~a.~n~n
- How many hours and minutes was it travelling?"
+ How many hours and minutes was it traveling?"
          '((0 310) (311 720))
          (lambda (at bt) (> (- bt at) 30)) ; trip > 30 minutes
          (lambda (at bt)
            (let ((formula `(,bt - ,at)))
              (values formula formula))))
 
+   (list "Jasna walked to school today. She started at ~a and arrived at ~a.~n~n
+ How many hours ans minutes was the walk?"
+         '((421 480) (481 541))
+         (lambda (at bt) (< (- bt at) 60))
+         (lambda (at bt)
+           (let ((formula `(,bt - ,at)))
+             (values formula formula))))
+
+   (list "Tina and Lisa met at the Seattle's Best cafeteria at ~a. They had 3 \
+cappuccinos a cake and a long chat. They left at ~a o'clock.~n~n
+ How long did they stay in cafeteria?"
+         '((400 480) (600 720))
+         t-func
+         (lambda (at bt)
+           (let ((formula `(,bt - ,at)))
+             (values formula formula))))
+   
+   (list "We had a brownout today, from ~a to ~a.~n~n
+ How long were we without power?"
+         '((480 540) (900 1060))
+         t-func
+         (lambda (at bt)
+           (let ((formula `(,bt - ,at)))
+             (values formula formula))))
+   
+   (list "Robert drove his daughter Nina to school today. He dropped her off at ~a and \
+picked her up again at ~a.~n~n
+ How long was Nina at school?"
+         '((480 540) (820 930))
+         t-func
+         (lambda (at bt)
+           (let ((formula `(,bt - ,at)))
+             (values formula formula))))        
+   ))
+
+(define time-passed2 ; harder
+  (list
    (list "We took a train ride yesterday. Train left Naga at ~a and arrived \
 to Legazpi city at ~a. Then we took a tricycle to the bus terminal, where we \
 boarded a bus for Sorsogon city. Bus departed at ~a and arrived to Sorsogon \
@@ -1503,14 +1540,6 @@ city at ~a.~n
          (lambda (ta tb ba bb) (and (> (- tb ta) 60) (> (- bb ba) 60)))
          (lambda (ta tb ba bb)
            (let ((formula `(,tb - ,ta + ,bb - ,ba)))
-             (values formula formula))))
-
-   (list "Jasna walked to school today. She started at ~a and arrived at ~a.~n~n
- How many minutes was the walk?"
-         '((421 480) (481 541))
-         (lambda (at bt) (< (- bt at) 60))
-         (lambda (at bt)
-           (let ((formula `(,bt - ,at)))
              (values formula formula))))
 
    (list "During cross country race, team A started at ~a and completed the race at ~a. \
@@ -1523,7 +1552,7 @@ city at ~a.~n
                  (calculate `(,a2 - ,a1 min ,b2 - ,b1 min ,c2 - ,c1)))
              (values display calculate))))
 
-   (list "Mary was traveling from Naga to Legazpi by train from ~a to ~a o'clock, \
+   (list "Garry was traveling from Naga to Legazpi by train from ~a to ~a o'clock, \
 and then from Legazpi to Sorsogon city by bus from ~a to ~a o'clock.~n~n
  What was the longer traveling time (answer in hours and minutes)?"
          '((420 460) (620 700) (720 750) (920 1000))
@@ -1541,13 +1570,31 @@ started at ~a and completed at ~a.~n
          (lambda (m1 m2 c1 c2) (> (- m2 m1) (- c2 c1) 60))
          (lambda (m1 m2 c1 c2)
            (let ((formula `(,m2 - ,m1 - (,c2 - ,c1))))
-             (values formula formula))))    
+             (values formula formula))))
+
+   (list "Maya and David went riding a bicycle today. Maya was riding from ~a to ~a, and David \
+from ~a to ~a.~n~n
+ By how many hours and minutes was one time shorter than the other?"
+         '((420 500) (600 700) (420 500) (620 720))
+         (lambda (m1 m2 d1 d2) (and (not (= m1 d1)) (not (= m2 d2))
+                                    (> (abs (- (- m2 m1) (- d2 d1))) 60)))
+         (lambda (m1 m2 d1 d2)
+           (let* ((maya `(,m2 - ,m1))
+                  (david `(,d2 - ,d1))
+                  (mv (- m2 m1))
+                  (dv (- d2 d1))
+                  (maxv (if (> mv dv) "Maya's time" "David's time"))
+                  (minv (if (< mv dv) "Maya's time" "David's time")))
+             (values (format "Maya's time  = ~a, David's time = ~a~ntime difference = ~a"
+                             (list2string maya) (list2string david)
+                             (list2string `(,maxv - ,minv)))
+                     `((,mv max ,dv) - (,mv min ,dv))))))
    ))
-                                                                
+
 ;;; export
 ;;; ===========================================================
 
 ;;; data
 (provide *dictionary* word+problems word-problems word+-problems word*problems
          word/problems circumference1 circumference2 area1 operand+- operand*/
-         word/problems-easy time-passed)
+         word/problems-easy time-passed1 time-passed2)

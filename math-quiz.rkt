@@ -1,8 +1,6 @@
 #lang racket/gui
 
-;;; Copyright (c) 2023, Capt. Hrvoje Blazevic. All rights reserved.
-
-;;; Math Quiz, v4.7.1
+;;; Math Quiz, v4.7.2
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -600,6 +598,13 @@
                               (lambda (mi e)
                                 (send slider-findX-dialog show #t))]))
 
+(define set-time-level (new menu-item%
+                            [label "Set time calculation level"]
+                            [parent setup-menu]
+                            [callback
+                             (lambda (mi e)
+                               (send slider-time-dialog show #t))]))
+
 (define slider-n-dialog (new dialog%
                              [label "Set"]
                              [parent main-window]
@@ -743,6 +748,14 @@
                                  [height 80]
                                  [style '(close-button)]
                                  [alignment '(right top)]))
+
+(define slider-time-dialog (new dialog%
+                                [label "Set"]
+                                [parent main-window]
+                                [width 400]
+                                [height 80]
+                                [style '(close-button)]
+                                [alignment '(right top)]))
 
 (define exercises-slider (new slider%
                               [label "number of exercises"]
@@ -951,6 +964,19 @@
                            (lambda (s e)
                              (set! *findX-level* (send s get-value)))]
                           [style '(vertical-label horizontal)]))
+
+(define time-slider (new slider%
+                         [label
+                          (format
+                           "time calculation level: 1 easy, hard, 3 mixed")]
+                         [min-value 1]
+                         [max-value 3]
+                         (parent slider-time-dialog)
+                         [init-value *time-level*]
+                         [callback
+                          (lambda (s e)
+                            (set! *time-level* (send s get-value)))]
+                         [style '(vertical-label horizontal)]))
 
 (define clear-reports (new menu-item%
                            [label "Clear all reports"]
@@ -3472,16 +3498,16 @@ Restart program immediately after"]
   (set! *time-flag* #t)
   (define ty #f)
   (case *time-level*
-    ((1) (set! *word-problem* (cons 'handle (shuffle time-passed)))
+    ((1) (set! *word-problem* (cons 'handle (shuffle time-passed1)))
          (set! *time-factor* 3) (set! ty "level-1"))
-    ;;     ((2) (set! *word-problem* (cons 'handle (shuffle operand*/)))
-    ;;          (set! *time-factor* 3) (set! ty "level-2"))
-    ;;     ((3) (set! *word-problem*
-    ;;                (cons 'handle (append-shuffle operand+- operand*/)))
-    ;;          (set! *time-factor* 3) (set! ty "level-3"))
+    ((2) (set! *word-problem* (cons 'handle (shuffle time-passed2)))
+         (set! *time-factor* 4) (set! ty "level-2"))
+    ((3) (set! *word-problem*
+               (cons 'handle (append-shuffle time-passed1 time-passed2)))
+         (set! *time-factor* 4) (set! ty "level-3"))
     (else (error *time-level*)))
   (send text-lines insert
-        (format "---   Time elapsed problems ~a exercise  ---~n" ty))
+        (format "---  Time elapsed problems ~a exercise  ---~n" ty))
   (send text-dialog set-label "Time elapsed questions")
   (send show-text-window-menu set-label "Show Time elapsed Window")
   (send text-dialog create-status-line)
@@ -3672,7 +3698,7 @@ Restart program immediately after"]
                   set-button-font set-clock-level set-fraction-level
                   set-skip-increment set-text-level set-circumference-level
                   menu-item-doc menu-item-about menu-item-update
-                  set-findX-level set-*-level))
+                  set-findX-level set-time-level set-*-level))
   (check-update-menu))
 
 (provide disable/enable-popup-window-menu)
