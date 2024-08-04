@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v4.7.2
+;;; v4.7.3
 
 (require "misc.rkt")
 (require "time.rkt")
@@ -1531,6 +1531,23 @@ picked her up again at ~a.~n~n
 
 (define time-passed2 ; harder
   (list
+   (list "Alex went to bed last night at ~a. He woke up this morning at ~a~n~n
+ How long did he sleep? (Give answer in hours and minutes)."
+         '((1200 1350) (360 500))
+         t-func
+         (lambda (ta tb)
+           (let ((formula `(24 * 60 + ,tb - ,ta)))
+             (values formula formula))))
+
+   (list "We traveled by train from Moscow to Vladivostok. Train left Moscow on Monday at ~a \
+and arrived to Vladivostok at ~a on Sunday.~n~n
+ How long was the trip? (Answer in hours and minutes.)"
+         '((600 800) (850 1100))
+         t-func
+         (lambda (ta tb)
+           (let ((formula `(6 * 24 * 60 + ,tb - ,ta)))
+             (values formula formula))))
+
    (list "We took a train ride yesterday. Train left Naga at ~a and arrived \
 to Legazpi city at ~a. Then we took a tricycle to the bus terminal, where we \
 boarded a bus for Sorsogon city. Bus departed at ~a and arrived to Sorsogon \
