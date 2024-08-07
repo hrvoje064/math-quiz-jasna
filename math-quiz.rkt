@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v4.7.2
+;;; Math Quiz, v4.7.4
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -4288,13 +4288,8 @@ Restart program immediately after"]
 (define (get-problem<=>)
   (let* ((op comp<=>) ; not a real operation
          (x (random 13 *left-number*))
-         (rn-list (list (random 13 *left-number*)
-                        (random 13 *left-number*)
-                        (random 13 *left-number*)
-                        x ; making sure "=" has at least 1/5 chance
-                        (random 13 *left-number*)
-                        (random 13 *left-number*)))
-         (y (list-ref rn-list (random 0 (length rn-list)))))
+         (incr '(10 5 1 0 -10 -5 -1))
+         (y (+ x (list-ref incr (random 0 (length incr))))))
     (check-used x op y)))
 
 (define (get-problem<=>fract1)
