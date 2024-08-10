@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v4.7.4
+;;; Math Quiz, v4.7.5
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -3646,25 +3646,30 @@ Restart program immediately after"]
   (case *clock-level*
     ((1) (set! *time-factor* 1/2) ; minutes per problem
          (send text-lines insert
-               (format "--------------   clock exercises   -------------~n"))
+               (format "--------------  clock exercises l1 -------------~n"))
          (set! do-math do-math-clock) ; set non arithmetic operation
          (send clock-dialog set-status-text "enter  hr:mn")
          (set! get-problem get-problem-clock)
          (set-problem-z! *problem* '(#f #f ""))) ; clearing promt message   
     ((2 3 4 5)
-     (case *clock-level*
-       ((2) (set! *before/after-clock* '(-60 60)))
-       ((3) (set! *before/after-clock* '(-30 -60 -30 30 60 30)))
-       ((4) (set! *before/after-clock* '(-15 -60 -30 -15 15 60 30 15)))
-       ((5) (set! *before/after-clock*
-                  (remove-duplicates
-                   (map (lambda (x) (if (zero? (random 2)) x (* -1 x)))
-                        (map (lambda (x) (- x (modulo x 10)))
-                             (build-list 60 (lambda (x) (random (+ 10 x) 211)))
-                             ))))))
-     (set! *time-factor* 3/2) ; minutes per problem
-     (send text-lines insert
-           (format "--------   clock before/after exercises   -------~n"))
+     (let ((level #f))
+       (case *clock-level*
+         ((2) (set! *before/after-clock* '(-60 60))
+              (set! level "l2"))
+         ((3) (set! *before/after-clock* '(-30 -60 -30 30 60 30))
+              (set! level "l3"))
+         ((4) (set! *before/after-clock* '(-60 -30 -15 60 30 15))
+              (set! level "l4"))
+         ((5) (set! *before/after-clock*
+                    (remove-duplicates
+                     (map (lambda (x) (if (zero? (random 2)) x (* -1 x)))
+                          (map (lambda (x) (- x (modulo x 10)))
+                               (build-list 60 (lambda (x) (random (+ 10 x) 601)))
+                               ))))
+              (set! level "l5")))
+       (set! *time-factor* 3/2) ; minutes per problem
+       (send text-lines insert
+             (format "-------  clock before/after exercises ~a -------~n" level)))
      (set! do-math do-math-clock-BA)
      (send clock-dialog set-status-text "enter new time in  hr:mn")
      (set! get-problem get-problem-clock-BA)))
@@ -4525,7 +4530,7 @@ Restart program immediately after"]
                (number->string (quotient (abs delta) 60)) "h "
                (number->string (modulo (abs delta) 60)) "m ")))
     (list hrs min (string-append m/h b/a))))
-    
+
 (define (get-pvalue-number n acc)
   (let ((digit (random 1 10)))
     (cond ((zero? n) acc)

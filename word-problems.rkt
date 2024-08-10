@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v4.7.4
+;;; v4.7.5
 
 (require "misc.rkt")
 (require "time.rkt")
@@ -1495,7 +1495,7 @@ leg a = ~a cm.~n What is the area of that triangle?"
              (values formula formula))))
 
    (list "Jasna walked to school today. She started at ~a and arrived at ~a.~n~n
- How many hours ans minutes was the walk?"
+ How many hours and minutes was the walk?"
          '((421 480) (481 541))
          (lambda (at bt) (< (- bt at) 60))
          (lambda (at bt)

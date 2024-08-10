@@ -251,7 +251,7 @@ There are 5 levels of clock exercises that can be changed with
 (level 1). In level 2-5 (before/after) the student should first read the time on the
 clock face, and then enter before or after time, as requested by the prompt.
 Level 2 is +/- 60min, level 3 is +/- 60,30min, level 4 is +/- 60,30,15min, and
-level 5 is random minutes from 10 to 210 rounded to 10 minutes.
+level 5 is random minutes from 10 to 600 rounded to 10 minutes.
 
 @section{Roman Numerals Exercises}
 

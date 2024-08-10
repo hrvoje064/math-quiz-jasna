@@ -109,7 +109,7 @@ Error reporting for level 3 and 4 is complicated and can be confusing. Program c
 
 The Clock exercise pops up the window with clock face drawn in it. The student should enter hr:mn in the input field, and click Check, or hit enter key.
 There are 5 levels of clock exercises, that can be changed with \"Setup->Set clock level: tell time or before/after time\". Default is tell time (level 1). In level 2-5 (before/after) the student should first read the time on the clock face, and then enter before or after time, as requested by the prompt.
-Level 2 is +/- 60min, level 3 is +/- 60,30min, level 4 is +/- 60,30,15min, and level 5 is random minutes from 10 to 210 rounded to 10 minutes.
+Level 2 is +/- 60min, level 3 is +/- 60,30min, level 4 is +/- 60,30,15min, and level 5 is random minutes from 10 to 600 rounded to 10 minutes.
 
 The N->Roman exercise pops up the window with Arabic number prompt. The student should enter the equivalent Roman number into the input field. Roman numerals should be entered in capital letters. However the program will accept lowercase letters without complaint.
 The Roman->N exercise pops up the window with Roman number prompt. The student should enter the equivalent Arabic number into the input field.
@@ -259,7 +259,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v4.7.4
+  "Jasna's Math Quiz, v4.7.5
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
