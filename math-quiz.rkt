@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v4.7.5
+;;; Math Quiz, v4.7.6
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -3068,9 +3068,7 @@ Restart program immediately after"]
   (set! do-math do-math+) ; set arithmetic operation
   (set! get-problem get-problem10*10)
   (set! setup setup-arithmetic) ; setup function
-  (set! *used-numbers* '())
   (set! equal= =) ; setting simple equality test
-  (set! *max-used-pairs* (kombinations *max*table* 2))
   (send number-input enable #t)
   (start-quiz *n* 0))
 
@@ -3105,9 +3103,7 @@ Restart program immediately after"]
   (set! do-math do-math+) ; set arithmetic operation
   (set! get-problem get-problem100/10)
   (set! setup setup-arithmetic) ; setup function
-  (set! *used-numbers* '())
   (set! equal= =) ; setting simple equality test
-  (set! *max-used-pairs* (kombinations *max*table* 2))
   (send number-input enable #t)
   (start-quiz *n* 0))
 
@@ -4036,7 +4032,7 @@ Restart program immediately after"]
          (push-used! x)
          (push-used! y))))
 
-(define (check-used-pairs x op y [dividend #f])
+#;(define (check-used-pairs x op y [dividend #f])
   (let ((xy (cons x y)) (yx (cons y x)))
     (if (or (member xy *used-numbers* equal?)
             (member yx *used-numbers* equal?))
@@ -4047,6 +4043,18 @@ Restart program immediately after"]
           (if dividend
               (initialize-problem dividend op y)
               (initialize-problem x op y))
+          (push-used! xy)
+          (push-used! yx)))))
+
+(define (check-used-pairs x op y)
+  (let ((xy (cons x y)) (yx (cons y x)))
+    (if (or (member xy *used-numbers* equal?)
+            (member yx *used-numbers* equal?))
+        (begin
+          (check-overflow) ; free used number pairs if all used
+          (get-problem)) ; look for new set of numbers
+        (begin
+          (initialize-problem x op y)
           (push-used! xy)
           (push-used! yx)))))
 
@@ -4171,12 +4179,31 @@ Restart program immediately after"]
           (if (> (gcd yn yd) 1)
               (check-used 3/5 op 2/3 30) ; avoiding Scheme simpifying fractions
               (check-used (/ xn xd) op (/ yn yd) 30))))))
-        
-(define (get-problem10*10)
-  (let ((op mult)
-        (x (add1 (random 1 *max*table*))) ; range between 2 to *max*table*
-        (y (add1 (random 1 *max*table*)))) ; range between 2 to *max*table*
-    (check-used-pairs x op y)))
+
+(define (make-table)
+  (shuffle
+   (append
+    (combinations (build-list *max*table* add1) 2)
+    (build-list *max*table* (λ (i) (list (add1 i) (add1 i)))))))
+
+(define get-problem100/10 #f) ; dummy definition
+(define get-problem10*10 #f) ; dummy definition
+(let ((pairs null))
+  (define (problem10*)
+    (when (null? pairs) (set! pairs (make-table)))
+    (let ((pair (car pairs)))
+      (set! pairs (cdr pairs))
+      (initialize-problem (first pair) mult (second pair))))
+  (define (problem100/)
+    (when (null? pairs)
+      (set! pairs (make-table)))
+    (let* ((pair (car pairs))
+           (x (first pair))
+           (y (second pair)))
+      (set! pairs (cdr pairs))
+      (initialize-problem (* x y) div y)))
+  (set! get-problem10*10 problem10*)
+  (set! get-problem100/10 problem100/))
 
 (define (get-problem*)
   (let ((op mult)
@@ -4204,13 +4231,6 @@ Restart program immediately after"]
                    1000 2000 3000 10 100 1000 10000))
          (y (list-ref ys (random (length ys)))))
     (check-used x op y)))
-
-(define (get-problem100/10)
-  (let* ((op div)
-         (x (add1 (random 1 *max*table*))) ; range between 2 to *max*table*
-         (y (add1 (random 1 *max*table*))) ; range between 2 to *max*table*
-         (dividend (* x y)))
-    (check-used-pairs x op y dividend)))
 
 (define (get-problem/)
   (let* ((op div)

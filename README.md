@@ -42,9 +42,9 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 4.7.5
+Current version of math-quiz is 4.7.6
 
-math-quiz is written/tested in Scheme (Racket compiler v8.7 - v8.13)
+math-quiz is written/tested in Scheme (Racket compiler v8.7 - v8.14)
 
 Hrvoje Blazevic
 
