@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v4.7.6
+;;; Math Quiz, v4.7.7
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -4033,18 +4033,18 @@ Restart program immediately after"]
          (push-used! y))))
 
 #;(define (check-used-pairs x op y [dividend #f])
-  (let ((xy (cons x y)) (yx (cons y x)))
-    (if (or (member xy *used-numbers* equal?)
-            (member yx *used-numbers* equal?))
-        (begin
-          (check-overflow) ; free used number pairs if all used
-          (get-problem)) ; look for new set of numbers
-        (begin
-          (if dividend
-              (initialize-problem dividend op y)
-              (initialize-problem x op y))
-          (push-used! xy)
-          (push-used! yx)))))
+    (let ((xy (cons x y)) (yx (cons y x)))
+      (if (or (member xy *used-numbers* equal?)
+              (member yx *used-numbers* equal?))
+          (begin
+            (check-overflow) ; free used number pairs if all used
+            (get-problem)) ; look for new set of numbers
+          (begin
+            (if dividend
+                (initialize-problem dividend op y)
+                (initialize-problem x op y))
+            (push-used! xy)
+            (push-used! yx)))))
 
 (define (check-used-pairs x op y)
   (let ((xy (cons x y)) (yx (cons y x)))
@@ -4186,24 +4186,36 @@ Restart program immediately after"]
     (combinations (build-list *max*table* add1) 2)
     (build-list *max*table* (λ (i) (list (add1 i) (add1 i)))))))
 
-(define get-problem100/10 #f) ; dummy definition
-(define get-problem10*10 #f) ; dummy definition
-(let ((pairs null))
-  (define (problem10*)
-    (when (null? pairs) (set! pairs (make-table)))
-    (let ((pair (car pairs)))
-      (set! pairs (cdr pairs))
-      (initialize-problem (first pair) mult (second pair))))
-  (define (problem100/)
-    (when (null? pairs)
-      (set! pairs (make-table)))
-    (let* ((pair (car pairs))
-           (x (first pair))
-           (y (second pair)))
-      (set! pairs (cdr pairs))
-      (initialize-problem (* x y) div y)))
-  (set! get-problem10*10 problem10*)
-  (set! get-problem100/10 problem100/))
+;;; Multiplication & division problems with local tables
+;;; ================================================================
+(define (clear-table10*/10)
+  (get-problem10*10 #t)
+  (get-problem100/10 #t))
+
+(define get-problem10*10
+  (let ((pairs null))
+    (λ ([clear #f])
+      (cond
+        (clear (set! pairs null))
+        (else
+         (when (null? pairs) (set! pairs (make-table)))
+         (let ((pair (car pairs)))
+           (set! pairs (cdr pairs))
+           (initialize-problem (first pair) mult (second pair))))))))
+
+(define get-problem100/10
+  (let ((pairs null))
+    (λ ([clear #f])
+      (cond
+        (clear (set! pairs null))
+        (else
+         (when (null? pairs) (set! pairs (make-table)))
+         (let* ((pair (car pairs))
+                (x (first pair))
+                (y (second pair)))
+           (set! pairs (cdr pairs))
+           (initialize-problem (* x y) div y)))))))
+;;; ================================================================
 
 (define (get-problem*)
   (let ((op mult)
@@ -5126,10 +5138,9 @@ Restart program immediately after"]
 
 (define (math-quiz input)
   "Ask the user a series of math problems. Mistakes trigger additional problems.
-If alloted time for solving problems is exceeded,
+If allotted time for solving problems is exceeded,
 then additional problems are given."
   (when (> (state-question *state*) (state-problems *state*))
-    ;(displayln "Questions done!") ; just for testing
     (let ((run-time (running-time))
           (mistakes (state-mistakes *state*)))
       (send text-lines change-style style-delta-green)
@@ -5160,6 +5171,7 @@ then additional problems are given."
          (disable/enable-popup-window-menu #f)
          (disable/enable-dialog-show #f)
          (send stop-button enable #f)
+         (clear-table10*/10)
          (set! *time-flag* #f))))))
 
 (define (reset)
@@ -5174,6 +5186,7 @@ then additional problems are given."
   (blank-input-fields) ; erase any residual inputs
   (clear-money-inputs)
   (clear-ABC-inputs)
+  (clear-table10*/10)
   (send number-input enable #f)
   (disable/enable-start-buttons #t)
   (disable/enable-set/font-menu #t)
