@@ -46,16 +46,16 @@
 
 ;; return turtles-world with pie-chart drawn
 ;; if startup call, return a dummy world
-(define (get-turtles *used-numbers* numerator denominator)
-  (if (null? *used-numbers*) ; startup call
+(define (get-turtles *canvas-flag* numerator denominator)
+  (if (not *canvas-flag*) ; startup call
       (let ((denominator 1) (numerator 1))
         (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))
       (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo))))
 
 ;; return turtles-world with 2 pie-charts drawn
 ;; if startup call, return a dummy world
-(define (get-turtles-left *used-numbers* x)
-  (if (null? *used-numbers*) ; startup call
+(define (get-turtles-left *canvas-flag* x)
+  (if (not *canvas-flag*) ; startup call
       (let ((denominator 1) (numerator 1))
         (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))
       (let* ((n/d (map string->number (string-split x "/")))
@@ -63,8 +63,8 @@
              (denominator (cadr n/d)))
         (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))))
 
-(define (get-turtles-right *used-numbers* y)
-  (if (null? *used-numbers*) ; startup call
+(define (get-turtles-right *canvas-flag* y)
+  (if (not *canvas-flag*) ; startup call
       (let ((denominator 1) (numerator 1))
         (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))
       (let* ((n/d (map string->number (string-split y "/")))
@@ -72,7 +72,7 @@
              (denominator (cadr n/d)))
         (n-slice 60 denominator numerator (/ 360 denominator) (logo-box 4 logo)))))
 
-(define (fraction-canvas-callback canvas dc *fraction-level* *used-numbers* x y)
+(define (fraction-canvas-callback canvas dc *fraction-level* *canvas-flag* x y)
   ;; clearing previous pie-chart
   (send dc draw-bitmap
         (pict->bitmap
@@ -86,13 +86,13 @@
   (case *fraction-level*
     ((1) (send dc draw-bitmap
                (pict->bitmap (turtles-pict
-                              (get-turtles *used-numbers* x y))) 80 55))
+                              (get-turtles *canvas-flag* x y))) 80 55))
     ((2 3 4) (send dc draw-bitmap
-                 (pict->bitmap (turtles-pict
-                                (get-turtles-left *used-numbers* x))) 80 55)
-           (send dc draw-bitmap
-                 (pict->bitmap (turtles-pict
-                                (get-turtles-right *used-numbers* y))) 300 55))
+                   (pict->bitmap (turtles-pict
+                                  (get-turtles-left *canvas-flag* x))) 80 55)
+             (send dc draw-bitmap
+                   (pict->bitmap (turtles-pict
+                                  (get-turtles-right *canvas-flag* y))) 300 55))
     (else (error '*fraction-level*))))
 
 ;;; =================================================================
@@ -162,13 +162,13 @@
 
 ;; return turtles-world with pie-chart drawn
 ;; if startup call, return a dummy world
-(define (get-clock-turtles *used-numbers* hour minute)
-  (if (null? *used-numbers*) ; startup call
+(define (get-clock-turtles *canvas-flag* hour minute)
+  (if (not *canvas-flag*) ; startup call
       (let ((hour 0) (minute 0))
         (draw-clock 114 hour minute))  
       (draw-clock 114 hour minute)))
 
-(define (clock-canvas-callback canvas dc *used-numbers* x y)
+(define (clock-canvas-callback canvas dc *canvas-flag* x y)
   ;; clearing previous clock
   (send dc draw-bitmap
         (pict->bitmap
@@ -177,9 +177,9 @@
   ;; drawing new clock
   (send dc draw-bitmap
         (pict->bitmap (turtles-pict
-                       (get-clock-turtles *used-numbers* x y))) 80 30))
+                       (get-clock-turtles *canvas-flag* x y))) 80 30))
 
 ;;; Export
 ;;; ==========================================================
 
-(provide clock-canvas-callback fraction-canvas-callback)
+(provide fraction-canvas-callback clock-canvas-callback)

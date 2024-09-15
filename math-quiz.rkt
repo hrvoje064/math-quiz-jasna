@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v4.7.7
+;;; Math Quiz, v4.7.8
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -61,6 +61,7 @@
 (define *wiwi* #f) ; pause switch
 (define *exec-button* #f) ; calc/comp button switch
 (define *time-flag* #f) ; elapsed time flag for text exercises
+(define *canvas-flag* #f) ; startup for empty canvas
 (define *peso* #f) ; distinguishing between USD & Peso exercises
 (define *before/after-clock* #f) ; time increments for before/after clock
 
@@ -3594,7 +3595,6 @@ Restart program immediately after"]
          (set! equal= =)
          (send text-lines insert
                (format "-----------   fraction exercises l1  -----------~n"))
-         (set! *max-used-pairs* (kombinations *max-slices* 2))
          (set! do-math do-math-fraction) ; set fraction reading operation
          (send fraction-dialog set-status-text
                " enter red-slices/all-slices into the left input field")
@@ -3602,8 +3602,6 @@ Restart program immediately after"]
          (set! get-problem get-problem-fraction))
     ((2 3)
      (set! get-problem get-problem-fraction<=>)
-     (set! *max-used-pairs*
-           (quotient (kombinations (sub1 *max-slices*) 3) 10))
      (case *fraction-level*
        ((2) (set! *time-factor* 2/3) ; minutes per problem
             (send text-lines insert
@@ -3628,13 +3626,12 @@ Restart program immediately after"]
            " enter: left fraction,  < = >,\
   right fraction, into input fields")         
      (set! get-problem get-problem-fraction-full<=>)
-     (set! *max-used-pairs*
-           (quotient (kombinations (sub1 *max-slices*) 3) 10))
      (set! do-math do-math-fract>) ; set fraction comparing operation
      (disable/enable-input-fields #t)))
   (send fraction-dialog show #t)
   (set! setup setup-fraction) ; setup function
   (set! *used-numbers* '())
+  (set! *canvas-flag* #t) ; not a void call
   (start-quiz *n* 0))
 
 (define (start-clock)
@@ -3672,6 +3669,7 @@ Restart program immediately after"]
   (set! equal= clock=)
   (set! setup setup-clock) ; setup function
   (set! *used-numbers* '())
+  (set! *canvas-flag* #t) ; not a void call
   (set! *max-used-pairs* 120)
   (send clock-dialog show #t)
   (send clock-input enable #t)
@@ -4180,17 +4178,20 @@ Restart program immediately after"]
               (check-used 3/5 op 2/3 30) ; avoiding Scheme simpifying fractions
               (check-used (/ xn xd) op (/ yn yd) 30))))))
 
-(define (make-table)
+(define (make-table limit)
   (shuffle
    (append
-    (combinations (build-list *max*table* add1) 2)
-    (build-list *max*table* (λ (i) (list (add1 i) (add1 i)))))))
+    (combinations (build-list limit add1) 2)
+    (build-list limit (λ (i) (list (add1 i) (add1 i)))))))
 
 ;;; Multiplication & division problems with local tables
 ;;; ================================================================
-(define (clear-table10*/10)
+(define (clear-persistent-tables)
   (get-problem10*10 #t)
-  (get-problem100/10 #t))
+  (get-problem100/10 #t)
+  (get-problem-fraction #t)
+  (get-problem-fraction<=> #t)
+  (get-problem-fraction-full<=> #t))
 
 (define get-problem10*10
   (let ((pairs null))
@@ -4198,7 +4199,7 @@ Restart program immediately after"]
       (cond
         (clear (set! pairs null))
         (else
-         (when (null? pairs) (set! pairs (make-table)))
+         (when (null? pairs) (set! pairs (make-table *max*table*)))
          (let ((pair (car pairs)))
            (set! pairs (cdr pairs))
            (initialize-problem (first pair) mult (second pair))))))))
@@ -4209,7 +4210,7 @@ Restart program immediately after"]
       (cond
         (clear (set! pairs null))
         (else
-         (when (null? pairs) (set! pairs (make-table)))
+         (when (null? pairs) (set! pairs (make-table *max*table*)))
          (let* ((pair (car pairs))
                 (x (first pair))
                 (y (second pair)))
@@ -4498,46 +4499,95 @@ Restart program immediately after"]
   (let-values ([(x op y) (get-problem-ordinal)])
     (check-used-sequence x op y)))
 
-(define (get-problem-fraction)
-  (let* ((denominator (random 2 (add1 *max-slices*)))
-         (numerator (random 1 denominator))
-         (op fract))
-    (check-used-pairs numerator op denominator)))
+(define get-problem-fraction
+  (let ((pairs null))
+    (λ ([clear #f])
+      (cond
+        (clear (set! pairs null))
+        (else
+         (when (null? pairs)
+           (set! pairs
+                 (filter (λ (p) (<= (first p) (second p)))
+                         (make-table *max-slices*))))
+         (let ((pair (car pairs)))
+           (set! pairs (cdr pairs))
+           (initialize-problem (first pair) fract (second pair))))))))
 
-(define (get-problem-fraction-full<=>)
-  (let* ((op comp<=>) ; not a real operation
-         ;; making sure fractions are close by in value
-         (max (add1 *max-slices*))
-         (n1 (random 1 max)) ;  numerator1
-         (n2 (min (add1 n1) *max-slices*)) ;  numerator2
-         (d1 (random n1 max)) ;  denominator1
-         (d2 (min (+ 2 d1) *max-slices*))) ; denominator2
-    (if (and (= 1 (/ n1 d1)) (= 1 (/ n2 d2)))
-        (get-problem-fraction-full<=>)
-        (let ((x (string-append (number->string n1) "/" (number->string d1)))
-              (y (string-append (number->string n2) "/" (number->string d2))))
-          (if (zero? (random 2)) ; making sure left is not always greater
-              (check-used-pairs x op y)
-              (check-used-pairs y op x))))))
-
-(define (get-problem-fraction<=>)
-  (let* ((op comp<=>) ; not a real operation
-         ;; possible 3 same numbers. giving "=" a chance
-         (max (add1 *max-slices*))
-         (a (random 1 max)) ; always numerator
-         (b (random 2 max)) ; numerator & denominator
-         (c (random 2 max))) ; always denominator
+(define (make-table2 slices)
+  (define (tuples lst)
     (cond
-      ((and (zero? (random 2)) (<= a b) (<= a c)) ; same numerators
-       (let ((x (string-append (number->string a) "/" (number->string b)))
-             (y (string-append (number->string a) "/" (number->string c))))
-         (check-used-pairs x op y)))
-      ((and (<= a c) (<= b c)) ; same denominators
-       (let ((x (string-append (number->string a) "/" (number->string c)))
-             (y (string-append (number->string b) "/" (number->string c))))
-         (check-used-pairs x op y)))
-      (else (get-problem-fraction<=>)))))
+      ((null? lst) null)
+      ((null? (cdr lst)) (list (list (car lst) (car lst)))) ; enabling equal
+      (else
+       (cons (list (car lst) (cadr lst)) (tuples (cddr lst))))))  
+  (define (make-n-d-table x n acc)
+    (define (tablen i acc1)
+      (if (> i n)
+          acc1
+          (tablen (add1 i) (if (<= i x) acc1 (cons (list x i) acc1)))))
+    (define (tabled i acc1)
+      (if (> i n)
+          acc1
+          (tabled (add1 i) (if (>= i x) acc1 (cons (list i x) acc1)))))  
+    (if (> x n)
+        acc
+        (make-n-d-table (add1 x) n
+                        (cons (shuffle (tabled 1 null))
+                              (cons (shuffle (tablen 2 null)) acc)))))
+  (shuffle
+   (apply append (map tuples (make-n-d-table 2 slices null)))))
 
+(define get-problem-fraction<=>
+  (let ((pairs null))
+    (λ ([clear #f])
+      (cond
+        (clear (set! pairs null))
+        (else
+         (when (null? pairs)
+           (set! pairs (make-table2 *max-slices*)))
+         (let* ((pair (car pairs))
+                (a (car pair))
+                (b (cadr pair))
+                (x (string-append
+                    (number->string (car a)) "/" (number->string (cadr a))))
+                (y (string-append
+                    (number->string (car b)) "/" (number->string (cadr b)))))
+           (set! pairs (cdr pairs))
+           (initialize-problem x comp<=> y)))))))
+
+(define (get-fraction-full-table slices)
+  (let ((pairs (shuffle (combinations (build-list slices add1) 2))))
+    (define (close? xn xd yn yd)
+      (and (or (= (add1 xn) yn) (= (sub1 xn) yn))
+           (or (= (add1 xd) yd) (= (sub1 xd) yd))))
+    (define (tuples x pairs)
+      (if (null? pairs)
+          (list (list x x))
+          (let ((close-pair
+                 (findf (λ (p) (close? (car x) (cadr x) (car p) (cadr p))) pairs)))
+            (if close-pair
+                (cons (list x close-pair) (tuples (car pairs) (cdr pairs)))
+                (tuples (car pairs) (cdr pairs))))))
+    (shuffle (tuples (car pairs) (cdr pairs)))))
+
+(define get-problem-fraction-full<=>
+  (let ((pairs null))
+    (λ ([clear #f])
+      (cond
+        (clear (set! pairs null))
+        (else
+         (when (null? pairs)
+           (set! pairs (get-fraction-full-table *max-slices*)))
+         (let* ((pair (car pairs))
+                (a (car pair))
+                (b (cadr pair))
+                (x (string-append
+                    (number->string (car a)) "/" (number->string (cadr a))))
+                (y (string-append
+                    (number->string (car b)) "/" (number->string (cadr b)))))
+           (set! pairs (cdr pairs))
+           (initialize-problem x comp<=> y)))))))
+        
 (define (get-problem-clock)
   (let* ((m-list (list (* (random 12) 5) (random 60)))
          (minute (list-ref m-list (random (length m-list)))) 
@@ -5171,7 +5221,7 @@ then additional problems are given."
          (disable/enable-popup-window-menu #f)
          (disable/enable-dialog-show #f)
          (send stop-button enable #f)
-         (clear-table10*/10)
+         (clear-persistent-tables)
          (set! *time-flag* #f))))))
 
 (define (reset)
@@ -5186,7 +5236,7 @@ then additional problems are given."
   (blank-input-fields) ; erase any residual inputs
   (clear-money-inputs)
   (clear-ABC-inputs)
-  (clear-table10*/10)
+  (clear-persistent-tables)
   (send number-input enable #f)
   (disable/enable-start-buttons #t)
   (disable/enable-set/font-menu #t)
@@ -5435,7 +5485,7 @@ but limited by *max-penalty-exercises*"
 
 (define (fraction-callback canvas dc)
   (fraction-canvas-callback
-   canvas dc *fraction-level* *used-numbers*
+   canvas dc *fraction-level* *canvas-flag*
    (problem-x *problem*) (problem-y *problem*)))
 
 (define fraction-dialog (new frame%
