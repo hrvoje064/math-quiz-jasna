@@ -1,6 +1,6 @@
 #lang racket
 
-;; v5.0.2
+;; v5.0.3
 
 (require "misc.rkt") ; for definition of //
 
@@ -65,7 +65,7 @@
 (require 'tables)
 
 ;;; aux functions
-  
+
 (define (make-table limit)
   (shuffle
    (append
@@ -113,6 +113,25 @@
            (list x (closest (/ (car x) (cadr x)) pairs (list 1 x)))
            (tuples (car pairs) (cdr pairs)))))
     (tuples (car pairs) (cdr pairs))))
+
+(define (make-table-hard+- n)
+  (let* ((t (shuffle (combinations (build-list n add1) 2))))
+    (define (find-pairs f x pairs acc reject)
+      (if (null? pairs)
+          (values acc reject)
+          (let* ((p (findf (λ (p) (f (list x p))) pairs))
+                 (new-pairs (remove p pairs)))
+            (if (null? new-pairs)
+                (if p (list (cons (list x p) acc) reject)
+                    (values acc (cons x reject)))
+                (if p
+                    (find-pairs f (car new-pairs) (cdr new-pairs)
+                                (cons (list x p) acc) reject)
+                    (find-pairs f (car pairs) (cdr pairs) acc (cons x reject)))))))
+    (let-values ([(done to-do) (find-pairs rem=0? (car t) (cdr t) null null)])
+      (let-values ([(done1 to-do1)
+                    (find-pairs gcd<>1? (car to-do) (cdr to-do) done null)])
+        (interleave (reverse done1) (make-pairs to-do1))))))
 
 ;; get-problem functions
   
@@ -211,7 +230,7 @@
 
 (define (get-problem-f2)
   (when (null? (pairs))
-    (sett! (get-fraction-full-table *max-denominator*)))
+    (sett! (make-table-hard+- *max-denominator*)))
   (let* ((pair (car (pairs)))
          (a (car pair))
          (b (cadr pair))
@@ -252,7 +271,7 @@
 
 (define clear-persistent-tables clear-tables)
 
-;; local helper function
+;; local helper functions
 (define (swap-nd pair)
   (let ((a (car pair)) (b (cadr pair)))
     (if (not (= (cadr a) (cadr b)))
@@ -260,6 +279,34 @@
               (list (cadr b) (car b)))
         pair)))
 
+(define (rem=0? pair)
+  (let* ((a (car pair))
+         (b (cadr pair))
+         (da (cadr a))
+         (db (cadr b)))
+    (and (not (= da db))
+         (zero? (modulo (max da db) (min da db))))))
+
+(define (gcd<>1? pair)
+  (let* ((a (car pair))
+         (b (cadr pair))
+         (da (cadr a))
+         (db (cadr b)))
+    (and (not (= da db))
+         (not (= 1 (gcd da db))))))
+
+(define (make-pairs lst)
+  (if (or (null? lst) (null? (cdr lst)))
+      null
+      (cons (list (car lst) (cadr lst))
+            (make-pairs (cddr lst)))))
+
+(define (interleave l1 l2)
+  (cond
+    ((null? l1) l2)
+    ((null? l2) l1)
+    (else (cons (car l1) (cons (car l2) (interleave (cdr l1) (cdr l2)))))))
+    
 ;;; testing
 ;;; ========================================================
 
@@ -289,7 +336,8 @@
   (check-equal? (length (make-table2 6)) 15)
   (check-equal? (length (get-fraction-full-table 10)) 45)
   (check-true (denominator-not-1 (get-fraction-full-table 10)))
+  (check-true (denominator-not-1 (make-table-hard+- 10)))
+  (check-equal? (length (make-table-hard+- 10)) 21)
   )
 
-
-
+;;; =====================================================================
