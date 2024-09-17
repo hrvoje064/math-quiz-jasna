@@ -102,6 +102,7 @@ number, as in 5 enter 5th, 122 enter 122nd.
 
 The Fractions exercise pops up the window with pie-chart drawn in it, containing a random number of red and black slices. The student should enter in input field red-slices/all-slices, as in: 3/5 (if the drawing contained 3 red and 2 black slices). No need to enter spaces as in 3 / 5 , but the program can handle that as well.
 The default max size of pie-chart is 10 slices, but that can be changed with \"Setup->Set number of fraction slices\" sub-menu. Slider goes from 5-12 slices.
+Likewise there is a menu entry (\"Setup->Set maximum fraction denominator\" sub-menu), for changing maximum size of denominator for any exercise that works with fractions: (non graphical) fraction comparison, addition, subtraction, multiplication, and division of fractions. The reason for two different choices for basically the same thing (max denominator), is that graphical display for fractions works well with up to 12 slices. After that it becomes hard to read, while for the purely numeric fractions it does not matter. Denominator choice goes from 6 to 18, with 15 being the default.
 Fractions exercise works in 4 levels. Level 1 (reading the fraction, described above) is the default level. This can be changed with \"Setup->Set fraction level: read or compare\" sub-menu to display and compare 2 fractions.
 Level 2 works in a similar way to comparison (fractions level) exercise. Student should enter <, =, or > into the middle input field to indicate weather the left fraction of pie-chart is smaller, equal, or greater than the right one.
 Level 3 and 4 work almost the same, except that all 3 input fields are active, and all 3 require input. Enter left fraction (as in 1/3) into the left field, right fraction into the right field, and < = or > into the middle field. Level 4 is tougher, because both numerators and denominators will be different.
@@ -259,7 +260,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.0
+  "Jasna's Math Quiz, v5.0.1
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

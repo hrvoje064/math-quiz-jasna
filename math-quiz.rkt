@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.0
+;;; Math Quiz, v5.0.1
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -180,8 +180,6 @@
   (let-values ([(res rem) (quotient/remainder x y)])
     (list res rem)))
 
-;(define plus (cons '+ +))
-;(define minus (cons '- -))
 (define divr (cons // quot/rem)) ; div with remainder
 (define comp> (cons '> >))
 (define comp< (cons '< <))
@@ -521,6 +519,12 @@
                                    (lambda (mi e)
                                      (send slider-comparison-dialog show #t))]))
 
+(define set-fraction-denominator (new menu-item%
+                                      [label "Set max fraction denominator"]
+                                      [parent setup-menu]
+                                      [callback
+                                       (lambda (mi e)
+                                         (send slider-fraction-denom-dialog show #t))]))
 
 (define set-sequence-level (new menu-item%
                                 [label "Set sequence difficulty level"]
@@ -679,6 +683,14 @@
                                     [height 80]
                                     [style '(close-button)]
                                     [alignment '(right top)]))
+
+(define slider-fraction-denom-dialog (new dialog%
+                                          [label "Set"]
+                                          [parent main-window]
+                                          [width 280]
+                                          [height 80]
+                                          [style '(close-button)]
+                                          [alignment '(right top)]))
 
 (define slider-fraction<>dialog (new dialog%
                                      [label "Set"]
@@ -867,6 +879,17 @@
                               (lambda (s e)
                                 (setms! *max-slices* (send s get-value)))]
                              [style '(vertical-label horizontal)]))
+
+(define fraction-denom-slider (new slider%
+                                   [label "Maximum fraction denominator"]
+                                   [min-value 6]
+                                   [max-value 18]
+                                   (parent slider-fraction-denom-dialog)
+                                   [init-value *max-denominator*]
+                                   [callback
+                                    (lambda (s e)
+                                      (setmd! *max-denominator* (send s get-value)))]
+                                   [style '(vertical-label horizontal)]))
 
 (define fraction<>slider (new slider%
                               [label "1 read, 2-3 easy compare, 4 compare"]
@@ -3679,7 +3702,8 @@ Restart program immediately after"]
                   set-button-font set-clock-level set-fraction-level
                   set-skip-increment set-text-level set-circumference-level
                   menu-item-doc menu-item-about menu-item-update
-                  set-findX-level set-time-level set-*-level))
+                  set-findX-level set-time-level set-*-level
+                  set-fraction-denominator))
   (check-update-menu))
 
 (provide disable/enable-popup-window-menu)

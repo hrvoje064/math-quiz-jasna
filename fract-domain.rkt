@@ -1,6 +1,6 @@
 #lang racket
 
-;; v5.0
+;; v5.0.1
 
 (require "misc.rkt") ; for definition of //
 
@@ -10,14 +10,14 @@
 
 ;;; All this is transfered from math-quiz.rkt
 (define *max-slices* 10) ; max size of pie-slice (denominator)
-(define *comparison-fract-max* 12) ; Max numerator & denominator in fraction comparison
+(define *max-denominator* 15) ; Max numerator & denominator in fraction comparison
 (define *max*table* 10) ; max size for multiplication / division tables
 (define *n* 20) ; default number of problems in exercise
 
 (struct state (question problems mistakes) #:mutable)
 ;; initialize question to 1, problems to *n*, mistakes to 0
 (define *state* (state 1 *n* 0))
-(struct problem (x op y z) #:mutable) ; z is late entry for BA clock
+(struct problem (x op y z) #:mutable) ; z is late entry for Before/After clock
 (define *problem* (problem #f #f #f #f))
 
 (define plus (cons '+ +))
@@ -38,11 +38,12 @@
 (define (setn! n v) (set! *n* v))
 (define (setmt! n v) (set! *max*table* v))
 (define (setms! n v) (set! *max-slices* v))
+(define (setmd! n v) (set! *max-denominator* v))
 
 
 ;;; Exporting back to math-quiz.rkt
-(provide *max-slices* *max*table* *n* *comparison-fract-max*
-         initialize-problem setn! setmt! setms! plus minus)
+(provide *max-slices* *max*table* *n* *max-denominator*
+         initialize-problem setn! setmt! setms! setmd! plus minus)
 (provide (struct-out state) (struct-out problem) *state* *problem*)
 (provide clear-persistent-tables get-problem10*10 get-problem100/10
          get-problem-fraction get-problem-fraction<=> get-problem-fraction-full<=>
@@ -120,7 +121,7 @@
             (cons
              (list x (closest (/ (car x) (cadr x)) pairs (list 1 x)))
              (tuples (car pairs) (cdr pairs)))))
-      (shuffle (tuples (car pairs) (cdr pairs)))))
+      (tuples (car pairs) (cdr pairs))))
 
   ;; get-problem functions
   
@@ -176,7 +177,7 @@
 
   ;; textual comparison
   (define (get-problem<=>)
-    (when (null? pairs) (set! pairs (make-table2 *comparison-fract-max*)))
+    (when (null? pairs) (set! pairs (make-table2 *max-denominator*)))
     (let* ((pair (car pairs))
            (a (car pair))
            (b (cadr pair))
@@ -190,7 +191,7 @@
   ;; textual comparison
   (define (get-problem1<=>)
     (when (null? pairs)
-      (set! pairs (get-fraction-full-table *comparison-fract-max*)))
+      (set! pairs (get-fraction-full-table *max-denominator*)))
     (let* ((pair (car pairs))
            (a (car pair))
            (b (cadr pair))
@@ -204,7 +205,7 @@
   ;; arithmetic problems
   (define (get-problem-f1+-)
     (when (null? pairs)
-      (set! pairs (map swap-nd (make-table2 *comparison-fract-max*))))
+      (set! pairs (map swap-nd (make-table2 *max-denominator*))))
     (let* ((op-list (list minus plus minus plus minus))
            (op (list-ref op-list (random (length op-list)))) ; minus weighted 3/5 
            (pair (car pairs))
@@ -219,7 +220,7 @@
 
   (define (get-problem-f2+-)
     (when (null? pairs)
-      (set! pairs (get-fraction-full-table *comparison-fract-max*)))
+      (set! pairs (get-fraction-full-table *max-denominator*)))
     (let* ((pair (car pairs))
            (a (car pair))
            (b (cadr pair))
@@ -234,7 +235,7 @@
 
   (define (get-problem*frac)
     (when (null? pairs)
-      (set! pairs (get-fraction-full-table *comparison-fract-max*)))
+      (set! pairs (get-fraction-full-table *max-denominator*)))
     (let* ((pair (car pairs))
            (a (car pair))
            (b (cadr pair))
@@ -247,7 +248,7 @@
 
   (define (get-problem/quotfrac7)
     (when (null? pairs)
-      (set! pairs (get-fraction-full-table *comparison-fract-max*)))
+      (set! pairs (get-fraction-full-table *max-denominator*)))
     (let* ((pair (car pairs))
            (a (car pair))
            (b (cadr pair))

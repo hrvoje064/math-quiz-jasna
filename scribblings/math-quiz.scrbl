@@ -220,6 +220,16 @@ No need to enter spaces as in 3 / 5 , but the program can handle that as well.
 The default max size of pie-chart is 10 slices, but that can be changed with
 @bold{Setup->Set number of fraction slices} sub-menu. Slider goes from 5-12 slices.
 
+@subsection{Maximum fraction denominator}
+Likewise there is a menu entry @bold{Setup->Set maximum fraction denominator} sub-menu,
+for changing maximum size of denominator for any exercise that works with fractions:
+(non graphical) fraction comparison, addition, subtraction, multiplication, and division
+of fractions. The reason for two different choices for basically the same thing
+(max denominator), is that graphical display for fractions works well with
+up to 12 slices. After that it becomes hard to read, while for the purely numeric
+fractions it does not matter. Denominator choice goes from 6 to 18, with 15 being
+the default.
+
 @subsection{Fraction Exercise Levels}
 
 Fractions exercise works in 4 levels. Level 1 (reading the fraction, described above)
