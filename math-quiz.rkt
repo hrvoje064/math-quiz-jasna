@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.0.1
+;;; Math Quiz, v5.0.2
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -17,7 +17,7 @@
 (require "rounding.rkt") ; rounding numbers on random position
 (require "ordinal.rkt") ; spelling ordinal numbers
 (require "time.rkt") ; time conversions
-(require "fract-domain.rkt") ; persistent state for get-problem functions
+(require "domain-tables.rkt") ; persistent state for get-problem functions
 
 (define *speed-factor* 1) ; reduce or increase allotted time
 (define *left-number* 700) ; Max size-1 of left number
