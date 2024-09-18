@@ -6,7 +6,7 @@ This program came into being when my daughter started pre-school 4 years ago. No
 
 The program now contains 6 arithmetic exercises; 
 
-    +/- (in 6 levels) including negative result, and fractions, 
+    +/- (in 9 levels) including negative result, and fractions, 
     multiplication/division  table (adjustable from 5*5 to 12*12),
     division of integers/fractions where the result is always integer 
     with or without remainder, or a fraction (in 7 levels),
@@ -42,7 +42,7 @@ Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 5.0.3
+Current version of math-quiz is 5.1
 
 math-quiz is written/tested in Scheme (Racket compiler v8.7 - v8.14)
 

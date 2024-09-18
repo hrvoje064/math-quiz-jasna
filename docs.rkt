@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v5.0.3
+;;; v5.1
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -175,7 +175,8 @@ While a set of exercises is running, all start exercise buttons are disabled.
 To change the number of exercises click on \"Setup->Set number of Exercises\" menu and the slider window will open.
 Move the slider to desired value and close the slider window by clicking X in the top right corner.
 
-Plus and minus exercises start by default at level 1; two digit addition only, with no carry over. This can be changed with \"Setup->Set + - difficulty level\" sub-menu. Level 1 is 2 digit limited addition, level 2 is 2 digit limited mixed addition/subtraction, level 3 is 3 digit unlimited addition/subtraction, level 4 is subtraction with negative result, level 5 is simple fraction (equal denominators) addition/subtraction, and level 6 is unlimited fraction addition/subtraction. Level 0 is mixed addition/subtraction, of numbers up to 18, designed to teach kids fast calculation without using fingers for counting.
+Plus and minus exercises start by default at level 1; two digit addition only, with no carry over. This can be changed with \"Setup->Set + - difficulty level\" sub-menu. Level 1 is 2 digit limited addition, level 2 is 2 digit limited mixed addition/subtraction, level 3 is 3 digit unlimited addition/subtraction, level 4 is subtraction with negative result. Level 5 to 9 is fraction addition/subtraction exercises. Level 5 is simple fraction (equal denominators) addition/subtraction, level 6 is one denominator divisible by other denominator addition/subtraction. Level 7 is both denominators divisible with the same number, level 8 is denominators not divisible, and level 9 is mixed exercises from level 6,7, and 8. 
+Level 0 is mixed addition/subtraction, of numbers up to 18, designed to teach kids fast calculation without using fingers for counting.
 
 Multiplication exercises start by default at level 2, which is 3 digit by 3 digit multiplication. This can be changed with \"Setup->Set * level: 1, multiples of 10; 2, 3d*; 3, fractions\". Level 1 uses multiples of 10 as a factor, and level 3 multiplies fractions.
 
@@ -196,6 +197,7 @@ ________________________________________________________
 20 seconds per exercise for (+ -) level 1
 30 seconds per exercise for (+ -) level 2 & 5
 1.5 minutes per exercise for (+ -) level 3 4 & 6
+2.5 minutes per exercise for (+ -) level 7 8 & 9
 30 seconds per exercise for (*) level 1
 2 minutes per exercise for (*) level 2 & 3
 2 minutes for integer/fraction ÷ level 1 2 & 7
@@ -260,7 +262,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.0.3
+  "Jasna's Math Quiz, v5.1
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

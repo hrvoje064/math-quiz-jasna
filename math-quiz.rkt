@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.0.3
+;;; Math Quiz, v5.1
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -464,7 +464,7 @@
                                 (send slider-n-dialog show #t))]))
 
 (define set-+-level (new menu-item%
-                         [label "Set + - difficulty level"]
+                         [label "Set + - difficulty level: integers or fractions"]
                          [parent setup-menu]
                          [callback
                           (lambda (mi e)
@@ -607,7 +607,7 @@
 (define slider-+-dialog (new dialog%
                              [label "Set"]
                              [parent main-window]
-                             [width 280]
+                             [width 400]
                              [height 80]
                              [style '(close-button)]
                              [alignment '(right top)]))
@@ -768,9 +768,10 @@
                               [style '(vertical-label horizontal)]))
 
 (define level-+-slider (new slider%
-                            [label "+ - exercises; 0-3 only positive, 4 negative, 5-6 fractions"]
+                            [label "+ - exercises; 0-3 only positive, 4 negative, \
+5-9 fractions"]
                             [min-value 0]
-                            [max-value 6]
+                            [max-value 9]
                             [parent slider-+-dialog]
                             [init-value *level+-*]
                             [callback
@@ -3057,13 +3058,26 @@ Restart program immediately after"]
          (send text-lines insert
                (format "---------   minus exercises negative   ---------~n")))
     ((5) (set! *time-factor* 1/2)
-         (set! get-problem get-problem-f1) ; setting the function         
+         (set! get-problem get-problem-f5) ; setting the function         
          (send text-lines insert
-               (format "------   (+ -) exercises simple fractions   -----~n")))
+               (format "-----  (+ -) exercises l5 (d1=d2) fractions  ---~n")))
     ((6) (set! *time-factor* 3/2)
-         (set! get-problem get-problem-f2) ; setting the function         
+         (set! get-problem get-problem-f6) ; setting the function         
          (send text-lines insert
-               (format "-----  (+ -) exercises difficult fractions   ----~n"))))   
+               (format "-----  (+ -) exercises l6 (d1/d1) fractions  ---~n")))
+    ((7) (set! *time-factor* 5/2)
+         (set! get-problem get-problem-f7) ; setting the function         
+         (send text-lines insert
+               (format "---- (+ -) exercises l7 (d1&d2/n) fractions  ---~n")))
+    ((8) (set! *time-factor* 5/2)
+         (set! get-problem get-problem-f8) ; setting the function         
+         (send text-lines insert
+               (format "----=  (+ -) exercises l8 tough fractions   ----~n")))
+    ((9) (set! *time-factor* 5/2)
+         (set! get-problem get-problem-f9) ; setting the function         
+         (send text-lines insert
+               (format "----=  (+ -) exercises l9 mixed fractions   ----~n")))
+    (else (error 'start+-level)))
   (set! do-math do-math+) ; set arithmetic operation
   (set! setup setup-arithmetic) ; setup function
   (set! equal= =) ; setting simple equality test

@@ -84,17 +84,26 @@ clicking the @bold{Calculate} button, you can also hit @bold{enter} key on keybo
 If the result was correct, the confirmation will be printed in black in the panel below.
 If, on the other hand, the result was not correct, the same line will be printed in red.
 
+@subsection{Arithmetic levels +-}
+
 Plus and minus exercises start by default at level 1; two digit addition only, with no
 carry over. This can be changed with @bold{Setup->Set + - difficulty level} sub-menu.
 Level 1 is 2 digit limited addition, level 2 is 2 digit limited mixed addition/subtraction,
-level 3 is 3 digit unlimited addition/subtraction, level 4 is subtraction with negative result,
-level 5 is simple fraction (equal denominators) addition/subtraction, and level 6 is unlimited
-fraction addition/subtraction. Level 0 is mixed addition/subtraction, of numbers up to 18,
+level 3 is 3 digit unlimited addition/subtraction, level 4 is subtraction with negative
+result. Level 5 is simple fraction (equal denominators) addition/subtraction, level 6 is
+one denominator divisible by other denominator addition/subtraction. Level 7 is both
+denominators divisible with the same number, level 8 is denominators not divisible,
+and level 9 is mixed exercises from level 6,7, and 8.
+Level 0 is mixed addition/subtraction, of numbers up to 18,
 designed to teach kids fast calculation without using fingers for counting.
+
+@subsection{Arithmetic levels *}
 
 Multiplication exercises start by default at level 2, which is 3 digit by 3 digit multiplication.
 This can be changed with @bold{Setup->Set * level: 1, multiplies of 10; 2, 3d*; 3, fractions}
 sub-menu. Level 1, uses multiples of 10 as a factor, and level 3 multiplies fractions.
+
+@subsection{Arithmetic levels Integer/fraction division}
 
 Integer/fraction division exercises start by default at level 1; one digit divisor.
 This can be changed with @bold{Setup->Set integer/fraction ÷ difficulty level} sub-menu.
@@ -454,6 +463,7 @@ default set by the program, set the slider back to 100%.
           @item{20 seconds per exercise for (+ -) level 1}
           @item{30 seconds per exercise for (+ -) level 2 & 5}
           @item{1.5 minutes per exercise for (+ -) level 3 4 & 6}
+          @item{2.5 minutes per exercise for (+ -) level 7 8 & 9}
           @item{30 seconds per exercise for (*) level 1}
           @item{2 minutes per exercise for (*) level 2 & 3}
           @item{2 minutes for integer/fraction ÷ level 1 2 & 7}
