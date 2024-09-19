@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.1
+;;; Math Quiz, v5.1.1
 
 (require net/sendurl)
 (require racket/runtime-path)

@@ -1,6 +1,6 @@
 #lang racket
 
-;; v5.1
+;; v5.1.1
 
 (require "misc.rkt") ; for definition of //
 
@@ -145,18 +145,36 @@
 ;; (1) (zero? (modulo d1 d2)), (2) (> (gcd d1 d2) 1, (3) rest
 (define (group-div-gcd-rest pairs)
   (define (insert p r)
-    (let ((ddiv (first r)) (dgcd (second r)) (rest (third r))
-                           (d1 (fd1 p)) (d2 (fd2 p)))
+    (let ((ddiv (first r))
+          (dgcd (second r))
+          (rest (third r))
+          (d1 (fd1 p)) (d2 (fd2 p)))
       (cond ((= d1 d2) (list ddiv dgcd rest))
             ((zero? (modulo (max d1 d2) (min d1 d2)))
              (list (cons p ddiv) dgcd rest))
             ((> (gcd d1 d2) 1) (list ddiv (cons p dgcd) rest))
             (else (list ddiv dgcd (cons p rest))))))                             
   (let* ((groups (foldr insert (list null null null) pairs))
-         (divisibles (shuffle (first groups)))
+         (divisibles (group-divisibles (shuffle (first groups))))
          (gcds (shuffle (second groups)))
          (rest (shuffle (third groups))))
     (values divisibles gcds rest)))
+
+(define (group-divisibles pairs)
+  (define (insert p r)
+    (let* ((threes> (first r))
+           (threes (second r))
+           (twos (third r))
+           (d1 (fd1 p)) (d2 (fd2 p))
+           (da (max d1 d2)) (db (min d1 d2)))
+      (cond ((> (quotient da db) 3) (list (cons p threes>) threes twos))
+            ((= (quotient da db) 3) (list threes> (cons p threes) twos))
+            (else (list threes> threes (cons p twos))))))
+  (let* ((groups (foldr insert (list null null null) pairs))
+         (threes> (first groups))
+         (threes (second groups))
+         (twos (third groups)))
+    (interleave (interleave threes> threes) twos)))
 
 (define (d1-in-d2 n)
   (let-values ([(d1ind2 g r) (group-div-gcd-rest (make-all-pairs n))])
@@ -423,6 +441,17 @@
         (and (> (second a) 0) (> (second b) 0)
              (denominator-not-1 (cdr table))))))
 
+(define (check-order-ds ds)
+  (if (or (null? ds) (null? (cdr ds)))
+      #t
+      (let* ((p1 (car ds))
+             (p2 (cadr ds))
+             (da1 (fd1 p1)) (da2 (fd2 p1))
+             (db1 (fd1 p2)) (db2 (fd2 p2)))
+        (and (> (quotient (max da1 da2) (min da1 da2)) 2)
+             (= (quotient (max db1 db2) (min db1 db2)) 2)
+             (check-order-ds (cddr ds))))))
+
 (module+ test
   (require rackunit)
   (check-false (all-in (cons (list 17 17) mt) (make-table 5)))
@@ -440,6 +469,7 @@
   (check-true (all-in mixnd (mix-nums-dens 4)))
   (check-equal? (length (d1-mix-d2 18)) 10812)
   (check-equal? (length (closest lower-c null (make-all-pairs 18))) 928)
+  (check-true (check-order-ds (take (d1-in-d2 15) 20)))
   )
 
 ;;; =====================================================================
