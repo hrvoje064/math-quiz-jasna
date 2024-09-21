@@ -51,6 +51,7 @@
 (define do-math #f) ; which operation to run arithemetic or others
 (define equal= #f) ; equal function (returns a number->string in (/) exercises)
 (define get-sequence #f) ; type of sequence for IQ test
+(define bell1 bell) ; bell can be disabled for tests
 
 (define *time-start* #f)
 (define *allowed-time* #f)
@@ -3086,6 +3087,8 @@ Restart program immediately after"]
   (start-quiz *n* 0))
 
 (define (start10*)
+  (when (or (< *max*table* 5) (> *max*table* 12))
+    (error 'max*table-size))
   (set! *time-factor* 1/2) ; minutes per problem
   (send text-lines insert
         (format "------   multiplication table exercises   ------~n"))
@@ -3112,7 +3115,8 @@ Restart program immediately after"]
      (set! *time-factor* 2) ; minutes per problem
      (send text-lines insert
            (format "---------   * exercises with fractions  ---------~n"))
-     (set! get-problem get-problem*f)))    
+     (set! get-problem get-problem*f))
+    (else (error 'start*level)))    
   (set! do-math do-math+) ; set arithmetic operation
   (set! setup setup-arithmetic) ; setup function
   (set! *used-numbers* '())
@@ -3121,6 +3125,8 @@ Restart program immediately after"]
   (start-quiz *n* 0))
 
 (define (start100/)
+  (when (or (< *max*table* 5) (> *max*table* 12))
+    (error 'max*table-size))
   (set! *time-factor* 1/2) ; minutes per problem
   (send text-lines insert
         (format "---------   division table exercises   ---------~n"))
@@ -3201,7 +3207,8 @@ Restart program immediately after"]
     ((3) (set! *time-factor* 3/2) ; minutes per problem
          (send text-lines insert
                (format "-----   comparison fraction exercises hard  ----~n"))
-         (set! get-problem get-problem<=>fract1)))
+         (set! get-problem get-problem<=>fract1))
+    (else (error 'start-comparison)))
   (set! *used-numbers* '())    
   (set! do-math do-math>) ; set non arithmetic operation
   (set! setup setup-comparison) ; setup function
@@ -3684,7 +3691,8 @@ Restart program immediately after"]
              (format "-------  clock before/after exercises ~a -------~n" level)))
      (set! do-math do-math-clock-BA)
      (send clock-dialog set-status-text "enter new time in  hr:mn")
-     (set! get-problem get-problem-clock-BA)))
+     (set! get-problem get-problem-clock-BA))
+    (else (error '*clock-level*)))
   (set! equal= clock=)
   (set! setup setup-clock) ; setup function
   (set! *used-numbers* '())
@@ -4337,7 +4345,8 @@ Restart program immediately after"]
       (case *max-skip-increment*
         ((2 3) 0)
         ((4 5 6) 1)
-        ((7 8 9 10) 2))))
+        ((7 8 9 10) 2)
+        (else (error 'max-skip-increment)))))
 
 (define (get-problem-skip-neg)
   (let* ((incr (* -1 (random (- *max-skip-increment* (skip-variation))
@@ -4461,11 +4470,6 @@ Restart program immediately after"]
     ((1 4) '(after))
     (else (error 'choose-bba-op))))
 
-#;(define (initialize-problem x op y)
-    (set-problem-x! *problem* x)
-    (set-problem-op! *problem* op)
-    (set-problem-y! *problem* y))
-
 ;;; rem= equal with remainder
 (define (rem= input calc)
   (cond
@@ -4508,13 +4512,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-arithmetic))) ; continue with next exercise
       (num
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg7 x op y num))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4537,25 +4541,25 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup))) ; continue with next exercise
       ((eq? (cdr result) 'left)
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg7 x '(left) "" (first stringl)))
        (send text-lines change-style style-delta-black))
       ((eq? (cdr result) 'right)
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg7 y '(right) "" (third stringl)))
        (send text-lines change-style style-delta-black))
       ((eq? (cdr result) 'comparison)
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg7 x op y (display-<=> (second stringl))))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 stringl))
        (send text-lines change-style style-delta-black)))
@@ -4574,13 +4578,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup))) ; continue with next exercise
       (op
-       (bell) ; just testing (play-sound "switch.oga" #f)
+       (bell1) ; just testing (play-sound "switch.oga" #f)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg7 x op y (display-<=> string)))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4596,13 +4600,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-odd-even))) ; continue with next exercise
       (op
-       (bell) ; just testing (play-sound "switch.oga" #f)
+       (bell1) ; just testing (play-sound "switch.oga" #f)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-odd/even x op y "not"))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4620,13 +4624,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-sequence))) ; continue with next exercise
       (missing-number-input
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-sequence x op y string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4644,13 +4648,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-a2r))) ; continue with next exercise
       ((not (string=? roman-number-input ""))
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-roman-error x op y string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4668,13 +4672,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup))) ; continue with next exercise
       (arabic-number-input
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-roman-error x op y string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4691,13 +4695,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup))) ; continue with next exercise
       (input
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-text-error x op y string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4715,13 +4719,13 @@ Restart program immediately after"]
          (setup-money))) ; continue with next exercise
       ((or (and (number? cash-input) (not (zero? cash-input)))
            (string? cash-input))
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-money-error x op y cash-input))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (clear-money-inputs) ; whatever is in there is garbage
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 "Empty Input"))
@@ -4741,7 +4745,7 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-ABC))) ; continue with next exercise
       ((not (zero? sum-idxs))
-       (bell)
+       (bell1)
        (cond
          ((not (equal? '(1 2 3 4 5) (sort indices <)))
           (send text-lines change-style style-delta-green)
@@ -4752,7 +4756,7 @@ Restart program immediately after"]
           (send text-lines insert (msg-ABC-error x op sorted-words))))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (clear-ABC-inputs) ; whatever is in there is garbage
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 "Empty Input"))
@@ -4776,7 +4780,7 @@ Restart program immediately after"]
               " numbers entered! Error not counted.\n"))
        (send text-lines change-style style-delta-black))
       ((not (list? result)) ; number or string
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (cond
@@ -4793,7 +4797,7 @@ Restart program immediately after"]
           error 'unknown-skip-error))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 n-list))
        (send text-lines change-style style-delta-black))))
@@ -4841,13 +4845,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-bba))) ; continue with next exercise
       (missing-number-input
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-bba x "not" op y string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4865,13 +4869,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-pvalue))) ; continue with next exercise
       (reply-input
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-pvalue result string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4888,13 +4892,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-round))) ; continue with next exercise
       (reply-input
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-round result string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4914,13 +4918,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-ord))) ; continue with next exercise
       (reply-input
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg-ord result string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4938,13 +4942,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-fraction))) ; continue with next exercise
       (fraction-input
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg7 x op y string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4961,13 +4965,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-clock))) ; continue with next exercise
       ((cons? time-list)
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg7 x op y string))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -4986,13 +4990,13 @@ Restart program immediately after"]
        (when (<= (state-question *state*) (state-problems *state*))
          (setup-clock))) ; continue with next exercise
       ((cons? time-list)
-       (bell)
+       (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
        (send text-lines insert (msg7 x op y string (third answer)))
        (send text-lines change-style style-delta-black))
       (else
-       (bell)
+       (bell1)
        (send text-lines change-style style-delta-green)
        (send text-lines insert (msg9 string))
        (send text-lines change-style style-delta-black))))
@@ -5518,3 +5522,549 @@ but limited by *max-penalty-exercises*"
  (send doc-instructions scroll-to-position 0)
  (send about-text scroll-to-position 0))
 
+;;; ==================================================================
+;;; Tests for the main logic
+;;; ==================================================================
+
+(define (set+-level! v) (set! *level+-* v))
+(define (set*level! v) (set! *level** v))
+(define (set-quot-level! v) (set! *level/quot* v))
+(define (set-comparison-level! v) (set! *comparison-level* v))
+(define (set-sequence! v) (set! *sequence-difficulty* v))
+(define (set-fract-level! v) (set! *fraction-level* v))
+(define (set-clock! v) (set! *clock-level* v))
+(define (set-max-rn! v) (set! *max-roman-number* v))
+(define (set-max-skip! v) (set! *max-skip-increment* v))
+(define (set-findX! v) (set! *findX-level* v))
+(define (set-bell1! v) (set! bell1 v))
+
+(define (ord-err str)
+  (let* ((cut (- (string-length str) 2))
+         (digits (substring str 0 cut))
+         (ords (substring str cut))
+         (wrong-ords (second (member ords '("st" "nd" "rd" "th" "st")))))
+    (string-append digits wrong-ords)))
+
+(define (return-cash money)
+  (let-values ([(d100 dr1) (quotient/remainder (* 100 money) 10000)])
+    (let-values ([(d50 dr2) (quotient/remainder dr1 5000)])
+      (let-values ([(d20 dr3) (quotient/remainder dr2 2000)])
+        (let-values ([(d10 dr4) (quotient/remainder dr3 1000)])
+          (let-values ([(d5 dr5) (quotient/remainder dr4 500)])
+            (let-values ([(d1 dr6) (quotient/remainder dr5 100)])
+              (let-values ([(c25 dr7) (quotient/remainder dr6 25)])
+                (let-values ([(c10 dr8) (quotient/remainder dr7 10)])
+                  (let-values ([(c5 dr9) (quotient/remainder dr8 5)])
+                    (list d100 d50 d20 d10 d5 d1 c25 c10 c5 dr9)))))))))))
+
+(define (index-words unsorted sorted)
+  (let ((indexed (map cons '(1 2 3 4 5) sorted)))
+    (map (λ (w)
+           (car (findf
+                 (λ (is) (string=? w (cdr is))) indexed))) unsorted)))
+                            
+(module+ test
+  (require rackunit)
+
+  (check-not-exn (λ () (set-bell1! void))) ; pacifying bell
+
+  (test-case
+   "start (+ -) tests"
+   (check-not-exn (λ () (set+-level! 0) (start+-)))
+   (check-not-exn (λ () (set+-level! 9) (start+-)))
+   (check-exn exn:fail? (λ () (set+-level! 10) (start+-)))
+   (check-not-exn (λ () (set+-level! 8) (start+-)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type
+                       (number->string
+                        ((run op) (string->number x) (string->number y)))))))
+   (check-eq? (+ 1 (state-mistakes *state*))
+              (begin (start+-)
+                     (let ((x (problem-x *problem*))
+                           (y (problem-y *problem*))
+                           (op (problem-op *problem*)))
+                       (math-quiz-type
+                        (number->string
+                         (+ 1/10
+                            ((run op) (string->number x) (string->number y))))))
+                     (state-mistakes *state*)))
+   (check-not-exn (λ () (set+-level! 1) (reset))))
+
+  (test-case
+   "start (*) tests"
+   (check-not-exn (λ () (set*level! 1) (start*)))
+   (check-exn exn:fail? (λ () (set*level! 4) (start*)))
+   (check-not-exn (λ () (set*level! 3) (start*)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type
+                       (number->string
+                        ((run op) (string->number x) (string->number y)))))))
+   (check-eq? (+ 1 (state-mistakes *state*))
+              (begin (start*)
+                     (let ((x (problem-x *problem*))
+                           (y (problem-y *problem*))
+                           (op (problem-op *problem*)))
+                       (math-quiz-type
+                        (number->string
+                         (+ 1/10
+                            ((run op) (string->number x) (string->number y))))))
+                     (state-mistakes *state*)))
+   (check-eq? (begin (set*level! 1) (start*) (+ 0 (state-mistakes *state*)))
+              (let ((x (problem-x *problem*))
+                    (y (problem-y *problem*))
+                    (op (problem-op *problem*)))
+                (math-quiz-type
+                 (number->string
+                  ((run op) x y)))
+                (state-mistakes *state*)))
+   (check-not-exn (λ () (set*level! 2) (reset))))
+
+  (test-case
+   "start (integer/fraction /) tests"
+   (check-not-exn (λ () (set-quot-level! 1) (start/quot)))
+   (check-exn exn:fail? (λ () (set-quot-level! 8) (start/quot)))
+   (check-not-exn (λ () (set-quot-level! 4) (start/quot)
+                    (let* ((x (problem-x *problem*))
+                           (y (problem-y *problem*))
+                           (op (problem-op *problem*))
+                           (res ((run op) x y)))
+                      (math-quiz-type
+                       (string-append (number->string (car res)) "r"
+                                      (number->string (cadr res)))))))
+   (check-eq? (+ 1 (state-mistakes *state*))
+              (begin (start/quot)
+                     (let* ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*))
+                            (res ((run op) x y)))
+                       (math-quiz-type
+                        (string-append (number->string (car res)) "r"
+                                       (number->string (+ 7 (cadr res))))))
+                     (state-mistakes *state*)))
+   (check-eq? (begin (set-quot-level! 7) (start/quot) (+ 0 (state-mistakes *state*)))
+              (let ((x (problem-x *problem*))
+                    (y (problem-y *problem*))
+                    (op (problem-op *problem*)))
+                (math-quiz-type
+                 (number->string
+                  ((run op) (string->number x) (string->number y))))
+                (state-mistakes *state*)))
+   (check-not-exn (λ () (set-quot-level! 1) (reset))))
+   
+  (test-case
+   "start (/) tests" ; no levels here
+   (check-not-exn (λ () (start/)))
+   (check-not-exn (λ () (start/)
+                    (let* ((x (problem-x *problem*))
+                           (y (problem-y *problem*))
+                           (op (problem-op *problem*))
+                           (res ((run op) x y)))
+                      (math-quiz-type (number->string res)))))
+   (check-eq? (begin (start/) ; correct answer
+                     (let* ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*))
+                            (res ((run op) x y)))
+                       (math-quiz-type
+                        (string-append (number->string res))))
+                     (state-mistakes *state*)) 0)
+   (check-eq? (begin (start/) ; wrong answer
+                     (let* ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*))
+                            (res ((run op) x y)))
+                       (math-quiz-type
+                        (string-append (number->string (+ res 0.1)))))
+                     (state-mistakes *state*)) 1)
+   (check-not-exn (λ () (start/) (set-quot-level! 1) (reset))))
+
+  (test-case
+   "start (*/) table tests"
+   (check-exn exn:fail? (λ () (setmt! *max*table* 4) (start10*)))
+   (check-exn exn:fail? (λ () (setmt! *max*table* 13) (start100/)))
+   (check-not-exn (λ () (setmt! *max*table* 10) (start10*)))
+   (check-not-exn (λ () (setmt! *max*table* 12) (start100/)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type
+                       (number->string
+                        ((run op) x y))))))
+   (check-eq? (begin (start10*) ; wrong answer
+                     (let ((x (problem-x *problem*))
+                           (y (problem-y *problem*))
+                           (op (problem-op *problem*)))
+                       (math-quiz-type
+                        (number->string
+                         (+ 10 ((run op) x y)))))
+                     (state-mistakes *state*)) 1)
+   (check-eq? (begin (start100/) ; correct answer
+                     (let ((x (problem-x *problem*))
+                           (y (problem-y *problem*))
+                           (op (problem-op *problem*)))
+                       (math-quiz-type
+                        (number->string ((run op) x y))))
+                     (state-mistakes *state*)) 0)
+   
+   (check-not-exn (λ () (setmt! *max*table* 10) (reset))))
+
+  (test-case
+   "start comparison (integer/fraction) tests"
+   (check-exn exn:fail? (λ () (set-comparison-level! 4) (start<=>)))
+   (check-not-exn (λ () (set-comparison-level! 2) (start<=>)))
+   (check-not-exn (λ () (set-comparison-level! 1) (start<=>)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type
+                       (cond ((> x y) ">")
+                             ((< x y) "<")
+                             (else "="))))))
+   (check-eq? (begin (start<=>) ; wrong answer (integers)
+                     (let ((x (problem-x *problem*))
+                           (y (problem-y *problem*))
+                           (op (problem-op *problem*)))
+                       (math-quiz-type
+                        (cond ((> x y) "<")
+                              ((< x y) "=")
+                              (else ">"))))
+                     (state-mistakes *state*)) 1)
+   (check-eq? (begin (set-comparison-level! 2) (start<=>) ; correct answer
+                     (let ((x (string->number (problem-x *problem*)))
+                           (y (string->number (problem-y *problem*)))
+                           (op (problem-op *problem*)))
+                       (math-quiz-type
+                        (cond ((> x y) ">")
+                              ((< x y) "<")
+                              (else "="))))
+                     (state-mistakes *state*)) 0) 
+   (check-not-exn (λ () (set-comparison-level! 1) (reset))))
+
+  (test-case
+   "start Odd/Even tests"
+   (check-not-exn (λ () (start-odd/even)))
+   (check-not-exn (λ () (reset))))
+   
+  (test-case
+   "start Position Value tests"
+   (check-not-exn (λ () (start-pvalue)))
+   (check-not-exn (λ () (reset))))
+
+  (test-case
+   "start sequence tests"
+   (check-exn exn:fail? (λ () (set-sequence! 5) (start-sequence)))
+   (check-not-exn (λ () (set-sequence! 2) (start-sequence)))
+   (check-not-exn (λ () (set-sequence! 1) (start-sequence)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type (number->string (last x))))))
+   (check-not-eqv? (begin (set-sequence! 3) (start-sequence) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (+ (last x) 1))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-sequence! 4) (start-sequence) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string (last x))))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (set-sequence! 1) (reset))))
+ 
+
+  (test-case
+   "start Before Between After tests"
+   (check-not-exn (λ () (start-bba)))
+   (check-not-exn (λ () (start-bba)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type (number->string y)))))
+   (check-not-eqv? (begin (start-bba) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (+ y 1))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-bba) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (reset))))
+
+  (test-case
+   "start Round tests"
+   (check-not-exn (λ () (start-round)))
+   (check-not-exn (λ () (start-round)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type (number->string y)))))
+   (check-not-eqv? (begin (start-round) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (+ y 1))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-round) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (reset))))
+
+  (test-case
+   "start Ordinal numbers tests"
+   (check-not-exn (λ () (start-ord)))
+   (check-not-exn (λ () (start-ord)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type y))))
+   (check-not-eqv? (begin (start-ord) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (ord-err y)))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-ord) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type y))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (reset))))
+
+  (test-case
+   "start Fractions (graphical) tests"
+   (check-exn exn:fail? (λ () (set-fract-level! 5) (start-fraction)))
+   (check-not-exn (λ () (set-fract-level! 1) (start-fraction)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type
+                       (string-append (number->string x) "/"
+                                      (number->string y))))))
+   (check-not-exn (λ () (reset)))
+   (check-not-exn (λ () (set-fract-level! 2) (start-fraction)
+                    (let ((x (string->number (problem-x *problem*)))
+                          (y (string->number (problem-y *problem*)))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type
+                       (cond ((> x y) ">")
+                             ((< x y) "<")
+                             (else "="))))))
+   (check-not-exn (λ () (reset)))             
+   (check-not-eqv? (begin (set-fract-level! 3) (start-fraction) ; wrong answer
+                          (let ((x (string->number (problem-x *problem*)))
+                                (y (string->number (problem-y *problem*)))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (list
+                                             (number->string x)
+                                             (cond ((> x y) "=")
+                                                   ((< x y) ">")
+                                                   (else "<"))
+                                             (number->string y))))
+                          (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (reset)))
+   (check-eqv? (begin (set-fract-level! 4) (start-fraction) ; correct answer
+                      (let ((x (string->number (problem-x *problem*)))
+                            (y (string->number (problem-y *problem*)))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (list
+                                         (number->string x)
+                                         (cond ((> x y) ">")
+                                               ((< x y) "<")
+                                               (else "="))
+                                         (number->string y))))
+                      (state-mistakes *state*)) 0)   
+   (check-not-exn (λ () (reset))))
+  
+  (test-case
+   "start Clock tests"
+   (check-exn exn:fail? (λ () (set-clock! 6) (start-clock)))
+   (check-not-exn (λ () (set-clock! 1) (start-clock)
+                    (let ((x (number->string (problem-x *problem*)))
+                          (y (number->string (problem-y *problem*)))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type (string-append x ":" y)))))
+   (check-not-eqv? (begin (set-clock! 3) (start-clock) ; wrong answer
+                          (let ((zh (number->string (first (problem-z *problem*))))
+                                (zm (number->string (second (problem-z *problem*)))))
+                            (math-quiz-type (string-append zh ":" "61")))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-clock! 5) (start-clock) ; correct answer
+                      (let ((zh (number->string (first (problem-z *problem*))))
+                            (zm (number->string (second (problem-z *problem*)))))
+                        (math-quiz-type (string-append zh ":" zm)))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (set-clock! 1) (reset))))
+
+  (test-case
+   "start Arabic to Roman numerals tests"
+   (check-not-exn (λ () (set-max-rn! 3999) (start-a2r)))
+   (check-not-exn (λ () (start-a2r)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*)))
+                      (math-quiz-type y))))
+   (check-not-eqv? (begin (start-a2r) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*)))
+                            (math-quiz-type "VX"))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-a2r) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*)))
+                        (math-quiz-type y))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (set-max-rn! 100) (reset))))
+  
+  (test-case
+   "start Roman to Arabic numerals tests"
+   (check-not-exn (λ () (set-max-rn! 3999) (start-r2a)))
+   (check-not-exn (λ () (start-r2a)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*)))
+                      (math-quiz-type (number->string y)))))
+   (check-not-eqv? (begin (start-r2a) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*)))
+                            (math-quiz-type "4000"))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-r2a) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (set-max-rn! 100) (reset))))
+
+  (test-case
+   "start Cash tests"
+   (check-not-exn (λ () (start-money)))
+   (check-not-exn (λ () (start-money-p)))
+   (check-not-exn (λ () (start-money)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*)))
+                      (math-quiz-type (return-cash y)))))
+   (check-not-eqv? (begin (start-money-p) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*)))
+                            (math-quiz-type '(4 4 4 4 4 4 4 0 4 4)))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-money) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*)))
+                        (math-quiz-type (return-cash y)))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (reset))))
+  
+  (test-case
+   "start Alphabetical sorting tests"
+   (check-not-exn (λ () (start-ABC)))
+   (check-not-exn (λ () (start-ABC)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*)))
+                      (math-quiz-type (index-words x y)))))
+   (check-not-eqv? (begin (start-ABC) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*)))
+                            (math-quiz-type
+                             (let* ((idxs (index-words x y))
+                                    (a (first idxs))
+                                    (b (second idxs)))
+                               (cons b (cons a (cddr idxs))))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-ABC) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*)))
+                        (math-quiz-type (index-words x y)))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (reset))))
+
+  (test-case
+   "start Skip (+ -) counting tests"
+   (check-not-exn (λ () (set-max-skip! 10) (start-skip)))
+   (check-not-exn (λ () (set-max-skip! 6) (start-skip-neg)))
+   (check-not-exn (λ () (set-max-skip! 3) (start-skip)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (inc (problem-op *problem*)))
+                      (math-quiz-type
+                       (build-list 10 (λ (i) (+ x (* i inc))))))))
+   (check-not-exn (λ () (set-max-skip! 5) (start-skip-neg)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (inc (problem-op *problem*)))
+                      (math-quiz-type
+                       (build-list 10 (λ (i) (+ x (* i inc))))))))
+   (check-not-eqv? (begin (set-max-skip! 6) (start-skip-neg) ; wrong answer
+                          (let ((x (add1 (problem-x *problem*)))
+                                (y (problem-y *problem*))
+                                (inc (problem-op *problem*)))
+                            (math-quiz-type
+                             (build-list 10 (λ (i) (+ x (* i inc))))))
+                          (state-mistakes *state*)) 0)
+   (check-not-eqv? (begin (set-max-skip! 7) (start-skip) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (inc (problem-op *problem*)))
+                            (math-quiz-type
+                             (cons (- x inc)
+                                   (build-list 9 (λ (i) (+ x (* i inc)))))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-max-skip! 4) (start-skip) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (inc (problem-op *problem*)))
+                        (math-quiz-type
+                         (build-list 11 (λ (i) (+ x (* i inc))))))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (reset))))
+  
+  (test-case
+   "start missing Operand tests"
+   (check-exn exn:fail? (λ () (set-findX! 4) (start-findX)))
+   (check-not-exn (λ () (set-findX! 2) (start-findX)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type (number->string y)))))
+   (check-not-eqv? (begin (set-findX! 3) (start-findX) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-findX! 1) (start-findX) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (set-findX! 1) (reset))))
+
+  #;(test-case
+     "start Time tests"
+     )
+
+  #;(test-case
+     "start GAPESA (word problems) tests"
+     )
+
+  #;(test-case
+     "start Perimeter/Area tests"
+     )
+
+  (check-not-exn (λ () (set-bell1! bell) (reset))) ; enabling bell
+
+  ;(fail-check "just testing")
+  ) 

@@ -9,6 +9,8 @@
 ;;   $ raco pkg remove <<name>>
 ;; To view documentation:
 ;;   $ raco docs <<name>>
+;;
+;;; 19.09.2024: 9365 lines
 
 (require "math-quiz.rkt")
 ;;; Starting the GUI
