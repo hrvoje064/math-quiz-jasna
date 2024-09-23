@@ -13,6 +13,9 @@
 ;;; 19.09.2024: 9365 lines
 
 (require "math-quiz.rkt")
+
+(enable-bell) ; no tests to be done here
+
 ;;; Starting the GUI
 ;;; ===========================================================
 (send main-window show #t)

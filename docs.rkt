@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v5.1.1
+;;; v5.2
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -262,7 +262,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.1.1
+  "Jasna's Math Quiz, v5.2
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

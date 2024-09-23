@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.1.1
+;;; Math Quiz, v5.2
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -980,7 +980,7 @@
 (define time-slider (new slider%
                          [label
                           (format
-                           "time calculation level: 1 easy, hard, 3 mixed")]
+                           "time calculation level: 1 easy, 2 hard, 3 mixed")]
                          [min-value 1]
                          [max-value 3]
                          (parent slider-time-dialog)
@@ -2162,14 +2162,33 @@ Restart program immediately after"]
                          [callback
                           (lambda (button event)
                             (let ((input (string-trim (send text-input get-value))))
-                              (cond
-                                ((and *time-flag* (result->min input))
-                                 (set! input (number->string (result->min input))))
-                                (*time-flag* (set! input (string-append " " input " ")))
-                                (else void))
+                              (when *time-flag*
+                                (let ((result (result->min input)))
+                                  (if result
+                                      (set! input (number->string result))
+                                      (set! input (string-append " " input " ")))))
                               (send text-input set-value "")
                               (math-quiz-type input)))]))
 
+#;(define text-button (new button%
+                           [parent text-pane]
+                           [label "Check"]
+                           [font button-font]
+                           [min-height start-button-height]
+                           [enabled #f]
+                           [vert-margin 20]
+                           [horiz-margin 100]
+                           [style '(border)]
+                           [callback
+                            (lambda (button event)
+                              (let ((input (string-trim (send text-input get-value))))
+                                (cond
+                                  ((and *time-flag* (result->min input))
+                                   (set! input (number->string (result->min input))))
+                                  (*time-flag* (set! input (string-append " " input " ")))
+                                  (else void))
+                                (send text-input set-value "")
+                                (math-quiz-type input)))]))
 
 ;;; ================================================================
 
@@ -5526,6 +5545,10 @@ but limited by *max-penalty-exercises*"
 ;;; Tests for the main logic
 ;;; ==================================================================
 
+(provide enable-bell)
+(define (disable-bell) (set! bell1 void))
+(define  (enable-bell) (set! bell1 bell))
+
 (define (set+-level! v) (set! *level+-* v))
 (define (set*level! v) (set! *level** v))
 (define (set-quot-level! v) (set! *level/quot* v))
@@ -5536,7 +5559,9 @@ but limited by *max-penalty-exercises*"
 (define (set-max-rn! v) (set! *max-roman-number* v))
 (define (set-max-skip! v) (set! *max-skip-increment* v))
 (define (set-findX! v) (set! *findX-level* v))
-(define (set-bell1! v) (set! bell1 v))
+(define (set-time-level! v) (set! *time-level* v))
+(define (set-gapesa-level! v) (set! *gapesa-level* v))
+(define (set-Carea-level! v) (set! *Carea-level* v))
 
 (define (ord-err str)
   (let* ((cut (- (string-length str) 2))
@@ -5546,27 +5571,26 @@ but limited by *max-penalty-exercises*"
     (string-append digits wrong-ords)))
 
 (define (return-cash money)
-  (let-values ([(d100 dr1) (quotient/remainder (* 100 money) 10000)])
-    (let-values ([(d50 dr2) (quotient/remainder dr1 5000)])
-      (let-values ([(d20 dr3) (quotient/remainder dr2 2000)])
-        (let-values ([(d10 dr4) (quotient/remainder dr3 1000)])
-          (let-values ([(d5 dr5) (quotient/remainder dr4 500)])
-            (let-values ([(d1 dr6) (quotient/remainder dr5 100)])
-              (let-values ([(c25 dr7) (quotient/remainder dr6 25)])
-                (let-values ([(c10 dr8) (quotient/remainder dr7 10)])
-                  (let-values ([(c5 dr9) (quotient/remainder dr8 5)])
-                    (list d100 d50 d20 d10 d5 d1 c25 c10 c5 dr9)))))))))))
-
+  (reverse
+   (car  
+    (foldl (λ (d r)
+             (let ((dl (first r))
+                   (rest (second r)))
+               (let-values ([(n newr) (quotient/remainder rest d)])
+                 (list (cons n dl) newr))))
+           (list null (inexact->exact (round (* 100 money))))
+           '(10000 5000 2000 1000 500 100 25 10 5 1)))))
+    
 (define (index-words unsorted sorted)
   (let ((indexed (map cons '(1 2 3 4 5) sorted)))
     (map (λ (w)
            (car (findf
                  (λ (is) (string=? w (cdr is))) indexed))) unsorted)))
-                            
+
 (module+ test
   (require rackunit)
 
-  (check-not-exn (λ () (set-bell1! void))) ; pacifying bell
+  (check-not-exn (λ () (disable-bell))) ; pacifying bell
 
   (test-case
    "start (+ -) tests"
@@ -6052,19 +6076,119 @@ but limited by *max-penalty-exercises*"
                       (state-mistakes *state*)) 0)
    (check-not-exn (λ () (set-findX! 1) (reset))))
 
-  #;(test-case
-     "start Time tests"
-     )
+  (test-case
+   "start Time tests"
+   (check-exn exn:fail? (λ () (set-time-level! 4) (start-time)))
+   (check-not-exn (λ () (set-time-level! 1) (start-time)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type (number->string y)))))
+   (check-not-eqv? (begin (set-time-level! 3) (start-time) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-time-level! 2) (start-time) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (set-time-level! 1) (reset))))
 
-  #;(test-case
-     "start GAPESA (word problems) tests"
-     )
+  (test-case
+   "start GAPESA (word problems) tests"
+   (check-exn exn:fail? (λ () (set-gapesa-level! 11) (start-text)))
+   (check-not-exn (λ () (set-gapesa-level! 1) (start-text)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type (number->string y)))
+                    (reset)))
+   (check-not-eqv? (begin (set-gapesa-level! 3) (start-text) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-gapesa-level! 4) (start-text) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-not-eqv? (begin (set-gapesa-level! 6) (start-text) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-gapesa-level! 8) (start-text) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-not-eqv? (begin (set-gapesa-level! 9) (start-text) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-gapesa-level! 10) (start-text) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)   
+   (check-not-exn (λ () (set-gapesa-level! 1) (reset))))
 
-  #;(test-case
-     "start Perimeter/Area tests"
-     )
-
-  (check-not-exn (λ () (set-bell1! bell) (reset))) ; enabling bell
+  (test-case
+   "start Perimeter/Area tests"
+   (check-exn exn:fail? (λ () (set-Carea-level! 5) (start-Carea)))
+   (check-not-exn (λ () (set-Carea-level! 1) (start-Carea)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type (number->string y)))
+                    (reset)))
+   (check-not-eqv? (begin (set-Carea-level! 2) (start-Carea) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-Carea-level! 3) (start-Carea) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-not-eqv? (begin (set-Carea-level! 4) (start-Carea) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-Carea-level! 4) (start-Carea) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (set-Carea-level! 1) (reset))))
 
   ;(fail-check "just testing")
   ) 
