@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v5.2
+;;; v5.2.1
 
 (require "misc.rkt")
 (require "time.rkt")
@@ -316,6 +316,51 @@ are square.~n~n How many more square buttons than round ones are there?"
          (lambda (a b)
            (let ((formula `(,a - ,b - ,b)))
              (values formula formula))))
+
+   (list "Lisa walks to school every morning. The walk from her house \
+to her school takes ~a minutes. If she has already been walking for ~a \
+minutes, how much longer does she have to walk before she arrives at school?"
+         '((20 36) (10 20))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a - ,b)))
+             (values formula formula))))
+
+   (list "Tina baked ~a cookies to sell at the school bake sale. \
+She plans to take home whatever cookies are not sold. If she sold ~a \
+cookies, how many cookies will she take home?"
+         '((60 120) (50 90))
+         (lambda (a b) (> a (+ b 10)))
+         (lambda (a b)
+           (let ((formula `(,a - ,b)))
+             (values formula formula))))
+
+   (list "Our school collects money for school uniforms. Third graders \
+collected $~a. Fourth graders collected ~a fewer dollars. How much \
+money did fourth graders collect?"
+   '((300 500) (100 170))
+   t-func
+   (lambda (a b)
+     (let ((formula `(,a - ,b)))
+       (values formula formula))))
+
+   (list "Lado has ~a pencils. There are ~a in a black box and some \
+in a brown box.~n
+ How many are in the brown box?"
+           '((300 600) (120 290))
+           t-func
+           (lambda (a b)
+             (let ((formula `(,a - ,b)))
+               (values formula formula))))
+
+   (list "Jasna’s new jump rope is ~a centimeters longer than her old \
+jump rope. Her new jump rope is ~a centimeters long.~n
+ How long was Jasnas’s old jump rope?"
+         '((5 11) (120 180))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,b - ,a)))
+             (values formula formula))))
    ))
 
 (define word+-problems2
@@ -362,6 +407,25 @@ Their difference is ~a.~n~n What is the sum of these two numbers?"
          t-func
          (lambda (a b)
            (let ((formula `(,a + ,b + ,a)))
+             (values formula formula))))
+
+   (list "Jagoda has ~a pens. She gives ~a pens to her friends. \
+Then she opens a new box of ~a pens.~n
+ How many pens does she have now?"
+         '((30 60) (20 40) (12 25))
+         (lambda (a b _) (> a b))
+         (lambda (a b c)
+           (let ((formula `(,a - ,b + ,c)))
+             (values formula formula))))
+
+   (list "There are ~a balls in a bag and ~a balls in a basket. \
+~a of these balls were used during lunch break.~n
+ How many balls were not used?"
+         '((15 30) (15 25) (9 21))
+         (lambda (a b c)
+           (and (not (= a b)) (not (= a c)) (not (= b c))))
+         (lambda (a b c)
+           (let ((formula `(,a + ,b - ,c)))
              (values formula formula))))
    ))
   

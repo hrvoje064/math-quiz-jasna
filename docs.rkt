@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v5.2
+;;; v5.2.1
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -262,11 +262,11 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.2
+  "Jasna's Math Quiz, v5.2.1
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
-My daughter is now in 2nd grade, and the program is being updated with all she is learning at school.
+My daughter is now in 3rd grade, and the program is being updated with all she is learning at school.
 Most of the exercises have several levels of difficulty, with level one being appropriate for 1st, or 2nd grades, and higher levels for higher grades.
 
 I intend to continue updating the program with new exercises (and/or new levels of existing exercises), as per material she is learning at school.
