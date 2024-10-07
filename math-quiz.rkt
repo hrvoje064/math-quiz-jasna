@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.2.1
+;;; Math Quiz, v5.3
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -728,7 +728,7 @@
 (define slider-text-dialog (new dialog%
                                 [label "Set"]
                                 [parent main-window]
-                                [width 500]
+                                [width 600]
                                 [height 80]
                                 [style '(close-button)]
                                 [alignment '(right top)]))
@@ -941,7 +941,7 @@
                          [label
                           (format
                            "GAPESA level: 1+ ,  2- ,  3+ or - ,  4+- , 5mix +- ,  \
-6* , 7~a easy , 8*~a easy, 9~a ,  10*~a" // // // //)]
+6* , 7~a easy + fractions, 8*~a easy, 9~a ,  10*~a" // // // //)]
                          [min-value 1]
                          [max-value 10]
                          (parent slider-text-dialog)
@@ -4381,11 +4381,16 @@ Restart program immediately after"]
          (rangel (second wp))
          (test (third wp))
          (equation (fourth wp)))
+    (define (parse-rangel range)
+      (let ((r-length (length range)))
+        (if (= r-length 2)
+            (apply random range)
+            (list-ref range (random r-length)))))
     (define (get-inputs)
       (let ((inputs
              (do ([parameters
-                   (map (lambda (range) (apply random range)) rangel)
-                   (map (lambda (range) (apply random range)) rangel)])
+                   (map parse-rangel rangel)
+                   (map parse-rangel rangel)])
                ((apply test parameters) parameters))))
         (let*-values
             ([(formula-show formula-calc) (apply equation inputs)]
@@ -4396,10 +4401,7 @@ Restart program immediately after"]
              (when *time-flag* (set! inputs (map min->time inputs))); changing to hh:mm
              (let ((problem (apply format text inputs)))
                (set-problem-x! *problem* problem)
-               (set-problem-y! *problem*
-                               (if (integer? result)
-                                   result
-                                   (exact->inexact result)))
+               (set-problem-y! *problem* result)
                (set-problem-op! *problem* formula-show)
                #;(println (truncate-result (problem-y *problem*)
                                            *exponent*)) ; for quick checking
@@ -6128,6 +6130,20 @@ but limited by *max-penalty-exercises*"
                             (math-quiz-type (number->string (add1 y))))
                           (reset)
                           (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-gapesa-level! 7) (start-text) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-not-eqv? (begin (set-gapesa-level! 7) (start-text) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)  
    (check-eqv? (begin (set-gapesa-level! 8) (start-text) ; correct answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
@@ -6142,6 +6158,13 @@ but limited by *max-penalty-exercises*"
                             (math-quiz-type (number->string (add1 y))))
                           (reset)
                           (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-gapesa-level! 9) (start-text) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
    (check-eqv? (begin (set-gapesa-level! 10) (start-text) ; correct answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
@@ -6160,6 +6183,13 @@ but limited by *max-penalty-exercises*"
                           (op (problem-op *problem*)))
                       (math-quiz-type (number->string y)))
                     (reset)))
+   (check-eqv? (begin (set-Carea-level! 2) (start-Carea) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0) 
    (check-not-eqv? (begin (set-Carea-level! 2) (start-Carea) ; wrong answer
                           (let ((x (problem-x *problem*))
                                 (y (problem-y *problem*))
@@ -6174,6 +6204,13 @@ but limited by *max-penalty-exercises*"
                         (math-quiz-type (number->string y)))
                       (reset)
                       (state-mistakes *state*)) 0)
+   (check-not-eqv? (begin (set-Carea-level! 3) (start-Carea) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)
    (check-not-eqv? (begin (set-Carea-level! 4) (start-Carea) ; wrong answer
                           (let ((x (problem-x *problem*))
                                 (y (problem-y *problem*))

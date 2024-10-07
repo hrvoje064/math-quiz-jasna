@@ -147,11 +147,11 @@ If hour is zero, it still has to be entered as 0h. No spaces between 5 and h or 
 The GAPESA exercise is math problem given in words. It stands for Given, Asked, Process, Equation, Solution, and Answer.
 It pops a window with the text of a problem. The student must write the equation on a scratch-pad, calculate the solution and answer it in the input field.
 There are 10 levels of this exercise. Level 1 (the default) is addition only, level 2 is subtraction only. Level 3 is a mix of addition and subtraction problems, chosen at random. Level 4 is addition and subtraction combined in one exercise, level 5 is all levels of (+ - +-) combined.
-Level 6 is multiplication problems, level 7 is easy (1 digit) division problems, level 8 is a mix of multiplication and easy division problems, level 9 is division problems, and level 10 is multiplication and division combined.
+Level 6 is multiplication problems, level 7 is easy (1 digit) division problems, but it is also mixed with fraction inputs and outputs, level 8 is a mix of multiplication and easy division problems, level 9 is division problems, and level 10 is multiplication and division combined.
 This can be set with \"Setup->Set GAPESA level\" sub-menu.
 If the student is working on division exercises, then precision of the answer becomes an issue. Just like in arithmetic division problems, the number of significant (taken into account) decimal places can be set with \"Setup->Set Division Precision\" sub-menu. Default is 3 places.
 Do not round up the answer, just give 3 decimal digits (or whatever is set-up for division precision) without rounding the number.
-However in existing set of exercises, only 2 problems require inexact (floating point) number. All the others are set up so that the answer is always an integer.
+However in existing set of exercises, only 2 problems require inexact (floating point) number. All the others are set up so that the answer is always an integer, except in exercises that require a fraction as a result. In that case just input 1/3 (if this is the correct answer). Do not use spaces as in 1 / 3, because 1/3 is a number (fraction), and 1 / 3 is not a number!
 In case the student answers with wrong solution (wrong number), error message will be printed in red, but it will also show the correct equation for the solution.
 
 The Perimeter/Area exercises deal with calculation of circumference and area of several different types of polygons, including the circle (in higher levels).
@@ -262,7 +262,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.2.1
+  "Jasna's Math Quiz, v5.3
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

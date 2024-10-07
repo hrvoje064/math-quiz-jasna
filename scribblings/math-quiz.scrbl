@@ -402,7 +402,10 @@ decimal places can be set with @bold{Setup->Set Division Precision} sub-menu. De
 is 3 places. Do not round up the answer, just give 3 decimal digits (or whatever is
 set up for division precision) without rounding the number.
 However in existing set of exercises, only 2 problems require inexact (floating point)
-number. All the others are set up so, that the answer is always an integer.
+number. All the others are set up so, that the answer is always an integer, except in exercises
+that require a fraction as a result. In that case just input 1/3 (if this is the correct
+answer). Do not use spaces as in 1 / 3, because 1/3 is a number (fraction),
+and 1 / 3 is not a number!
 
 @subsection[#:tag "gapesa-error"]{GAPESA Error Reporting}
 

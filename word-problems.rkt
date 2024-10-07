@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v5.2.1
+;;; v5.3
 
 (require "misc.rkt")
 (require "time.rkt")
@@ -66,6 +66,7 @@
 ;;; ========================================================================
 
 (define t-func (lambda x #t))
+(define fract-list '(1/2 1/3 1/4 1/5 1/6 1/7 1/8))
 
 (define word+problems1 ; addition only
   (list
@@ -338,20 +339,20 @@ cookies, how many cookies will she take home?"
    (list "Our school collects money for school uniforms. Third graders \
 collected $~a. Fourth graders collected ~a fewer dollars. How much \
 money did fourth graders collect?"
-   '((300 500) (100 170))
-   t-func
-   (lambda (a b)
-     (let ((formula `(,a - ,b)))
-       (values formula formula))))
+         '((300 500) (100 170))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a - ,b)))
+             (values formula formula))))
 
    (list "Lado has ~a pencils. There are ~a in a black box and some \
 in a brown box.~n
  How many are in the brown box?"
-           '((300 600) (120 290))
-           t-func
-           (lambda (a b)
-             (let ((formula `(,a - ,b)))
-               (values formula formula))))
+         '((300 600) (120 290))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a - ,b)))
+             (values formula formula))))
 
    (list "Jasna’s new jump rope is ~a centimeters longer than her old \
 jump rope. Her new jump rope is ~a centimeters long.~n
@@ -944,7 +945,77 @@ and were paid ~a php for each bottle.~n~n\
          (lambda (a b c) (not (= a b)))
          (lambda (a b c)
            (let ((formula `((,a + ,b) * ,c)))
-             (values formula formula))))         
+             (values formula formula))))
+
+   (list "A box of chocolates has ~a rows. There are ~a pieces of chocolate in each \
+row.~n
+ How many pieces of chocolate are in the box?"
+         '((6 20) (5 11))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * ,b)))
+             (values formula formula))))
+
+   (list "Cherry and Jana are playing a card game. Cherry has ~a cards and Jana \
+has ~a times as many cards.~n
+ How many cards do they have all-together?"
+         '((5 13) (3 13))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * (,b + 1))))
+             (values formula formula))))
+
+   (list "Jim is in charge of collecting the balls at the end of \
+gym class. There are ~a bins, and ~a balls can fit in each bin.~n
+ How many balls are there, if each bin is full?"
+         '((4 13) (5 13))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * ,b)))
+             (values formula formula))))
+
+   (list "Ana was given ~a pages of homework. Each page had ~a exercises on it.~n
+ How many total exercises did she have to complete?"
+         '((2 10) (5 12))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * ,b)))
+             (values formula formula))))
+
+   (list "A bakery  sells one cookie for $~a.~n
+ How much will a ~a dozen cookies cost?"
+         '((2 7) (2 7))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * ,b * 12)))
+             (values formula formula))))
+
+   (list "Our teacher needs to buy yarn for ~a pupils to do a science \
+activity. Each pupil needs ~a meters of green yarn and ~a meters of red yarn.~n
+ How many meters of yarn does our teacher need to buy?"
+         '((5 13) (2 6) (2 6))
+         (lambda (a b c) (not (= b c)))
+         (lambda (a b c)
+           (let ((formula `(,a * (,b + ,c))))
+             (values formula formula))))
+
+   (list "Tina is buying a new carpet tiles for her bedroom floor. The \
+floor measures ~a feet x ~a feet.~n
+If one tile measures 1 square foot, how many tiles does she need to buy?"
+         '((5 13) (5 13))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * ,b)))
+             (values formula formula))))
+
+   (list "Jasna reads ~a pages in her new book every day, for \
+~a days. Her book has ~a pages.~n
+ How many pages are left to read after that?"
+         '((2 6) (5 10) (50 100))
+         t-func
+         (lambda (a b c)
+           (let ((formula `(,c - ,a * ,b)))
+             (values formula formula))))   
    ))
 
 (define word/problems-easy ; one digit division problems
@@ -1067,6 +1138,107 @@ how many days does she need to read the whole book?"
          (lambda (a b)
            (let ((formula `((,a - ,b) ,// 2)))
              (values formula formula))))
+
+   (list "Our class has ~a pupils. If we are sitting ~a at each table,~n
+ how many tables do we need?"
+         '((20 40) (2 7))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a ,// ,b)))
+             (values formula formula))))
+
+   (list "There are ~a pupils sitting at our table in the classroom. \
+We are given ~a pencils to split evenly between us.~n
+ How many pencils will each pupil get?"
+         '((3 7) (20 45))
+         (lambda (a b) (zero? (modulo b a)))
+         (lambda (a b)
+           (let ((formula `(,b ,// ,a)))
+             (values formula formula))))
+
+   (list "Our teacher is conducting a math review before the exam. We earn \
+~a points for each correct answer. Today we earned ~a points during the review.~n
+ How many questions did we answer correctly?"
+         '((3 11) (50 100))
+         (lambda (a b) (zero? (modulo b a)))
+         (lambda (a b)
+           (let ((formula `(,b ,// ,a)))
+             (values formula formula))))
+
+   (list "The area of a rectangle is ~a square meters. One side has a length \
+of ~a meters.~n
+ What is the length of the other side?"
+         '((50 100) (5 10))
+         (lambda (a b) (zero? (modulo a b)))
+         (lambda (a b)
+           (let ((formula `(,a ,// ,b)))
+             (values formula formula))))
+
+   (list "There are ~a people at our picnic party. Each person \
+will get ~a hot dogs. If there are ~a hot dogs in a package, \
+how many packages are needed?"
+         '((5 13) (2 6) (5 11))
+         (lambda (a b c) (and (zero? (modulo (* a b) c))
+                              (not (= a c))))
+         (lambda (a b c)
+           (let ((formula `(,a * ,b ,// ,c)))
+             (values formula formula))))
+
+   (list "Myra has ~a fish in her fish tank. ~a fish are goldfish and the rest \
+are tilapia.~n
+ What fraction of the fish are goldfish?"
+         '((8 13) (5 10))
+         (lambda (a b) (> a b))
+         (lambda (a b)
+           (let ((formula `(,b ,//,a)))
+             (values formula formula))))
+
+   (list "Ashley has ~a colored crayons. ~a are blue, ~a are red, \
+and ~a are green.~n
+  What fraction of the crayons are green?"
+         '((8 15) (2 6) (2 6) (2 7))
+         (lambda (a b r g) (>= a (+ r g b)))
+         (lambda (a b r g)
+           (let ((formula `(,g ,// ,a)))
+             (values formula formula))))
+
+   (list "Maya has a bag of M&M's. There are ~a M&M’s in the bag. ~a are red, \
+~a are green, ~a are blue, and the rest are yellow.~n
+ What fraction of the M&M’s are yellow?"
+         '((30 60) (5 18) (5 18) (5 18))
+         (lambda (a r g b) (> a (+ r g b)))
+         (lambda (a r g b)
+           (let ((formula `((,a - (,r + ,g + ,b)) ,// ,a)))
+             (values formula formula))))
+
+   (list "Our teacher needs to order pizza for ~a pupils. He wants \
+each pupil to get ~a of pizza.~n
+ How many pizzas should he order?"
+         `((15 33) ,fract-list)
+         (lambda (p f) (integer? (* p f)))
+         (lambda (p f)
+           (let ((formula `(,p * ,f)))
+             (values formula formula))))
+
+   (list "Our class took a survey about favorite animals. ~a of pupils chose \
+lions as their favorite animal, and ~a of the pupils chose dogs. \
+The other students chose other animals.~n
+ What fraction of pupils chose other animals?"
+         `(,fract-list ,fract-list)
+         (lambda (f1 f2) (and (not (= f1 f2)) (< (+ f1 f2) 1)))
+         (lambda (f1 f2)
+           (let ((formula `(1 - (,f1 + ,f2))))
+             (values formula formula))))
+
+   (list "Raul wanted a chocolate cake for his birthday. After blowing out the \
+candles, he cut the cake in equal slices. Out of his ~a party guests, \
+only ~a ate cake. Raul let his friend Danny take ~a of the remaining cake home.~n
+ What fraction of the cake was left over?"
+         `((10 15) (3 7) ,fract-list)
+         (lambda (s c f) (> f (/ 1 s)))
+         (lambda (s c f)
+           (let ((formula `((,s - ,c) ,// ,s - ,f)))
+             (values formula formula))))  
    ))
          
 (define word/problems ; division problems
@@ -1079,8 +1251,9 @@ we topped up the fuel tank again with ~a liters of diesel.~n~n\
          '((10 20) (60 100) (120 150) (15 25))
          t-func
          (lambda (_ a b c)
-           (let ((formula `((,a + ,b) ,// ,c)))
-             (values formula formula))))
+           (let ((formula `((,a + ,b) ,// ,c))
+                 (calc `((,a + ,b) ,// ,c * 1.0)))
+             (values formula calc))))
 
    (list "Our neighbors family has ~a kids. They went to the mall today and bought \
 ~a chocolate bars. When they returned home they divided evenly chocolate bars \
@@ -1206,7 +1379,7 @@ truck consuming per 100 km?"
          '((80 500) (25 50))
          (lambda (a b) (and (> (/ a b) 6) (< (/ a b) 25)))
          (lambda (a b)
-           (let ((formula `(,b ,// (,a ,// 100))))
+           (let ((formula `(,b ,// (,a ,// 100.0))))
              (values formula formula))))
 
    (list "Train left station A at ~a o'clock AM. It is traveling at \
@@ -1449,8 +1622,9 @@ Use 3.14 for pi"
          '((5 20) (8 25))
          t-func
          (lambda (a b)
-           (let ((formula `(,a * ,b ,// 2)))
-             (values formula formula))))
+           (let ((formula `(,a * ,b ,// 2))
+                 (calc `(,a * ,b ,// 2.0)))
+             (values formula calc))))
 
    (list "We are given a Right triangle with area = ~a cm², \
 and leg a = ~a cm.~n
@@ -1458,8 +1632,9 @@ and leg a = ~a cm.~n
          '((30 150) (5 20))
          t-func
          (lambda (a b)
-           (let ((formula `(,a * 2 ,// ,b)))
-             (values formula formula))))
+           (let ((formula `(,a * 2 ,// ,b))
+                 (calc `(,a * 2.0 ,// ,b)))
+             (values formula calc))))
 
    (list "We are given a Right triangle with hypotenuse c = ~a cm, and \
 leg a = ~a cm.~n What is the length of leg b?"
@@ -1478,7 +1653,7 @@ leg a = ~a cm.~n What is the area of that triangle?"
                   (bv (evaluate b)))
              (values (format "b    = ~a~narea = ~a" (list2string b)
                              (list2string `(,a * b ,// 2)))
-                     `(,a * ,bv ,// 2)))))
+                     `(,a * ,bv ,// 2.0)))))
    ))
 
 ;;; missing operand exercises
