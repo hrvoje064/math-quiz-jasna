@@ -60,6 +60,8 @@
           (list " "          "________________________________________")
           (list "missing X"  @italic{Starts Find the missing Operand exercises.})
           (list " "          "________________________________________")
+          (list "operators"  @italic{Starts missing operators (+ -) exercises.})
+          (list " "          "________________________________________")
           (list "time"       @italic{Starts elapsed time exercises.})
           (list " "          "________________________________________")
           (list "GAPESA"     @italic{Given, Asked, Process, Equation, Solution, Answer})
@@ -370,6 +372,12 @@ of the form @bold{X (+-*/) N = M}, or @bold{N (+-*/) X = M}.
 The student must answer with the value of @bold{X}. Erroneous answer prints out
 the solution equation, just like @(secref "gapesa-error"), and Perimeter/Area exercises.
 
+@section{Operators Exercises}
+The operators exercise will display an arithmetic term with all operators (+ or -) missing.
+Student is asked to enter operators inside square brackets as in: 15 [+] 5 [-] 10 = 10.
+Terms vary between 1 and maximum 3 operators. There's no need to erase square brackets,
+but program will accept it as in 15 + 5 = 20. That is also a correct answer.
+
 @section{Time Exercises}
 The time exercise is about finding the elapsed time between two or more points.
 Requires answer in the form: @bold{5h 23m} (if elapsed time is 323min).
@@ -498,6 +506,7 @@ default set by the program, set the slider back to 100%.
           @item{2.5 minutes for skip-count exercises}
           @item{2 minutes for missing X level 1}
           @item{3 minutes for missing X level 2 & 3}
+          @item{2 minutes for operators exercises}
           @item{3 minutes for time exercises level 1}
           @item{4 minutes for time exercises level 2 & 3}
           @item{3 minutes for GAPESA level 1}

@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.3
+;;; Math Quiz, v5.4
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -18,6 +18,7 @@
 (require "ordinal.rkt") ; spelling ordinal numbers
 (require "time.rkt") ; time conversions
 (require "domain-tables.rkt") ; persistent state for get-problem functions
+(require "operators.rkt") ; missing operators
 
 (define *speed-factor* 1) ; reduce or increase allotted time
 (define *left-number* 700) ; Max size-1 of left number
@@ -1283,6 +1284,14 @@ Restart program immediately after"]
                                       (when (eq? *exec-button* skip-button)
                                         (send skip-dialog show #t)))]))
 
+(define show-operators-window-menu (new menu-item%
+                                        [label "Show missing Operators Window"]
+                                        [parent retrieve-menu]
+                                        [callback
+                                         (lambda (mi e)
+                                           (when (eq? *exec-button* operators-button)
+                                             (send operators-dialog show #t)))]))
+
 (define show-text-window-menu (new menu-item%
                                    [label "Show GAPESA Window"]
                                    [parent retrieve-menu]
@@ -2044,7 +2053,7 @@ Restart program immediately after"]
 
 ;;; ===============================================================
 
-;;; Skip counting problems
+;;; Skip counting problems & operators problems
 ;;; ===============================================================
 
 (define skip-dialog (new frame%
@@ -2056,6 +2065,15 @@ Restart program immediately after"]
                          [style '(no-resize-border)]
                          [alignment '(left center)]))
 
+(define operators-dialog (new frame%
+                              [label "Missing operators questions"]
+                              [parent main-window]
+                              [width 610]
+                              [height 120]
+                              [border 10]
+                              [style '(no-resize-border)]
+                              [alignment '(left center)]))
+
 (define skip-pane (new horizontal-pane%
                        [parent skip-dialog]
                        [vert-margin 10]
@@ -2063,6 +2081,14 @@ Restart program immediately after"]
                        [alignment '(center center)]
                        [stretchable-width #t]
                        [stretchable-height #t]))
+
+(define operators-pane (new horizontal-pane%
+                            [parent operators-dialog]
+                            [vert-margin 10]
+                            [horiz-margin 5]
+                            [alignment '(center center)]
+                            [stretchable-width #t]
+                            [stretchable-height #t]))
 
 (define skip-input (new text-field%
                         [parent skip-pane]
@@ -2076,6 +2102,19 @@ Restart program immediately after"]
                         [horiz-margin 10]
                         [stretchable-width #t]
                         [stretchable-height #f]))
+
+(define operators-input (new text-field%
+                             [parent operators-pane]
+                             [font message-font]
+                             [label " "]
+                             [init-value ""]
+                             [enabled #t]
+                             [min-width 500]
+                             [min-height 30]
+                             [vert-margin 10]
+                             [horiz-margin 10]
+                             [stretchable-width #t]
+                             [stretchable-height #f]))
 
 (define skip-prompt (new message%
                          [parent skip-pane]
@@ -2101,6 +2140,20 @@ Restart program immediately after"]
                             (let ((input
                                    (extract-numbers (send skip-input get-value))))
                               (math-quiz-type input)))]))
+
+(define operators-button (new button%
+                              [parent operators-pane]
+                              [label "Check"]
+                              [font button-font]
+                              [min-height start-button-height]
+                              [enabled #f]
+                              [vert-margin 10]
+                              [horiz-margin 20]
+                              [style '(border)]
+                              [callback
+                               (lambda (button event)
+                                 (let ((input (send operators-input get-value)))
+                                   (math-quiz-type input)))]))
 
 (define (extract-numbers n-str)
   (map (compose string->number string-trim) (string-split n-str ",")))
@@ -3013,6 +3066,18 @@ Restart program immediately after"]
                                 [callback
                                  (lambda (button event) (start-findX))]))
 
+(define start-operators-button (new button%
+                                    [parent v-start-popup]
+                                    [label "operators"]
+                                    [font button-font]
+                                    [min-width start-button-width]
+                                    [min-height start-button-height]
+                                    [enabled #t]
+                                    [vert-margin 6]
+                                    [horiz-margin 6]
+                                    [callback
+                                     (lambda (button event) (start-operators))]))
+
 (define start-time-button (new button%
                                [parent v-start-popup]
                                [label "time"]
@@ -3419,6 +3484,22 @@ Restart program immediately after"]
   (send skip-input enable #t)
   (start-quiz *n* 0))
 
+(define (start-operators)
+  (set! *time-factor* 2) ; minutes per problem
+  (send text-lines insert
+        (format "--------  Missing operators (+ -) exercise  ------~n"))
+  (send operators-dialog create-status-line)
+  (send operators-dialog set-status-text
+        "Enter operators (+ or -) inside [ ]. No need to erase brackets!")
+  (set! equal= =)
+  (set! do-math do-math-operators) ; set non arithmetic operation
+  (set! get-problem get-problem-ops)
+  (set! setup setup-operators) ; setup function
+  (set! *used-numbers* '())
+  (send operators-dialog show #t)
+  (send operators-input enable #t)
+  (start-quiz *n* 0))
+
 (define (start-text)
   (define ty #f)
   (case *gapesa-level*
@@ -3731,7 +3812,7 @@ Restart program immediately after"]
                   start-money-button start-money-p-button start-ABC-button
                   start-skip-button start-skip-neg-button start-text-button
                   start-Carea-button start-findX-button start-round-button
-                  start-time-button)))
+                  start-time-button start-operators-button)))
 
 (define (disable/enable-set/font-menu t/f)
   (for-each (lambda (m) (send m enable t/f))
@@ -3757,20 +3838,20 @@ Restart program immediately after"]
                   show-r2a-window-menu show-money-window-menu
                   show-ABC-window-menu show-skip-window-menu
                   show-text-window-menu show-round-window-menu
-                  show-ord-window-menu)))
+                  show-ord-window-menu show-operators-window-menu)))
 
 (define (disable/enable-dialog-show t/f)
   (for-each (lambda (window) (send window show t/f))
             (list odd-even-dialog input-dialog sequence-dialog bba-dialog
                   pvalue-dialog round-dialog fraction-dialog clock-dialog
                   a2r-dialog r2a-dialog money-dialog ABC-dialog skip-dialog
-                  text-dialog ord-dialog)))
+                  operators-dialog text-dialog ord-dialog)))
 
 (define (disable/enable-input-fields t/f)
   (for-each (lambda (input) (send input enable t/f))
             (list comparison-input sequence-input bba-input clock-input
                   a2r-input r2a-input skip-input text-input round-input
-                  ord-input))
+                  ord-input operators-input))
   (enable-disable-sequence-cheat-button t/f)
   (enable-disable-ABC-inputs t/f)
   (enable-disable-fraction-inputs t/f)
@@ -3903,6 +3984,16 @@ Restart program immediately after"]
         set-label (string-append "skip by " (number->string (problem-op *problem*))))
   (send skip-input set-value
         (string-append (number->string (problem-x *problem*)) ",")))
+
+(define (setup-operators)
+  (set! *exec-button* operators-button)
+  (send show-operators-window-menu enable #t)
+  (send operators-button enable #t)
+  (send number-input enable #f)
+  (send prompt-msg set-label
+        (msg3 (state-question *state*) (state-problems *state*) (running-time)))
+  (get-problem)
+  (send operators-input set-value (problem-x *problem*)))
 
 (define (decimal-points n)
   (define (dps nlst)
@@ -4411,6 +4502,14 @@ Restart program immediately after"]
             (cons 'handle (list-copy (shuffle (cdr *word-problem*)))))) ; restore problem set
     (get-inputs)))
 
+(define (get-problem-ops)
+  (let* ((input (get-problem-operators))
+         (numbers (car input)))
+    (check-used-sequence
+     numbers (list (second input) (third input)) (last input)))
+  (set-problem-x! *problem* (first (problem-op *problem*)))
+  (set-problem-op! *problem* (second (problem-op *problem*))))
+    
 ;;; ==========================================================
 
 (define (get-problem-bba)
@@ -4854,6 +4953,31 @@ Restart program immediately after"]
              (map * input-0-list '(100 50 20 10 5 1 1/4 1/10 1/20 1/100))))
         (exact->inexact (apply + cash-list)))))
 
+(define (do-math-operators string x op y out)
+  (let* ((number-input (parse-input string))
+         (correct-number y)
+         (result (and number-input
+                      (equal= number-input correct-number))))
+    (cond
+      (result
+       (send text-lines insert (msg-ops string "equal" op))
+       (set-state-question! *state* (add1 (state-question *state*)))
+       (when (<= (state-question *state*) (state-problems *state*))
+         (setup-operators))) ; continue with next exercise
+      (number-input
+       (bell1)
+       (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
+       (send text-lines change-style style-delta-red)
+       (send text-lines insert (msg-ops string "not =" op))
+       (send text-lines change-style style-delta-black))
+      (else
+       (bell1)
+       (send text-lines change-style style-delta-green)
+       (send text-lines insert (msg9 string))
+       (send text-lines change-style style-delta-black)
+       (send operators-input set-value (problem-x *problem*)))))
+  (send out set-editor text-lines))
+
 (define (do-math-bba string x op y out)
   (let* ((missing-number-input (string->number string))
          (bba-number y)
@@ -5290,6 +5414,9 @@ but limited by *max-penalty-exercises*"
     ((after) (format "~a is ~a after ~a~n" result yes/no (first x)))
     (else (error 'msg-bba))))
 
+(define (msg-ops x yes/no input)
+  (format "~a is ~a to: ~a~n" x yes/no input))
+
 (define (msg-pvalue result input)
   (let ((x (problem-x *problem*))
         (pos (show (problem-op *problem*))))
@@ -5325,7 +5452,7 @@ but limited by *max-penalty-exercises*"
   (format "~a ~a ~a" x op y))
 
 (define (msg9 err-input)
-  (format "erroneous input ( ~a ) - error will not be counted!~n" err-input))
+  (format "invalid input ( ~a ) - error will not be counted!~n" err-input))
 
 (define (msg-stop)
   (format "~nExecution of exercises was stopped!~n"))
@@ -6226,6 +6353,36 @@ but limited by *max-penalty-exercises*"
                       (reset)
                       (state-mistakes *state*)) 0)
    (check-not-exn (λ () (set-Carea-level! 1) (reset))))
+
+  (test-case
+   "start operator tests"
+   (check-not-exn (λ () (start-operators)
+                    (let ((x (problem-x *problem*))
+                          (y (problem-y *problem*))
+                          (op (problem-op *problem*)))
+                      (math-quiz-type op))
+                    (reset)))
+   (check-eqv? (begin (start-operators) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type op))
+                      (reset)
+                      (state-mistakes *state*)) 0) 
+   (check-not-eqv? (begin (start-operators) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (wrong-answer-ops op)))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-operators) ; invalid - not error - answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (invalid-answer-ops op)))
+                      (reset)
+                      (state-mistakes *state*)) 0))
 
   ;(fail-check "just testing")
   ) 

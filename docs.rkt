@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v5.2.1
+;;; v5.4
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -54,6 +54,8 @@ _______________________________________________________________
 skip-count      Starts Negative Skip Counting exercises.
 _______________________________________________________________
 missing X       Starts Find the missing Operand exercises.
+_______________________________________________________________
+operators	Starts missing operators (+ -) exercises.
 _______________________________________________________________
 time            Starts elapsed time exercises
 _______________________________________________________________
@@ -140,6 +142,9 @@ Just like with cash exercises, input field will not be cleared on errors.
 The missing X exercise is the missing arithmetic operand exercise. It shows the equation of the form \"X (+-*/) N = M\", or \"N (+-*/) X = M.
 The student must answer with value of X. Erroneous answer prints out the solution equation, just like GAPESA and Perimeter/Area exercises.
 There are 3 levels for \"missing X\" exercise. Level 1 (+ -), level 2 (* /), and level 3 mix of 1 & 2.
+
+The operators exercise will display an arithmetic term with all operators (+ or -) missing. Student is asked to enter operators inside square brackets as in: 
+15 [+] 5 [-] 10 = 10. Terms vary between 1 and maximum 3 operators. There's no need to erase square brackets, but program will accept it as in 15 + 5 = 20. That is also a correct answer.
 
 The time exercise is about finding the elapsed time between two or more points. Requires answer in the form: 5h 23m (if elapsed time is 323min).
 If hour is zero, it still has to be entered as 0h. No spaces between 5 and h or m are allowed. There are 3 levels for \"time\" exercise. Level 1 is easy, level 2 a bit more complicated, and level 3 is a mix of previous 2 levels.
@@ -229,6 +234,7 @@ ________________________________________________________
 2.5 minutes for skip-count exercises
 2 minutes for missing X level 1
 3 minutes for missing X level 2 & 3
+2 minutes for operators exercises
 3 minutes for time exercises level 1
 4 minutes for time exercises level 2 & 3
 3 minutes for GAPESA level 1
@@ -262,7 +268,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.3
+  "Jasna's Math Quiz, v5.4
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
