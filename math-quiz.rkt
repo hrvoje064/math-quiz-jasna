@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.4
+;;; Math Quiz, v5.4.1
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -591,6 +591,13 @@
                               (lambda (mi e)
                                 (send slider-findX-dialog show #t))]))
 
+(define set-operators-level (new menu-item%
+                                 [label "Set missing Operators level"]
+                                 [parent setup-menu]
+                                 [callback
+                                  (lambda (mi e)
+                                    (send slider-ops-dialog show #t))]))
+
 (define set-time-level (new menu-item%
                             [label "Set time calculation level"]
                             [parent setup-menu]
@@ -749,6 +756,14 @@
                                  [height 80]
                                  [style '(close-button)]
                                  [alignment '(right top)]))
+
+(define slider-ops-dialog (new dialog%
+                               [label "Set"]
+                               [parent main-window]
+                               [width 400]
+                               [height 80]
+                               [style '(close-button)]
+                               [alignment '(right top)]))  
 
 (define slider-time-dialog (new dialog%
                                 [label "Set"]
@@ -977,6 +992,19 @@
                            (lambda (s e)
                              (set! *findX-level* (send s get-value)))]
                           [style '(vertical-label horizontal)]))
+
+(define ops-slider (new slider%
+                        [label
+                         (format
+                          "Missing operators level (+ -): 1 (1-2 ops), 2 (3 ops)")]
+                        [min-value 1]
+                        [max-value 2]
+                        (parent slider-ops-dialog)
+                        [init-value *ops-level*]
+                        [callback
+                         (lambda (s e)
+                           (set-ops-level! (send s get-value)))]
+                        [style '(vertical-label horizontal)]))  
 
 (define time-slider (new slider%
                          [label
@@ -3485,12 +3513,17 @@ Restart program immediately after"]
   (start-quiz *n* 0))
 
 (define (start-operators)
-  (set! *time-factor* 2) ; minutes per problem
-  (send text-lines insert
-        (format "--------  Missing operators (+ -) exercise  ------~n"))
+  (case *ops-level*
+    ((1) (set! *time-factor* 2) ; minutes per problem
+         (send text-lines insert
+               (format "------  Missing operators l1 (+ -) exercise  -----~n")))
+    ((2) (set! *time-factor* 5/2) ; minutes per problem
+         (send text-lines insert
+               (format "------  Missing operators l2 (+ -) exercise  -----~n")))
+    (else (error 'start-operators "*ops-level* invalid value")))
   (send operators-dialog create-status-line)
   (send operators-dialog set-status-text
-        "Enter operators (+ or -) inside [ ]. No need to erase brackets!")
+        "Enter operators ( +  or  - ) inside [  ].   No need to erase brackets!")
   (set! equal= =)
   (set! do-math do-math-operators) ; set non arithmetic operation
   (set! get-problem get-problem-ops)
@@ -3825,7 +3858,7 @@ Restart program immediately after"]
                   set-skip-increment set-text-level set-circumference-level
                   menu-item-doc menu-item-about menu-item-update
                   set-findX-level set-time-level set-*-level
-                  set-fraction-denominator))
+                  set-fraction-denominator set-operators-level))
   (check-update-menu))
 
 (provide disable/enable-popup-window-menu)
@@ -6356,12 +6389,15 @@ but limited by *max-penalty-exercises*"
 
   (test-case
    "start operator tests"
+   (check-exn exn:fail? (λ () (set-ops-level! 3) (start-operators)))
+   (check-not-exn (λ () (set-ops-level! 1)))
    (check-not-exn (λ () (start-operators)
                     (let ((x (problem-x *problem*))
                           (y (problem-y *problem*))
                           (op (problem-op *problem*)))
                       (math-quiz-type op))
                     (reset)))
+   (check-not-exn (λ () (set-ops-level! 1)))   
    (check-eqv? (begin (start-operators) ; correct answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
@@ -6382,7 +6418,32 @@ but limited by *max-penalty-exercises*"
                             (op (problem-op *problem*)))
                         (math-quiz-type (invalid-answer-ops op)))
                       (reset)
-                      (state-mistakes *state*)) 0))
-
+                      (state-mistakes *state*)) 0)
+   
+   (check-not-exn (λ () (set-ops-level! 2)))   
+   (check-eqv? (begin (start-operators) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type op))
+                      (reset)
+                      (state-mistakes *state*)) 0) 
+   (check-not-eqv? (begin (start-operators) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (wrong-answer-ops op)))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-operators) ; invalid - not error - answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (invalid-answer-ops op)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-not-exn (λ () (set-ops-level! 1) (reset))))
+   
+   
   ;(fail-check "just testing")
   ) 

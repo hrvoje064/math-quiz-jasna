@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v5.4
+;;; v5.4.1
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -145,6 +145,8 @@ There are 3 levels for \"missing X\" exercise. Level 1 (+ -), level 2 (* /), and
 
 The operators exercise will display an arithmetic term with all operators (+ or -) missing. Student is asked to enter operators inside square brackets as in: 
 15 [+] 5 [-] 10 = 10. Terms vary between 1 and maximum 3 operators. There's no need to erase square brackets, but program will accept it as in 15 + 5 = 20. That is also a correct answer.
+There are 2 levels for operators exercise: level 1 is one or two operators, and
+level 2 is three operators.
 
 The time exercise is about finding the elapsed time between two or more points. Requires answer in the form: 5h 23m (if elapsed time is 323min).
 If hour is zero, it still has to be entered as 0h. No spaces between 5 and h or m are allowed. There are 3 levels for \"time\" exercise. Level 1 is easy, level 2 a bit more complicated, and level 3 is a mix of previous 2 levels.
@@ -234,7 +236,8 @@ ________________________________________________________
 2.5 minutes for skip-count exercises
 2 minutes for missing X level 1
 3 minutes for missing X level 2 & 3
-2 minutes for operators exercises
+2 minutes for operators exercises level 1
+2.5 minutes for operators exercises level 2
 3 minutes for time exercises level 1
 4 minutes for time exercises level 2 & 3
 3 minutes for GAPESA level 1
@@ -268,7 +271,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.4
+  "Jasna's Math Quiz, v5.4.1
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

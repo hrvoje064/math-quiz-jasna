@@ -372,17 +372,28 @@ of the form @bold{X (+-*/) N = M}, or @bold{N (+-*/) X = M}.
 The student must answer with the value of @bold{X}. Erroneous answer prints out
 the solution equation, just like @(secref "gapesa-error"), and Perimeter/Area exercises.
 
+@subsection{Missing X levels}
+There are 3 levels for @bold{missing X} exercise. Level 1 (+ -), level 2 (* /),
+and level 3 mix of 1 & 2.
+
 @section{Operators Exercises}
 The operators exercise will display an arithmetic term with all operators (+ or -) missing.
 Student is asked to enter operators inside square brackets as in: 15 [+] 5 [-] 10 = 10.
 Terms vary between 1 and maximum 3 operators. There's no need to erase square brackets,
 but program will accept it as in 15 + 5 = 20. That is also a correct answer.
 
+@subsection{Operators levels}
+There are 2 levels for @bold{operators} exercise: level 1 is one or two operators, and
+level 2 is three operators.
+
 @section{Time Exercises}
 The time exercise is about finding the elapsed time between two or more points.
 Requires answer in the form: @bold{5h 23m} (if elapsed time is 323min).
 If hour is zero, it still has to be entered as @bold{0h}. No spaces between
-5 and h or m are allowed. There are 3 levels for @bold{time} exercise.
+5 and h or m are allowed.
+
+@subsection{Time levels}
+There are 3 levels for @bold{time} exercise.
 Level 1 is easy, level 2 a bit more complicated, and level 3 is a mix of previous 2 levels.
 
 @section[#:tag "gapesa"]{GAPESA Exercises}
@@ -506,7 +517,8 @@ default set by the program, set the slider back to 100%.
           @item{2.5 minutes for skip-count exercises}
           @item{2 minutes for missing X level 1}
           @item{3 minutes for missing X level 2 & 3}
-          @item{2 minutes for operators exercises}
+          @item{2 minutes for operators level 1}
+          @item{2.5 minutes for operators level 2}
           @item{3 minutes for time exercises level 1}
           @item{4 minutes for time exercises level 2 & 3}
           @item{3 minutes for GAPESA level 1}
