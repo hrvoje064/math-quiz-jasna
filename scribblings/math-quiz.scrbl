@@ -378,13 +378,12 @@ and level 3 mix of 1 & 2.
 
 @section{Operators Exercises}
 The operators exercise will display an arithmetic term with all operators (+ or -) missing.
-Student is asked to enter operators inside square brackets as in: 15 [+] 5 [-] 10 = 10.
-Terms vary between 1 and maximum 3 operators. There's no need to erase square brackets,
-but program will accept it as in 15 + 5 = 20. That is also a correct answer.
+Student is asked to enter operators inside input fields, as in: 15 [+] 5 [-] 10 = 10.
 
 @subsection{Operators levels}
-There are 2 levels for @bold{operators} exercise: level 1 is one or two operators, and
-level 2 is three operators.
+There are 3 levels for @bold{operators} exercise: level 1 is one missing operator,
+level 2 is two, and level 3 is three missing operators. This can be set with
+@bold{Setup->Set missing Operators level} sub-menu.
 
 @section{Time Exercises}
 The time exercise is about finding the elapsed time between two or more points.
@@ -517,8 +516,9 @@ default set by the program, set the slider back to 100%.
           @item{2.5 minutes for skip-count exercises}
           @item{2 minutes for missing X level 1}
           @item{3 minutes for missing X level 2 & 3}
-          @item{2 minutes for operators level 1}
-          @item{2.5 minutes for operators level 2}
+          @item{30 seconds for operators level 1}
+          @item{1.5 minutes for operators level 2}
+          @item{2.5 minutes for operators level 3}
           @item{3 minutes for time exercises level 1}
           @item{4 minutes for time exercises level 2 & 3}
           @item{3 minutes for GAPESA level 1}

@@ -6,53 +6,32 @@
 (define *ops-level* 1)
 (define (set-ops-level! v) (set! *ops-level* v))
 
-(define n-op-list12 '(2 1 2 2 2 1 2))
-(define n-op-list3 '(3))
+(define (parse-operator in)
+  (let ((op (string-trim in)))
+    (if (and (= (string-length op) 1) (member op '("+" "-")))
+        op
+        #f)))
 
-(define (parse-input in)
-  (let* ((term+result (string-split in "="))
-         (result (string->number (string-trim (last term+result))))
-         (term
-          (apply
-           append
-           (map
-            string-split
-            (map string-trim
-                 (apply append
-                        (map (λ (x) (string-split x "]"))
-                             (string-split (first term+result) "[")))))))
-         (n-terms (length (string-split in)))
-         (verify?
-          (case *ops-level*
-            ((1) (>= n-terms 5))
-            ((2) (= n-terms 9))
-            (else (error 'parse-input "*ops-level* invalid value")))))
-    (define (operator? x)
-      (memq x '(+ -)))
-    (define (num-or-sym x)
-      (let ((n (string->number x)))
-        (cond
-          (n)
-          ((member x '("+" "-")) (string->symbol x))
-          (else #f))))
-    (define (good-term term p p2)
-      (if (null? term)
-          #t
-          (and (p (car term)) (good-term (cdr term) p2 p))))
-    (let ((term-solution (map num-or-sym term)))
-      ;(println term-solution)
-      (if (or (not verify?)
-              (memq #f term-solution)
-              (not (good-term term-solution number? operator?))) ; student tried to cheat!
-          #f
-          (evaluate term-solution)))))
+(define (all? lst)
+  (if (null? lst)
+      #t
+      (and (car lst) (all? (cdr lst)))))
+
+(define (parse-ops-input prompts raw-ops)
+  (define (parse ps ops)
+    (if (null? (cddr ps))
+        (list (string-append (car ps) " ") (cadr ps))
+        (cons (car ps) (cons (car ops) (parse (cdr ps) (cdr ops))))))
+  (let ((operators (map parse-operator raw-ops)))
+    (if (not (all? operators))
+        #f
+        (let ((ops (map (λ (x) (string-append " " x " ")) operators)))
+          (if (= (- (length prompts) (length ops)) 2)
+              (apply string-append (parse prompts ops))
+              #f)))))
 
 (define (get-problem-operators)
-  (let* ((nop-list (case *ops-level*
-                     ((1) n-op-list12)
-                     ((2) n-op-list3)
-                     (else (error 'get-problem-operators "*ops-level* out of range"))))
-         (n-ops (list-ref nop-list (random (length nop-list)))))
+  (let ((n-ops *ops-level*))
     (define (get-term n acc)
       (if (zero? n)
           acc
@@ -67,6 +46,10 @@
     (let* ((term (get-term n-ops (list (random 39 100))))
            (result (evaluate term))
            (expanded (append term (list '= result)))
+           (operators (map symbol->string (filter symbol? term)))
+           (prompts
+            (append (map number->string (filter number? term))
+                    (list (string-append "=  " (number->string result)))))
            (answer
             (apply
              string-append
@@ -81,82 +64,52 @@
                                ((symbol? x) (string-append " " (symbol->string x) " "))
                                (else (string-append " " x " "))))
                   (map (λ (x) (if (or (eq? x '-) (eq? x '+)) "[]" x)) expanded)))))
-      (list numbers input answer result))))
+      (list numbers input answer (list operators prompts result)))))
 
-(define (invalid-answer-ops term-str) ; for tests in math-quiz.rkt
-  (let ((term-lst (string->list term-str)))
-    (if (memv #\+ term-lst)
-        (list->string (filter (λ (x) (not (char=? x #\+))) term-lst))
-        (list->string (filter (λ (x) (not (char=? x #\-))) term-lst)))))
+(define (invalid-answer1-ops y) ; for tests in math-quiz.rkt
+  (let ((operators (car y)))
+    (cons "*" (cdr operators))))
 
-(define (wrong-answer-ops term-str) ; for tests in math-quiz.rkt
-  (let ((term-lst (string->list term-str)))
-    (if (memv #\+ term-lst)
-        (list->string (map (λ (x) (if (char=? x #\+) #\- x)) term-lst))
-        (list->string (map (λ (x) (if (char=? x #\-) #\+ x)) term-lst)))))  
+(define (invalid-answer2-ops y) ; for tests in math-quiz.rkt
+  (cdar y)) 
+  
+(define (wrong-answer-ops y) ; for tests in math-quiz.rkt
+  (let ((operators (car y)))
+    (if (string=? (car operators) "+")
+        (cons "-" (cdr operators))
+        (cons "+" (cdr operators)))))
 
-(provide parse-input get-problem-operators wrong-answer-ops invalid-answer-ops
-         *ops-level* set-ops-level!)
+      
+(provide parse-ops-input get-problem-operators wrong-answer-ops set-ops-level!
+         invalid-answer1-ops invalid-answer2-ops *ops-level*)
 
 ;;; ===================================================
-
-;;; test terms
-(define term31 "77 [-] 15 [+] 5 [-] 33 = 34") ; ok
-(define term32 " 77 -] 15   [+ 5 - 33  =    34 ") ; ok
-(define term33 "77 - 15  +  5 - 33 = 34") ; ok
-(define term11 "22 +[] [12] = [34]") ; ok
-(define term12 "22 + [12] = [34]") ; ok
-(define term13 "22 [*] [12] = [34]") ; invalid
-(define term14 "22 [-] = 34") ; invalid
-(define term15 "22 12 = 34") ; invalid
-(define term34 "77 - 15 + 5 -x 33 = 34") ; invalid
-(define term35 "77 [*] 15 / 5 -x 33 = 34") ; invalid
-(define term36 "77 [] 15 [+] 5 [-] 33 = 34") ; invalid
-(define term37 "77 [+] [-] 15 + 33 = 34") ; invalid
-(define term21 "22 + 22 - 10 = 34") ; ok
-(define term22 "22 [+] 22 [-] 10 = 34") ; ok
-(define term23 "22 + 22 [] 10 = 34") ; invalid
-(define term24 "22 + 22 * 10 = 34") ; invalid
-(define term25 "22 + - 10 = 34") ; invalid
 
 (module+ test
   (require rackunit)
 
-  (check-exn exn:fail? (λ () (set-ops-level! 3) (get-problem-operators)))
-  (check-exn exn:fail? (λ () (set-ops-level! 3) (parse-input term31)))
+  (check-not-exn (λ () (set-ops-level! 1)))
+  (check-not-exn (λ () (get-problem-operators)))
+  (check-not-exn (λ () (get-problem-operators)))
   (check-not-exn (λ () (set-ops-level! 2)))
   (check-not-exn (λ () (get-problem-operators)))
   (check-not-exn (λ () (get-problem-operators)))
-  (check-not-exn (λ () (set-ops-level! 1)))
+  (check-not-exn (λ () (set-ops-level! 3)))
   (check-not-exn (λ () (get-problem-operators)))
   (check-not-exn (λ () (get-problem-operators)))
-  (check-not-exn (λ () (get-problem-operators)))
-
-  (check-not-exn (λ () (set-ops-level! 2)))
-  (check-eqv? (parse-input term31) 34)
-  (check-eqv? (parse-input term32) 34)
-  (check-eqv? (parse-input term33) 34)
-  (check-false (parse-input term34))
-  (check-false (parse-input term35))
-  (check-false (parse-input term36))
-  (check-false (parse-input term37))
-
   (check-not-exn (λ () (set-ops-level! 1)))
-  (check-eqv? (parse-input term21) 34)
-  (check-eqv? (parse-input term21) 34)
-  (check-eqv? (parse-input term22) 34)
-  (check-false (parse-input term23))
-  (check-false (parse-input term24))
-  (check-false (parse-input term25))
 
-  (check-eqv? (parse-input term11) 34)
-  (check-eqv? (parse-input term12) 34)
-  (check-false (parse-input term13))
-  (check-false (parse-input term14))
-  (check-false (parse-input term15))
-    
-  (check-false (parse-input "34"))
+  (check-equal? (parse-ops-input '("10" "20" "= 30") '("+")) "10 + 20 = 30")
+  (check-equal? (parse-ops-input '("1" "2" "3" "= 6") '("+" "+")) "1 + 2 + 3 = 6")
+  (check-equal? (parse-ops-input '("100" "20" "30" "5" "= 55") '("-" "-" "+"))
+                "100 - 20 - 30 + 5 = 55")
 
-  (check-not-exn (λ () (set-ops-level! 1)))
+  (check-false (parse-ops-input '("10" "20" "= 30") '()))
+  (check-false (parse-ops-input '("10" "20" "= 30") '("*")))
+  (check-false (parse-ops-input '("1" "2" "3" "= 6") '("+")))
+  (check-false (parse-ops-input '("1" "2" "3" "= 6") '("+" "x")))
+  (check-false (parse-ops-input '("100" "20" "30" "5" "= 55") '("-" "+")))
+  (check-false (parse-ops-input '("100" "20" "30" "5" "= 55") '("-" "/" "+")))
+
   )
 

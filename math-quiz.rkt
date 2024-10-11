@@ -94,21 +94,21 @@
 (define (initialize-fonts)
   (if (file-exists? *font-init-file*)
       (begin
-        (display (format "Loading font init file ~a~n" *font-init-file*))
+        #;(display (format "Loading font init file ~a~n" *font-init-file*))
         (call-with-input-file *font-init-file*
           (lambda (in)
             (with-handlers
                 ([exn:fail?
                   (lambda (exn)
-                    (display (format "Loading init file failed. File corrupted!~n"))
-                    (displayln "Setting default fonts")
+                    #;(display (format "Loading init file failed. File corrupted!~n"))
+                    #;(displayln "Setting default fonts")
                     (set-default-fonts))])
               (for-each
                (lambda (f v) (set-box! f (legal-font (string->number v))))
                all-font-list
                (read-init-file in))))))
       (begin
-        (display
+        #;(display
          (format "Font init file ~a not found!~nSetting default fonts.~n"
                  *font-init-file*))
         (set-default-fonts))))
@@ -996,9 +996,9 @@
 (define ops-slider (new slider%
                         [label
                          (format
-                          "Missing operators level (+ -): 1 (1-2 ops), 2 (3 ops)")]
+                          "Missing operators level (+ -): 1 (1 ops), 2 (2 ops), 3 (3 ops)")]
                         [min-value 1]
-                        [max-value 2]
+                        [max-value 3]
                         (parent slider-ops-dialog)
                         [init-value *ops-level*]
                         [callback
@@ -1312,13 +1312,19 @@ Restart program immediately after"]
                                       (when (eq? *exec-button* skip-button)
                                         (send skip-dialog show #t)))]))
 
-(define show-operators-window-menu (new menu-item%
-                                        [label "Show missing Operators Window"]
-                                        [parent retrieve-menu]
-                                        [callback
-                                         (lambda (mi e)
-                                           (when (eq? *exec-button* operators-button)
-                                             (send operators-dialog show #t)))]))
+(define show-operators-window-menu
+  (new menu-item%
+       [label "Show missing Operators Window"]
+       [parent retrieve-menu]
+       [callback
+        (lambda (mi e)
+          (cond
+            ((eq? *exec-button* ops-button1) (send ops-dialog1 show #t))
+            ((eq? *exec-button* ops-button2) (send ops-dialog2 show #t))
+            ((eq? *exec-button* ops-button3) (send ops-dialog3 show #t))
+            (else
+             (error 'show-operators-window-menu
+                    "invalid value *exec-button*"))))]))
 
 (define show-text-window-menu (new menu-item%
                                    [label "Show GAPESA Window"]
@@ -2080,7 +2086,320 @@ Restart program immediately after"]
                                      (if (number? x) x 0)) input))))]))
 
 ;;; ===============================================================
+;;; Missing Operators problems
+;;; ===============================================================
 
+(define ops-dialog1 (new frame%
+                         [label "Missing Operator (1) problems"]
+                         [parent main-window]
+                         [width 240]
+                         [height 120]
+                         [border 10]
+                         [style '(no-resize-border)]
+                         [alignment '(left center)]))
+
+(define ops-dialog2 (new frame%
+                         [label "Missing Operators (2) problems"]
+                         [parent main-window]
+                         [width 300]
+                         [height 120]
+                         [border 10]
+                         [style '(no-resize-border)]
+                         [alignment '(left center)]))
+
+(define ops-dialog3 (new frame%
+                         [label "Missing Operators (3) problems"]
+                         [parent main-window]
+                         [width 380]
+                         [height 120]
+                         [border 10]
+                         [style '(no-resize-border)]
+                         [alignment '(left center)]))
+
+(define ops-pane1 (new horizontal-pane%
+                       [parent ops-dialog1]
+                       [vert-margin 10]
+                       [horiz-margin 5]
+                       [alignment '(center center)]
+                       [stretchable-width #t]
+                       [stretchable-height #t]))
+
+(define ops-pane2 (new horizontal-pane%
+                       [parent ops-dialog2]
+                       [vert-margin 10]
+                       [horiz-margin 5]
+                       [alignment '(center center)]
+                       [stretchable-width #t]
+                       [stretchable-height #t]))
+
+(define ops-pane3 (new horizontal-pane%
+                       [parent ops-dialog3]
+                       [vert-margin 10]
+                       [horiz-margin 5]
+                       [alignment '(center center)]
+                       [stretchable-width #t]
+                       [stretchable-height #t]))
+
+(define ops-prompt1-1 (new message%
+                           [parent ops-pane1]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #f]))
+
+(define ops-input1-1 (new text-field%
+                          [parent ops-pane1]
+                          [font message-font]
+                          [label " "]
+                          [init-value input-label]
+                          [enabled #t]
+                          [min-width *cash-input-size*]
+                          [min-height 30]
+                          [vert-margin 10]
+                          [horiz-margin 5]
+                          [stretchable-width #t]
+                          [stretchable-height #f]))
+
+(define ops-prompt1-2 (new message%
+                           [parent ops-pane1]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #f]))
+
+(define ops-prompt1-3 (new message%
+                           [parent ops-pane1]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #t]))
+
+(define ops-button1 (new button%
+                         [parent ops-pane1]
+                         [label "Check"]
+                         [font button-font]
+                         [min-height start-button-height]
+                         [enabled #f]
+                         [vert-margin 10]
+                         [horiz-margin 30]
+                         [style '(border)]
+                         [callback
+                          (lambda (button event)
+                            (let ((input
+                                   (map
+                                    (λ (x) (string-trim (send x get-value)))
+                                    (list ops-input1-1))))
+                              (clear-ops-inputs)
+                              (math-quiz-type input)))]))
+
+(define ops-prompt2-1 (new message%
+                           [parent ops-pane2]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #f]))
+
+(define ops-input2-1 (new text-field%
+                          [parent ops-pane2]
+                          [font message-font]
+                          [label " "]
+                          [init-value input-label]
+                          [enabled #t]
+                          [min-width *cash-input-size*]
+                          [min-height 30]
+                          [vert-margin 10]
+                          [horiz-margin 5]
+                          [stretchable-width #t]
+                          [stretchable-height #f]))
+
+(define ops-prompt2-2 (new message%
+                           [parent ops-pane2]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #f]))
+
+(define ops-input2-2 (new text-field%
+                          [parent ops-pane2]
+                          [font message-font]
+                          [label " "]
+                          [init-value input-label]
+                          [enabled #t]
+                          [min-width *cash-input-size*]
+                          [min-height 30]
+                          [vert-margin 10]
+                          [horiz-margin 5]
+                          [stretchable-width #t]
+                          [stretchable-height #f]))
+
+(define ops-prompt2-3 (new message%
+                           [parent ops-pane2]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #f]))
+
+(define ops-prompt2-4 (new message%
+                           [parent ops-pane2]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 20]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #t]))
+
+(define ops-button2 (new button%
+                         [parent ops-pane2]
+                         [label "Check"]
+                         [font button-font]
+                         [min-height start-button-height]
+                         [enabled #f]
+                         [vert-margin 10]
+                         [horiz-margin 10]
+                         [style '(border)]
+                         [callback
+                          (lambda (button event)
+                            (let ((input
+                                   (map
+                                    (λ (x) (string-trim (send x get-value)))
+                                    (list ops-input2-1 ops-input2-2))))
+                              (clear-ops-inputs)
+                              (math-quiz-type input)))]))
+
+(define ops-prompt3-1 (new message%
+                           [parent ops-pane3]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #f]))
+
+(define ops-input3-1 (new text-field%
+                          [parent ops-pane3]
+                          [font message-font]
+                          [label " "]
+                          [init-value input-label]
+                          [enabled #t]
+                          [min-width *cash-input-size*]
+                          [min-height 30]
+                          [vert-margin 10]
+                          [horiz-margin 5]
+                          [stretchable-width #t]
+                          [stretchable-height #f]))
+
+(define ops-prompt3-2 (new message%
+                           [parent ops-pane3]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #f]))
+
+(define ops-input3-2 (new text-field%
+                          [parent ops-pane3]
+                          [font message-font]
+                          [label " "]
+                          [init-value input-label]
+                          [enabled #t]
+                          [min-width *cash-input-size*]
+                          [min-height 30]
+                          [vert-margin 10]
+                          [horiz-margin 5]
+                          [stretchable-width #t]
+                          [stretchable-height #f]))
+
+(define ops-prompt3-3 (new message%
+                           [parent ops-pane3]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #f]))
+
+(define ops-input3-3 (new text-field%
+                          [parent ops-pane3]
+                          [font message-font]
+                          [label " "]
+                          [init-value input-label]
+                          [enabled #t]
+                          [min-width *cash-input-size*]
+                          [min-height 30]
+                          [vert-margin 10]
+                          [horiz-margin 5]
+                          [stretchable-width #t]
+                          [stretchable-height #f]))
+
+(define ops-prompt3-4 (new message%
+                           [parent ops-pane3]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 15]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #t]))
+
+(define ops-prompt3-5 (new message%
+                           [parent ops-pane3]
+                           [font message-bold-font]
+                           [label " "]
+                           [vert-margin 10]
+                           [horiz-margin 10]
+                           [stretchable-width #t]
+                           [stretchable-height #f]
+                           [auto-resize #t]))
+
+(define ops-button3 (new button%
+                         [parent ops-pane3]
+                         [label "Check"]
+                         [font button-font]
+                         [min-height start-button-height]
+                         [enabled #f]
+                         [vert-margin 10]
+                         [horiz-margin 10]
+                         [style '(border)]
+                         [callback
+                          (lambda (button event)
+                            (let ((input
+                                   (map
+                                    (λ (x) (string-trim (send x get-value)))
+                                    (list ops-input3-1 ops-input3-2 ops-input3-3))))
+                              (clear-ops-inputs)
+                              (math-quiz-type input)))]))
+
+(define ops-input-list
+  (list ops-input1-1 ops-input2-1 ops-input2-2 ops-input3-1
+        ops-input3-2 ops-input3-3))
+
+(define (clear-ops-inputs) ; taking erasing inputs out of callback function
+  (for-each (lambda (x) (send x set-value "")) ops-input-list))
+
+;;; ===============================================================
 ;;; Skip counting problems & operators problems
 ;;; ===============================================================
 
@@ -2093,15 +2412,6 @@ Restart program immediately after"]
                          [style '(no-resize-border)]
                          [alignment '(left center)]))
 
-(define operators-dialog (new frame%
-                              [label "Missing operators questions"]
-                              [parent main-window]
-                              [width 610]
-                              [height 120]
-                              [border 10]
-                              [style '(no-resize-border)]
-                              [alignment '(left center)]))
-
 (define skip-pane (new horizontal-pane%
                        [parent skip-dialog]
                        [vert-margin 10]
@@ -2109,14 +2419,6 @@ Restart program immediately after"]
                        [alignment '(center center)]
                        [stretchable-width #t]
                        [stretchable-height #t]))
-
-(define operators-pane (new horizontal-pane%
-                            [parent operators-dialog]
-                            [vert-margin 10]
-                            [horiz-margin 5]
-                            [alignment '(center center)]
-                            [stretchable-width #t]
-                            [stretchable-height #t]))
 
 (define skip-input (new text-field%
                         [parent skip-pane]
@@ -2130,19 +2432,6 @@ Restart program immediately after"]
                         [horiz-margin 10]
                         [stretchable-width #t]
                         [stretchable-height #f]))
-
-(define operators-input (new text-field%
-                             [parent operators-pane]
-                             [font message-font]
-                             [label " "]
-                             [init-value ""]
-                             [enabled #t]
-                             [min-width 500]
-                             [min-height 30]
-                             [vert-margin 10]
-                             [horiz-margin 10]
-                             [stretchable-width #t]
-                             [stretchable-height #f]))
 
 (define skip-prompt (new message%
                          [parent skip-pane]
@@ -2168,20 +2457,6 @@ Restart program immediately after"]
                             (let ((input
                                    (extract-numbers (send skip-input get-value))))
                               (math-quiz-type input)))]))
-
-(define operators-button (new button%
-                              [parent operators-pane]
-                              [label "Check"]
-                              [font button-font]
-                              [min-height start-button-height]
-                              [enabled #f]
-                              [vert-margin 10]
-                              [horiz-margin 20]
-                              [style '(border)]
-                              [callback
-                               (lambda (button event)
-                                 (let ((input (send operators-input get-value)))
-                                   (math-quiz-type input)))]))
 
 (define (extract-numbers n-str)
   (map (compose string->number string-trim) (string-split n-str ",")))
@@ -2250,26 +2525,6 @@ Restart program immediately after"]
                                       (set! input (string-append " " input " ")))))
                               (send text-input set-value "")
                               (math-quiz-type input)))]))
-
-#;(define text-button (new button%
-                           [parent text-pane]
-                           [label "Check"]
-                           [font button-font]
-                           [min-height start-button-height]
-                           [enabled #f]
-                           [vert-margin 20]
-                           [horiz-margin 100]
-                           [style '(border)]
-                           [callback
-                            (lambda (button event)
-                              (let ((input (string-trim (send text-input get-value))))
-                                (cond
-                                  ((and *time-flag* (result->min input))
-                                   (set! input (number->string (result->min input))))
-                                  (*time-flag* (set! input (string-append " " input " ")))
-                                  (else void))
-                                (send text-input set-value "")
-                                (math-quiz-type input)))]))
 
 ;;; ================================================================
 
@@ -3514,23 +3769,41 @@ Restart program immediately after"]
 
 (define (start-operators)
   (case *ops-level*
-    ((1) (set! *time-factor* 2) ; minutes per problem
+    ((1) (set! *time-factor* 1/2) ; minutes per problem
          (send text-lines insert
-               (format "------  Missing operators l1 (+ -) exercise  -----~n")))
-    ((2) (set! *time-factor* 5/2) ; minutes per problem
+               (format "-----  Missing operators l1 (+ -) exercise  -----~n"))
+         (set! setup setup-operators1) ; setup function
+         (send ops-dialog1 create-status-line)
+         (send ops-dialog1 set-status-text
+               " Enter operators  ( +  or  - )  inside input field.")
+         (send ops-dialog1 show #t)
+         (send ops-input1-1 enable #t))
+    ((2) (set! *time-factor* 3/2) ; minutes per problem
          (send text-lines insert
-               (format "------  Missing operators l2 (+ -) exercise  -----~n")))
+               (format "-----  Missing operators l2 (+ -) exercise  -----~n"))
+         (set! setup setup-operators2) ; setup function
+         (send ops-dialog2 create-status-line)
+         (send ops-dialog2 set-status-text
+               " Enter operators  ( +  or  - )  inside input fields.")
+         (send ops-dialog2 show #t)
+         (send ops-input2-1 enable #t)
+         (send ops-input2-2 enable #t))
+    ((3) (set! *time-factor* 5/2) ; minutes per problem
+         (send text-lines insert
+               (format "-----  Missing operators l3 (+ -) exercise  -----~n"))
+         (set! setup setup-operators3) ; setup function
+         (send ops-dialog3 create-status-line)
+         (send ops-dialog3 set-status-text
+               " Enter operators  ( +  or  - )  inside input fields.")
+         (send ops-dialog3 show #t)
+         (send ops-input3-1 enable #t)
+         (send ops-input3-2 enable #t)
+         (send ops-input3-3 enable #t))
     (else (error 'start-operators "*ops-level* invalid value")))
-  (send operators-dialog create-status-line)
-  (send operators-dialog set-status-text
-        "Enter operators ( +  or  - ) inside [  ].   No need to erase brackets!")
-  (set! equal= =)
+  (set! equal= equal?)
   (set! do-math do-math-operators) ; set non arithmetic operation
   (set! get-problem get-problem-ops)
-  (set! setup setup-operators) ; setup function
   (set! *used-numbers* '())
-  (send operators-dialog show #t)
-  (send operators-input enable #t)
   (start-quiz *n* 0))
 
 (define (start-text)
@@ -3878,19 +4151,25 @@ Restart program immediately after"]
             (list odd-even-dialog input-dialog sequence-dialog bba-dialog
                   pvalue-dialog round-dialog fraction-dialog clock-dialog
                   a2r-dialog r2a-dialog money-dialog ABC-dialog skip-dialog
-                  operators-dialog text-dialog ord-dialog)))
+                  ops-dialog1 ops-dialog2 ops-dialog3 text-dialog ord-dialog)))
 
 (define (disable/enable-input-fields t/f)
   (for-each (lambda (input) (send input enable t/f))
             (list comparison-input sequence-input bba-input clock-input
                   a2r-input r2a-input skip-input text-input round-input
-                  ord-input operators-input))
+                  ord-input))
+  (enable-disable-ops-inputs t/f)
   (enable-disable-sequence-cheat-button t/f)
   (enable-disable-ABC-inputs t/f)
   (enable-disable-fraction-inputs t/f)
   (if (and t/f *peso*)
       (enable-disable-money-inputs-p #t)
       (enable-disable-money-inputs t/f)))
+
+(define (enable-disable-ops-inputs flag)
+  (for-each (λ (x) (send x enable flag))
+            (list ops-input1-1 ops-input2-1 ops-input2-2 ops-input3-1
+                  ops-input3-2 ops-input3-3)))
 
 (define (enable-disable-sequence-cheat-button flag)
   (send sequence-cheat-button enable #f)
@@ -4005,6 +4284,45 @@ Restart program immediately after"]
   (send ABC-prompt-4 set-label (string-append "< "(fourth (problem-x *problem*))))
   (send ABC-prompt-5 set-label (string-append "< "(fifth (problem-x *problem*)))))
 
+(define (setup-operators1)
+  (set! *exec-button* ops-button1)
+  (send show-operators-window-menu enable #t)
+  (send ops-button1 enable #t)
+  (send number-input enable #f)
+  (send prompt-msg set-label
+        (msg3 (state-question *state*) (state-problems *state*) (running-time)))
+  (get-problem)
+  (send ops-prompt1-1 set-label (first (second (problem-y *problem*))))
+  (send ops-prompt1-2 set-label (second (second (problem-y *problem*))))
+  (send ops-prompt1-3 set-label (third (second (problem-y *problem*)))))
+
+(define (setup-operators2)
+  (set! *exec-button* ops-button2)
+  (send show-operators-window-menu enable #t)
+  (send ops-button2 enable #t)
+  (send number-input enable #f)
+  (send prompt-msg set-label
+        (msg3 (state-question *state*) (state-problems *state*) (running-time)))
+  (get-problem)
+  (send ops-prompt2-1 set-label (first (second (problem-y *problem*))))
+  (send ops-prompt2-2 set-label (second (second (problem-y *problem*))))
+  (send ops-prompt2-3 set-label (third (second (problem-y *problem*))))
+  (send ops-prompt2-4 set-label (fourth (second (problem-y *problem*)))))
+
+(define (setup-operators3)
+  (set! *exec-button* ops-button3)
+  (send show-operators-window-menu enable #t)
+  (send ops-button3 enable #t)
+  (send number-input enable #f)
+  (send prompt-msg set-label
+        (msg3 (state-question *state*) (state-problems *state*) (running-time)))
+  (get-problem)
+  (send ops-prompt3-1 set-label (first (second (problem-y *problem*))))
+  (send ops-prompt3-2 set-label (second (second (problem-y *problem*))))
+  (send ops-prompt3-3 set-label (third (second (problem-y *problem*))))
+  (send ops-prompt3-4 set-label (fourth (second (problem-y *problem*))))
+  (send ops-prompt3-5 set-label (fifth (second (problem-y *problem*)))))
+  
 (define (setup-skip)
   (set! *exec-button* skip-button)
   (send show-skip-window-menu enable #t)
@@ -4017,16 +4335,6 @@ Restart program immediately after"]
         set-label (string-append "skip by " (number->string (problem-op *problem*))))
   (send skip-input set-value
         (string-append (number->string (problem-x *problem*)) ",")))
-
-(define (setup-operators)
-  (set! *exec-button* operators-button)
-  (send show-operators-window-menu enable #t)
-  (send operators-button enable #t)
-  (send number-input enable #f)
-  (send prompt-msg set-label
-        (msg3 (state-question *state*) (state-problems *state*) (running-time)))
-  (get-problem)
-  (send operators-input set-value (problem-x *problem*)))
 
 (define (decimal-points n)
   (define (dps nlst)
@@ -4310,30 +4618,6 @@ Restart program immediately after"]
          (x (get-left-number (random 13 *left-number*) op))) ; min 2 for (-)
     (let ((y (+ x (random 1 100))))
       (check-used x op y))))
-
-#;(define (get-problem-f1)
-    (let* ((op-list (list minus plus minus plus minus))
-           (op (list-ref op-list (random (length op-list)))) ; minus weighted 3/5
-           (xn (random 1 13))
-           (xd (random 2 13)))
-      (if (> (gcd xn xd) 1)
-          (check-used 3/5 op 2/5 30) ; avoiding Scheme simpifying fractions
-          (let ((yd xd) (yn (random 1 13)))
-            (if (> (gcd yn yd) 1)
-                (check-used 3/5 op 2/5 30) ; avoiding Scheme simpifying fractions
-                (check-used (/ xn xd) op (/ yn yd) 30))))))
-          
-#;(define (get-problem-f2)
-    (let* ((op-list (list minus plus minus plus minus))
-           (op (list-ref op-list (random (length op-list)))) ; minus weighted 3/5
-           (xn (random 1 13))
-           (xd (random 2 13)))
-      (if (> (gcd xn xd) 1)
-          (check-used 3/5 op 2/3 30) ; avoiding Scheme simpifying fractions
-          (let ((yn (random 1 13)) (yd (random 2 13)))
-            (if (> (gcd yn yd) 1)
-                (check-used 3/5 op 2/3 30) ; avoiding Scheme simpifying fractions
-                (check-used (/ xn xd) op (/ yn yd) 30))))))
 
 ;;; Multiplication & division problems with local tables
 ;;; ================================================================
@@ -4986,29 +5270,27 @@ Restart program immediately after"]
              (map * input-0-list '(100 50 20 10 5 1 1/4 1/10 1/20 1/100))))
         (exact->inexact (apply + cash-list)))))
 
-(define (do-math-operators string x op y out)
-  (let* ((number-input (parse-input string))
-         (correct-number y)
-         (result (and number-input
-                      (equal= number-input correct-number))))
+(define (do-math-operators operators x op y out)
+  (let* ((term-list (second y))
+         (term-string (parse-ops-input term-list operators))
+         (result (and term-string (equal= operators (first y)))))
     (cond
       (result
-       (send text-lines insert (msg-ops string "equal" op))
+       (send text-lines insert (msg-ops x "equal" op))
        (set-state-question! *state* (add1 (state-question *state*)))
        (when (<= (state-question *state*) (state-problems *state*))
-         (setup-operators))) ; continue with next exercise
-      (number-input
+         (setup))) ; continue with next exercise
+      (term-string
        (bell1)
        (set-state-mistakes! *state* (add1 (state-mistakes *state*)))
        (send text-lines change-style style-delta-red)
-       (send text-lines insert (msg-ops string "not =" op))
+       (send text-lines insert (msg-ops term-string "not =" op))
        (send text-lines change-style style-delta-black))
       (else
        (bell1)
        (send text-lines change-style style-delta-green)
-       (send text-lines insert (msg9 string))
-       (send text-lines change-style style-delta-black)
-       (send operators-input set-value (problem-x *problem*)))))
+       (send text-lines insert (msg9 operators))
+       (send text-lines change-style style-delta-black))))
   (send out set-editor text-lines))
 
 (define (do-math-bba string x op y out)
@@ -5262,9 +5544,11 @@ then additional problems are given."
 
 (define (blank-input-fields)
   (let ((input-fields
-         (list comparison-input sequence-input bba-input fraction-input-left
-               fraction-input-right fraction-input clock-input a2r-input r2a-input
-               round-input ord-input text-input number-input)))
+         (append
+          ops-input-list
+          (list comparison-input sequence-input bba-input fraction-input-left
+                fraction-input-right fraction-input clock-input a2r-input r2a-input
+                round-input ord-input text-input number-input))))
     (for-each (lambda (input) (send input set-value input-label)) input-fields)))
 
 (define (check-<=> string)
@@ -6389,61 +6673,102 @@ but limited by *max-penalty-exercises*"
 
   (test-case
    "start operator tests"
-   (check-exn exn:fail? (λ () (set-ops-level! 3) (start-operators)))
+   (check-exn exn:fail? (λ () (set-ops-level! 4) (start-operators)))
    (check-not-exn (λ () (set-ops-level! 1)))
    (check-not-exn (λ () (start-operators)
                     (let ((x (problem-x *problem*))
                           (y (problem-y *problem*))
                           (op (problem-op *problem*)))
-                      (math-quiz-type op))
+                      (math-quiz-type (car y)))
                     (reset)))
-   (check-not-exn (λ () (set-ops-level! 1)))   
+   (check-not-exn (λ () (set-ops-level! 1)))
    (check-eqv? (begin (start-operators) ; correct answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
                             (op (problem-op *problem*)))
-                        (math-quiz-type op))
+                        (math-quiz-type (car y)))
                       (reset)
                       (state-mistakes *state*)) 0) 
    (check-not-eqv? (begin (start-operators) ; wrong answer
                           (let ((x (problem-x *problem*))
                                 (y (problem-y *problem*))
                                 (op (problem-op *problem*)))
-                            (math-quiz-type (wrong-answer-ops op)))
+                            (math-quiz-type (wrong-answer-ops y)))
                           (reset)
                           (state-mistakes *state*)) 0)
-   (check-eqv? (begin (start-operators) ; invalid - not error - answer
+   (check-eqv? (begin (start-operators) ; invalid answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
                             (op (problem-op *problem*)))
-                        (math-quiz-type (invalid-answer-ops op)))
+                        (math-quiz-type (invalid-answer1-ops y)))
                       (reset)
                       (state-mistakes *state*)) 0)
-   
+   (check-eqv? (begin (start-operators) ; invalid answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (invalid-answer2-ops y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)  
    (check-not-exn (λ () (set-ops-level! 2)))   
    (check-eqv? (begin (start-operators) ; correct answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
                             (op (problem-op *problem*)))
-                        (math-quiz-type op))
+                        (math-quiz-type (car y)))
                       (reset)
                       (state-mistakes *state*)) 0) 
    (check-not-eqv? (begin (start-operators) ; wrong answer
                           (let ((x (problem-x *problem*))
                                 (y (problem-y *problem*))
                                 (op (problem-op *problem*)))
-                            (math-quiz-type (wrong-answer-ops op)))
+                            (math-quiz-type (wrong-answer-ops y)))
                           (reset)
                           (state-mistakes *state*)) 0)
-   (check-eqv? (begin (start-operators) ; invalid - not error - answer
+   (check-eqv? (begin (start-operators) ; invalid answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
                             (op (problem-op *problem*)))
-                        (math-quiz-type (invalid-answer-ops op)))
+                        (math-quiz-type (invalid-answer1-ops y)))
                       (reset)
                       (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-operators) ; invalid answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (invalid-answer2-ops y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)  
+   (check-not-exn (λ () (set-ops-level! 3)))
+   (check-eqv? (begin (start-operators) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (car y)))
+                      (reset)
+                      (state-mistakes *state*)) 0) 
+   (check-not-eqv? (begin (start-operators) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (wrong-answer-ops y)))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-operators) ; invalid answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (invalid-answer1-ops y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-eqv? (begin (start-operators) ; invalid answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (invalid-answer2-ops y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)   
    (check-not-exn (λ () (set-ops-level! 1) (reset))))
-   
-   
+      
   ;(fail-check "just testing")
   ) 
