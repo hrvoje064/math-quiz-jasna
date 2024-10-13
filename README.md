@@ -37,13 +37,13 @@ There are also numerous  non arithmetic exercises;
     GAPESA - Text given math problems in 10 levels (+, -, + or -, +-, *, / easy, */easy, /, */)
     Perimeter/Area problems in 4 levels
 
-Program is very simple to operate, and very easy for parent to control later what was the child up to. Each exercise set (min 1, max 30 exercises) is allotted certain amount of time, and when exercises are completed, if time was exceeded, penalty (again certain number of exercises) is given. After that if there were any mistakes, again additional exercises are given.
+Program is simple to operate, and very easy for parent to control later what was the child up to. Each exercise set (min 1, max 30 exercises) is allotted certain amount of time, and when exercises are completed, if time was exceeded, penalty (again certain number of exercises) is given. After that if there were any mistakes, again additional exercises are given.
 
 Child very quickly learns that accuracy,  and speed are important.
 
 Program keeps the record of all exercises, and child's answers, black for correct answers, and red for errors.
 
-Current version of math-quiz is 5.4.2
+Current version of math-quiz is 5.4.3
 
 math-quiz is written/tested in Scheme (Racket compiler v8.7 - v8.14)
 

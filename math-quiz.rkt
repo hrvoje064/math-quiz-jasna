@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.4.1
+;;; Math Quiz, v5.4.3
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -109,8 +109,8 @@
                (read-init-file in))))))
       (begin
         #;(display
-         (format "Font init file ~a not found!~nSetting default fonts.~n"
-                 *font-init-file*))
+           (format "Font init file ~a not found!~nSetting default fonts.~n"
+                   *font-init-file*))
         (set-default-fonts))))
 
 (define (read-init-file in)
@@ -2092,7 +2092,7 @@ Restart program immediately after"]
 (define ops-dialog1 (new frame%
                          [label "Missing Operator (1) problems"]
                          [parent main-window]
-                         [width 240]
+                         [width 250]
                          [height 120]
                          [border 10]
                          [style '(no-resize-border)]
@@ -2101,7 +2101,7 @@ Restart program immediately after"]
 (define ops-dialog2 (new frame%
                          [label "Missing Operators (2) problems"]
                          [parent main-window]
-                         [width 300]
+                         [width 315]
                          [height 120]
                          [border 10]
                          [style '(no-resize-border)]
@@ -2110,7 +2110,7 @@ Restart program immediately after"]
 (define ops-dialog3 (new frame%
                          [label "Missing Operators (3) problems"]
                          [parent main-window]
-                         [width 380]
+                         [width 400]
                          [height 120]
                          [border 10]
                          [style '(no-resize-border)]
@@ -2148,7 +2148,7 @@ Restart program immediately after"]
                            [horiz-margin 15]
                            [stretchable-width #t]
                            [stretchable-height #f]
-                           [auto-resize #f]))
+                           [auto-resize #t]))
 
 (define ops-input1-1 (new text-field%
                           [parent ops-pane1]
@@ -2171,7 +2171,7 @@ Restart program immediately after"]
                            [horiz-margin 15]
                            [stretchable-width #t]
                            [stretchable-height #f]
-                           [auto-resize #f]))
+                           [auto-resize #t]))
 
 (define ops-prompt1-3 (new message%
                            [parent ops-pane1]
@@ -2209,7 +2209,7 @@ Restart program immediately after"]
                            [horiz-margin 15]
                            [stretchable-width #t]
                            [stretchable-height #f]
-                           [auto-resize #f]))
+                           [auto-resize #t]))
 
 (define ops-input2-1 (new text-field%
                           [parent ops-pane2]
@@ -2232,7 +2232,7 @@ Restart program immediately after"]
                            [horiz-margin 15]
                            [stretchable-width #t]
                            [stretchable-height #f]
-                           [auto-resize #f]))
+                           [auto-resize #t]))
 
 (define ops-input2-2 (new text-field%
                           [parent ops-pane2]
@@ -2255,7 +2255,7 @@ Restart program immediately after"]
                            [horiz-margin 15]
                            [stretchable-width #t]
                            [stretchable-height #f]
-                           [auto-resize #f]))
+                           [auto-resize #t]))
 
 (define ops-prompt2-4 (new message%
                            [parent ops-pane2]
@@ -2293,7 +2293,7 @@ Restart program immediately after"]
                            [horiz-margin 15]
                            [stretchable-width #t]
                            [stretchable-height #f]
-                           [auto-resize #f]))
+                           [auto-resize #t]))
 
 (define ops-input3-1 (new text-field%
                           [parent ops-pane3]
@@ -2316,7 +2316,7 @@ Restart program immediately after"]
                            [horiz-margin 15]
                            [stretchable-width #t]
                            [stretchable-height #f]
-                           [auto-resize #f]))
+                           [auto-resize #t]))
 
 (define ops-input3-2 (new text-field%
                           [parent ops-pane3]
@@ -2339,7 +2339,7 @@ Restart program immediately after"]
                            [horiz-margin 15]
                            [stretchable-width #t]
                            [stretchable-height #f]
-                           [auto-resize #f]))
+                           [auto-resize #t]))
 
 (define ops-input3-3 (new text-field%
                           [parent ops-pane3]
