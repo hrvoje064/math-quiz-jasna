@@ -118,12 +118,12 @@ remainder. Level 7 is fraction division.
 
 All arithmetic exercises require exact (integer or fraction) results. Only exceptions are
 division (÷) that requires almost always inexact, (real -- floating point) numbers, but
-limited only to 3 digits after the decimal point. No need to enter more - excess digits will
-be discarded! You can change the default setting of 3 digits after decimal point in
+limited only to 2 digits after the decimal point. No need to enter more - excess digits will
+be discarded! You can change the default setting of 2 digits after decimal point in
 @bold{Setup->Set division precision} menu. The pop-up slider allows 0-7 digit setting.
 Having said that, of-course, if division exercise actually gives an integer result
 (as in 10 / 2 = 5) entering only 5 as a result is fine. Likewise if result has less
-than 3 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is okay.
+than 2 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is okay.
 The other is integer division (÷) where all even levels (2 4 6) require result to be entered
 as: 12r3 (where the problem was stated as 63÷5). 
 
@@ -417,13 +417,13 @@ This can be set with @bold{Setup->Set GAPESA level} sub-menu.
 If the student is working on division exercises, then precision of the answer becomes an issue.
 Just like in arithmetic division problems, the number of significant (taken into account)
 decimal places can be set with @bold{Setup->Set Division Precision} sub-menu. Default
-is 3 places. Do not round up the answer, just give 3 decimal digits (or whatever is
+is 2 places. Do not round up the answer, just give 2 decimal digits (or whatever is
 set up for division precision) without rounding the number.
 However in existing set of exercises, only 2 problems require inexact (floating point)
 number. All the others are set up so, that the answer is always an integer, except in exercises
 that require a fraction as a result. In that case just input 1/3 (if this is the correct
 answer). Do not use spaces as in 1 / 3, because 1/3 is a number (fraction),
-and 1 / 3 is not a number!
+and 1 / 3 is @bold{not} a number!
 
 @subsection[#:tag "gapesa-error"]{GAPESA Error Reporting}
 
@@ -435,13 +435,15 @@ printed in red, but it will also show the correct equation for the solution.
 The Perimeter/Area exercises deal with calculation of circumference and area of several
 different types of polygons, including the circle (in higher levels).
 The exercise behaves exactly the same way as the @(secref "gapesa") explained above,
-except for the levels, which are only 4 here. Level 4 is area exercises.
+except for the levels, which are 6 here. Level 1, 2, 3, are perimeter exercises,
+and levels 4, 5, & 6 are Area exercises.
 The levels are chosen with @bold{Setup->Set Perimeter/Area level} sub-menu.
 Exercises involving circle require floating point results, therefore the precision (number of
 decimal places required) is set with @bold{Setup->Set division precision} sub-menu. 
-This is set by default to 3. Again, do not round up/down the answers. 
+This is set by default to 2. Again, do not round up/down the answers. 
 Circle exercises use @bold{3.14} as the value of @bold{PI} (which is noted in the text of
-each exercise). Do not use more precise values for @bold{PI}, because the results will not be accepted!
+each exercise). Do not use more precise values for @bold{PI}, because the results will not
+be accepted!
 
 
 @section{Error reporting for ALL Exercises}
@@ -526,8 +528,9 @@ default set by the program, set the slider back to 100%.
           @item{4 minutes for GAPESA level 4 & 5}
           @item{5 minutes for GAPESA level 6 7 & 8}
           @item{6 minutes for GAPESA level 9 & 10}
-          @item{3 minutes for Circumference level 1}
-          @item{4 minutes for Circumference level 2 & 3}]
+          @item{3 minutes for Perimeter/Area level 1 & 4}
+          @item{4 minutes for Perimeter/Area level 2 3 & 6}
+          @item{5 minutes for Perimeter/Area level 5}]
 
 @section{Pause Button}
 

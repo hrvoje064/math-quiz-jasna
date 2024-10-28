@@ -3,7 +3,7 @@
 ;;; ABC-sort problem
 ;;; ================================================================
 
-;;; v5.3
+;;; v5.4.5
 
 (require "misc.rkt")
 (require "time.rkt")
@@ -1565,6 +1565,66 @@ a is ~a cm, side b is ~a cm, side c is ~a cm, and side d is ~a cm.~n
 
 (define area1
   (list
+   (list "We are given a rectangle with side a of ~a cm, and side b of ~a cm.~n
+ What is the area of the rectangle?"
+         `((5 20) (5 20))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * ,b)))
+             (values formula formula))))
+   
+   (list "We are given a Right triangle with legs: a = ~a cm, and b = ~a cm.~n
+ What is the area of that triangle?"
+         '((5 20) (8 25))
+         t-func
+         (lambda (a b)
+           (let ((formula `(,a * ,b ,// 2))
+                 (calc `(,a * ,b ,// 2.0)))
+             (values formula calc))))
+
+    (list "We are given a rectangle with side a of ~a cm, and side b of ~a cm, \
+and another rectangle with side a of ~a cm, and side b of ~a cm.~n
+ What is the area of both rectangles?"
+         `((5 25) (5 25) (5 25) (5 25))
+         t-func
+         (lambda (a1 b1 a2 b2)
+           (let ((formula `(,a1 * ,b1 + ,a2 * ,b2)))
+             (values formula formula))))
+  
+   (list "We are given a Right triangle with legs: a = ~a cm, and b = ~a cm, \
+and another Right triangle with legs: a = ~a cm, and b = ~a cm.~n
+ What is the area of both triangles?"
+         '((5 20) (8 25) (8 25) (6 21))
+         t-func
+         (lambda (a1 b1 a2 b2)
+           (let ((formula `((,a1 * ,b1 + ,a2 * ,b2) ,// 2))
+                 (calc `((,a1 * ,b1 + ,a2 * ,b2) ,// 2.0)))
+             (values formula calc))))
+
+   (list "We are given a Right triangle with legs: a = ~a cm, and b = ~a cm, \
+and a rectangle with side a = ~a cm, and side b = ~a cm.~n
+ What is the combined area of triangle and rectangle?"
+         '((5 20) (8 25) (6 21) (6 21))
+         t-func
+         (lambda (a1 b1 a2 b2)
+           (let ((formula `(,a1 * ,b1 ,// 2 + ,a2 * ,b2))
+                 (calc `(,a1 * ,b1 ,// 2.0 + ,a2 * ,b2)))
+             (values formula calc))))
+
+   (list "We are given a Right triangle with legs: a = ~a cm, and b = ~a cm, \
+and a rectangle with side a = ~a cm, and side b = ~a cm.~n
+ How much is the area of triangle smaller than the area rectangle?"
+         '((5 20) (8 25) (6 21) (6 21))
+         (λ (ta tb ra rb)
+           (< (add1 (/ (* ta tb) 2.0)) (* ra rb)))
+         (lambda (ta tb ra rb)
+           (let ((formula `(,ra * ,rb - ,ta * ,tb ,// 2))
+                 (calc `(,ra * ,rb - ,ta * ,tb ,// 2.0)))
+             (values formula calc))))
+   ))
+
+(define area2
+  (list
    (list "We are given a triangle with side a of ~a cm, side b of ~a cm, \
 and side c of ~a cm.~n
  What is the area of the triangle?"
@@ -1577,19 +1637,6 @@ and side c of ~a cm.~n
              (values (format "s    = ~a~narea = ~a" (list2string s)
                              (list2string `(2,V (s * (s - ,a) * (s - ,b) * (s - ,c)))))
                      `(2,V (,sv * (,sv - ,a) * (,sv - ,b) * (,sv - ,c)))))))
-
-   (list "We are given a rectangle with side a of ~a cm, and side b of ~a cm.~n
- What is the area of the rectangle?"
-         `((5 20) (5 20))
-         (lambda (a b)
-           (reset-cases)
-           (case choice
-             ((0 1) (and (= a b) (set! case0 #t) #t))
-             (else (not (= a b)))))
-         (lambda (a b)
-           (let ((formula (if case0 `(,a ^ 2) `(,a * ,b))))
-             (reset-choice)
-             (values formula formula))))
 
    (list "We are given a circle with radius = ~a cm.~n
  What is the area of the circle?~n
@@ -1616,15 +1663,6 @@ Use 3.14 for pi"
          (lambda (a)
            (let ((formula `(2,V (,a ,// 3.14))))
              (values formula formula))))
-
-   (list "We are given a Right triangle with legs: a = ~a cm, and b = ~a cm.~n
- What is the area of that triangle?"
-         '((5 20) (8 25))
-         t-func
-         (lambda (a b)
-           (let ((formula `(,a * ,b ,// 2))
-                 (calc `(,a * ,b ,// 2.0)))
-             (values formula calc))))
 
    (list "We are given a Right triangle with area = ~a cm², \
 and leg a = ~a cm.~n
@@ -1852,5 +1890,5 @@ from ~a to ~a.~n~n
 
 ;;; data
 (provide *dictionary* word+problems word-problems word+-problems word*problems
-         word/problems circumference1 circumference2 area1 operand+- operand*/
+         word/problems circumference1 circumference2 area1 area2 operand+- operand*/
          word/problems-easy time-passed1 time-passed2)

@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.4.4
+;;; Math Quiz, v5.4.5
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -23,7 +23,7 @@
 (define *speed-factor* 1) ; reduce or increase allotted time
 (define *left-number* 700) ; Max size-1 of left number
 (define *left-digit* 8) ; Max size-1 of left digit of left number
-(define *exponent* 3) ; regulating division result precision (3 places)
+(define *exponent* 2) ; regulating division result precision (2 places)
 (define *min-break-ex* 5) ; min number of exercises to enable suspend break button
 (define *max-penalty-exercises* 5) ; a reasonable punishment for exceeding time
 (define *max-roman-number* 100) ; default max roman number - can be adjusted to 3999
@@ -744,7 +744,7 @@
 (define slider-Carea-dialog (new dialog%
                                  [label "Set"]
                                  [parent main-window]
-                                 [width 400]
+                                 [width 560]
                                  [height 80]
                                  [style '(close-button)]
                                  [alignment '(right top)]))
@@ -970,9 +970,10 @@
 (define Carea-slider (new slider%
                           [label
                            (format
-                            "Perimeter/Area level: 1 P-easy, 2 P-hard, 3 P-mix, 4 Area")]
+                            "Perimeter/Area level: 1 P-easy, 2 P-hard, 3 P-mix, 4 A-easy \
+5 A-hard, 6 A-mix")]
                           [min-value 1]
-                          [max-value 4]
+                          [max-value 6]
                           (parent slider-Carea-dialog)
                           [init-value *Carea-level*]
                           [callback
@@ -3867,7 +3868,12 @@ Restart program immediately after"]
                (cons 'handle (append-shuffle circumference1 circumference2)))
          (set! *time-factor* 4) (set! ty "level-3"))
     ((4) (set! *word-problem* (cons 'handle (shuffle area1)))
-         (set! *time-factor* 4) (set! ty "level-4 "))
+         (set! *time-factor* 3) (set! ty "level-4 "))
+    ((5) (set! *word-problem* (cons 'handle (shuffle area2)))
+         (set! *time-factor* 5) (set! ty "level-5 "))
+    ((6) (set! *word-problem*
+               (cons 'handle (append-shuffle area1 area2)))
+         (set! *time-factor* 4) (set! ty "level-6 "))
     (else (error *Carea-level*)))
   (case *Carea-level*
     ((1 2 3) 
@@ -3875,7 +3881,7 @@ Restart program immediately after"]
            (format "----   Perimeter problems ~a exercise   ---~n" ty))
      (send text-dialog set-label "Perimeter questions")
      (send show-text-window-menu set-label "Show Perimeter Window"))
-    ((4)
+    ((4 5 6)
      (send text-lines insert
            (format "------   Area problems ~a exercise   -----~n" ty))
      (send text-dialog set-label "Area questions")
@@ -6620,7 +6626,7 @@ but limited by *max-penalty-exercises*"
 
   (test-case
    "start Perimeter/Area tests"
-   (check-exn exn:fail? (λ () (set-Carea-level! 5) (start-Carea)))
+   (check-exn exn:fail? (λ () (set-Carea-level! 7) (start-Carea)))
    (check-not-exn (λ () (set-Carea-level! 1) (start-Carea)
                     (let ((x (problem-x *problem*))
                           (y (problem-y *problem*))
@@ -6663,6 +6669,34 @@ but limited by *max-penalty-exercises*"
                           (reset)
                           (state-mistakes *state*)) 0)
    (check-eqv? (begin (set-Carea-level! 4) (start-Carea) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-not-eqv? (begin (set-Carea-level! 5) (start-Carea) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-Carea-level! 5) (start-Carea) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string y)))
+                      (reset)
+                      (state-mistakes *state*)) 0)
+   (check-not-eqv? (begin (set-Carea-level! 6) (start-Carea) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (add1 y))))
+                          (reset)
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-Carea-level! 6) (start-Carea) ; correct answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
                             (op (problem-op *problem*)))

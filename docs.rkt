@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v5.4.4
+;;; v5.4.5
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -73,10 +73,10 @@ Default maximum factor (for both multiplication and division tables) is set to 1
 
 Once you start the arithmetic (+ -, *, ÷, integer ÷, 10*10, 100/10) exercises, enter the result of requested exercise in the text field, and click \"Calculate\" button. Instead of clicking the \"Calculate\" button, you can also hit \"enter\" key on keyboard. If the result was correct, the confirmation will be printed in black in the panel below. If, on the other hand, the result was not correct, the same line will be printed in red.
 
-Important note. All arithmetic exercises require exact (integer or fraction) results. Only two exceptions are division (÷) that requires almost always inexact, (real -- floating point) numbers, but limited only to 3 digits after the decimal point. No need to enter more - excess digits will be discarded! The other is integer division (÷) where all even levels (2 4 6) require result to be entered as: 12r3 (where the problem was stated as 63÷5).
+Important note. All arithmetic exercises require exact (integer or fraction) results. Only two exceptions are division (÷) that requires almost always inexact, (real -- floating point) numbers, but limited only to 2 digits after the decimal point. No need to enter more - excess digits will be discarded! The other is integer division (÷) where all even levels (2 4 6) require result to be entered as: 12r3 (where the problem was stated as 63÷5).
 
-You can change the default setting of 3 digits after decimal point in \"Setup->Set division precision\" menu. The pop-up slider allows 0-7 digit setting.
-Having said that, of-course, if division exercise actually gives an integer result (as in 10 / 2 = 5) entering only 5 as a result is fine. Likewise if result has less than 3 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is okay.
+You can change the default setting of 2 digits after decimal point in \"Setup->Set division precision\" menu. The pop-up slider allows 0-7 digit setting.
+Having said that, of-course, if division exercise actually gives an integer result (as in 10 / 2 = 5) entering only 5 as a result is fine. Likewise if result has less than 2 digits after decimal point, as in (7 / 2 = 3.5), entering only 3.5 is okay.
 
 The comparison exercise (<=>), works slightly differently. It opens a separate input window, and of-course does not require numerical result. Student is asked to input one of comparison symbols ( > = < ) depending on the two numbers shown to the left and the right of the input field, as in: 133  [     ]  211 . In this case the student should type < in the input field, as 133 is smaller than 211.
 Comparison exercise works in 3 levels. Level one (integer comparison, described above) is the default level. This can be changed with \"Setup->Set comparison type: integer or fraction\" menu to compare fractions, as in 3/4 [ ] 3/5. Level 2 is easy fractions (having the same numerators or denominators). Level 3 is using different numerators and denominators.
@@ -158,15 +158,15 @@ It pops a window with the text of a problem. The student must write the equation
 There are 10 levels of this exercise. Level 1 (the default) is addition only, level 2 is subtraction only. Level 3 is a mix of addition and subtraction problems, chosen at random. Level 4 is addition and subtraction combined in one exercise, level 5 is all levels of (+ - +-) combined.
 Level 6 is multiplication problems, level 7 is easy (1 digit) division problems, but it is also mixed with fraction inputs and outputs, level 8 is a mix of multiplication and easy division problems, level 9 is division problems, and level 10 is multiplication and division combined.
 This can be set with \"Setup->Set GAPESA level\" sub-menu.
-If the student is working on division exercises, then precision of the answer becomes an issue. Just like in arithmetic division problems, the number of significant (taken into account) decimal places can be set with \"Setup->Set Division Precision\" sub-menu. Default is 3 places.
-Do not round up the answer, just give 3 decimal digits (or whatever is set-up for division precision) without rounding the number.
+If the student is working on division exercises, then precision of the answer becomes an issue. Just like in arithmetic division problems, the number of significant (taken into account) decimal places can be set with \"Setup->Set Division Precision\" sub-menu. Default is 2 places.
+Do not round up the answer, just give 2 decimal digits (or whatever is set-up for division precision) without rounding the number.
 However in existing set of exercises, only 2 problems require inexact (floating point) number. All the others are set up so that the answer is always an integer, except in exercises that require a fraction as a result. In that case just input 1/3 (if this is the correct answer). Do not use spaces as in 1 / 3, because 1/3 is a number (fraction), and 1 / 3 is not a number!
 In case the student answers with wrong solution (wrong number), error message will be printed in red, but it will also show the correct equation for the solution.
 
 The Perimeter/Area exercises deal with calculation of circumference and area of several different types of polygons, including the circle (in higher levels).
-The exercise behaves exactly the same way as the GAPESA exercise explained above, except for the levels, which are only 4 here. Level 4 is Area exercises.
+The exercise behaves exactly the same way as the GAPESA exercise explained above, except for the levels, which are 6 here. Level 1, 2, 3, are perimeter exercises, and levels 4, 5, & 6 are Area exercises.
 The levels are chosen with \"Setup->Set Perimeter/Area level\" sub-menu.
-Exercises involving circle require floating point results, therefore the precision (number of decimal places required) is set with \"Setup->Set division precision\" sub-menu. This is set by default to 3. Again, do not round up/down the answers. 
+Exercises involving circle require floating point results, therefore the precision (number of decimal places required) is set with \"Setup->Set division precision\" sub-menu. This is set by default to 2. Again, do not round up/down the answers. 
 Circle exercises use 3.14 as the value of PI (which is noted in the text of each exercise). Do not use more precise values for PI, because the results will not be accepted!
 
 For all exercises, if wrong result was entered, the report line (in the report panel) will be printed in red, and the computer will beep. Program will not move on (give next problem) until original problem is answered correctly.
@@ -248,8 +248,9 @@ ________________________________________________________
 4 minutes for GAPESA level 4 & 5
 5 minutes for GAPESA level 6 7 & 8
 6 minutes for GAPESA level 9 & 10
-3 minutes for Circumference level 1
-4 minutes for Circumference level 2 & 3
+3 minutes for Perimeter/Area level 1 & 4
+4 minutes for Perimeter/Area level 2 & 3 & 6
+5 minutes for Perimeter/Area level 5
 ___________________________________________________________
 
 The button above all start exercise buttons is labeled \"Pause\". The purpose for this is a toilet break. If a student needs to go to the toilet, they can press this button, and exercises will be suspended. Most importantly the running time will be stopped, and the input-field will not accept any inputs.
@@ -274,7 +275,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.4.4
+  "Jasna's Math Quiz, v5.4.5
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
