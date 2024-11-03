@@ -3,7 +3,7 @@
 ;;; Documentation & dictionary for Jasna's math-quiz program
 ;;; ===========================================================
 
-;;; v5.4.5
+;;; v5.4.6
 
 (define instructions1
   "Start the program by clicking on one of Exercise buttons.
@@ -164,7 +164,7 @@ However in existing set of exercises, only 2 problems require inexact (floating 
 In case the student answers with wrong solution (wrong number), error message will be printed in red, but it will also show the correct equation for the solution.
 
 The Perimeter/Area exercises deal with calculation of circumference and area of several different types of polygons, including the circle (in higher levels).
-The exercise behaves exactly the same way as the GAPESA exercise explained above, except for the levels, which are 6 here. Level 1, 2, 3, are perimeter exercises, and levels 4, 5, & 6 are Area exercises.
+The exercise behaves exactly the same way as the GAPESA exercise explained above, except for the levels, which are 8 here. Level 1, 2, 3, are perimeter exercises,  levels 4, 6, & 7 are area exercises, and level 5 & 8 are mixed perimeter/area exercises.
 The levels are chosen with \"Setup->Set Perimeter/Area level\" sub-menu.
 Exercises involving circle require floating point results, therefore the precision (number of decimal places required) is set with \"Setup->Set division precision\" sub-menu. This is set by default to 2. Again, do not round up/down the answers. 
 Circle exercises use 3.14 as the value of PI (which is noted in the text of each exercise). Do not use more precise values for PI, because the results will not be accepted!
@@ -248,9 +248,9 @@ ________________________________________________________
 4 minutes for GAPESA level 4 & 5
 5 minutes for GAPESA level 6 7 & 8
 6 minutes for GAPESA level 9 & 10
-3 minutes for Perimeter/Area level 1 & 4
-4 minutes for Perimeter/Area level 2 & 3 & 6
-5 minutes for Perimeter/Area level 5
+3 minutes for Perimeter/Area level 1 4 & 5
+4 minutes for Perimeter/Area level 2 3 & 7
+5 minutes for Perimeter/Area level 6 & 8
 ___________________________________________________________
 
 The button above all start exercise buttons is labeled \"Pause\". The purpose for this is a toilet break. If a student needs to go to the toilet, they can press this button, and exercises will be suspended. Most importantly the running time will be stopped, and the input-field will not accept any inputs.
@@ -275,7 +275,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.4.5
+  "Jasna's Math Quiz, v5.4.6
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 

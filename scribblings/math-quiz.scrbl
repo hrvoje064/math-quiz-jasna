@@ -435,8 +435,8 @@ printed in red, but it will also show the correct equation for the solution.
 The Perimeter/Area exercises deal with calculation of circumference and area of several
 different types of polygons, including the circle (in higher levels).
 The exercise behaves exactly the same way as the @(secref "gapesa") explained above,
-except for the levels, which are 6 here. Level 1, 2, 3, are perimeter exercises,
-and levels 4, 5, & 6 are Area exercises.
+except for the levels, which are 8 here. Level 1, 2, 3, are perimeter exercises,
+levels 4, 6, & 7 are area exercises, and level 5 & 8 are mixed perimeter/area exercises.
 The levels are chosen with @bold{Setup->Set Perimeter/Area level} sub-menu.
 Exercises involving circle require floating point results, therefore the precision (number of
 decimal places required) is set with @bold{Setup->Set division precision} sub-menu. 
@@ -528,9 +528,9 @@ default set by the program, set the slider back to 100%.
           @item{4 minutes for GAPESA level 4 & 5}
           @item{5 minutes for GAPESA level 6 7 & 8}
           @item{6 minutes for GAPESA level 9 & 10}
-          @item{3 minutes for Perimeter/Area level 1 & 4}
-          @item{4 minutes for Perimeter/Area level 2 3 & 6}
-          @item{5 minutes for Perimeter/Area level 5}]
+          @item{3 minutes for Perimeter/Area level 1 4 & 5}
+          @item{4 minutes for Perimeter/Area level 2 3 & 7}
+          @item{5 minutes for Perimeter/Area level 6 & 8}]
 
 @section{Pause Button}
 
