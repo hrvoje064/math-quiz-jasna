@@ -73,7 +73,7 @@
                 '(18 20 25 33 44))
   )
 
-;;; tough sequences; Fibonacci, inc=exp inc=exp */+ incremented, * n
+;;; tough sequences; Fibonacci, prime, inc=exp inc=exp */+ incremented, * n
 
 (define (exp-inc*sequence) ; tough
   (let ((begin (random 0 IQ-seq-limit))
@@ -99,6 +99,19 @@
          (seq (build-list 5 (lambda (i) (+ i begin)))))
     (map (lambda (x) (expt x exponent)) seq)))
 
+(define (get-primes n)
+  (let ((pl (cdr (build-list n (lambda (i) (add1 i))))))
+    (define (sieve acc nl)
+      (if (null? nl)
+          (reverse acc)
+          (let ((new-l (filter (lambda (n) (not (zero? (modulo n (car acc))))) nl)))
+            (sieve (cons (car new-l) acc) (cdr new-l)))))
+    (sieve '(2) pl)))
+
+(define (prime-sequence)
+  (let ((primes (get-primes 100)))
+    (take (drop primes (random (- (length primes) 5))) 5)))
+
 (module+ test
   (check-equal? (fibonacci-sequence IQ-seq-limit-fib 0 1)
                 '(0 1 1 2 3 5 8 13 21 34 55 89 144))
@@ -109,7 +122,8 @@
     (check-equal? (expt-sequence) '(8 27 64 125 216))
     (check-equal? (exp-inc*sequence) '(2 5 14 29 50))
     (check-equal? (exp-inc+sequence) '(19 23 29 37 47))
-    (check-equal? (get-sequence-2) '(10 13 17 22 28)))
+    (check-equal? (get-sequence-2) '(10 13 17 22 28))
+    (check-equal? (prime-sequence) '(71 73 79 83 89)))
   )
   
 (define (get-sequence-3)
@@ -122,7 +136,8 @@
                    (take (drop (fibonacci-sequence IQ-seq-limit-fib acc1 acc2)
                                (random (- IQ-seq-limit-fib 4))) 5)))
          (seq-lst
-          (list fibs-x exp-inc*sequence fibs exp-inc+sequence fibs-x expt-sequence))
+          (list fibs-x exp-inc*sequence fibs exp-inc+sequence
+                fibs-x expt-sequence prime-sequence))
          (chosen (list-ref seq-lst (random (length seq-lst)))))
     (chosen)))
 
