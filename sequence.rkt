@@ -16,7 +16,37 @@
          (inc (list-ref inc-lst (random (length inc-lst)))))
     inc))
 
+(define (get-inc-dec)
+  (let* ((inc-dec-lst
+          (map (lambda (p) (cons (first p) (list (- (second p)))))
+               (combinations '(5 4 3 2 1) 2)))
+         (inc-dec (list-ref inc-dec-lst (random (length inc-dec-lst)))))
+    inc-dec))
+
+(define (get-sequence-1inc begin)
+  (let ((inc (get-inc)))
+    (build-list 5 (lambda (i) (+ begin (* i inc))))))
+
+(define (get-sequence-1+- acc inc dec n)
+  (if (zero? n)
+      (reverse acc)
+      (get-sequence-1+- (cons (+ inc (car acc)) acc) dec inc (sub1 n))))
+
 (define (get-sequence-1)
+  (let ((begin (random 0 IQ-seq-limit)))
+    (if (even? (random 5)) ; inc version 3/5 weighted
+        (get-sequence-1inc begin)
+        (let ((inc-dec (get-inc-dec)))
+          (get-sequence-1+- (list begin) (first inc-dec) (second inc-dec) 4)))))
+
+(module+ test
+  (require rackunit)
+  (check-equal? (map (lambda (p) (cons (first p) (list (- (second p)))))
+                     (combinations '(5 4 3 2 1) 2))
+                '((5 -4) (5 -3) (5 -2) (5 -1) (4 -3) (4 -2) (4 -1) (3 -2) (3 -1) (2 -1)))
+  )
+
+(define (get-sequence-1-2)
   (let* ((inc (get-inc))
          (start (random 0 IQ-seq-limit))
          (lst (build-list 5 (lambda (i) (+ start (* i inc))))))
@@ -27,7 +57,7 @@
 (define inc-inc1 '(0 0 1 3 6)) ; increment-increment by 1
 
 (define (get-sequence-2)
-  (let* ((seq1 (get-sequence-1))
+  (let* ((seq1 (get-sequence-1-2))
          (inc (random 1 4)) ; 1 - 3 inc
          (inc-lst (make-list inc inc-inc1))
          (seq2 (add-sequences seq1 inc-lst)))
@@ -37,7 +67,6 @@
   (apply map + (cons seq lsts)))
 
 (module+ test
-  (require rackunit)
   (check-equal? (add-sequences '(18 20 22 24 26) (make-list 1 '(0 0 1 3 6)))
                 '(18 20 23 27 32))
   (check-equal? (add-sequences '(18 20 22 24 26) (make-list 3 '(0 0 1 3 6)))

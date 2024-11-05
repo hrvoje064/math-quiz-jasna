@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.4.6
+;;; Math Quiz, v5.4.7
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -6256,14 +6256,49 @@ but limited by *max-penalty-exercises*"
                                 (op (problem-op *problem*)))
                             (math-quiz-type (number->string (+ (last x) 1))))
                           (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-sequence! 3) (start-sequence) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string (last x))))
+                      (state-mistakes *state*)) 0)  
+   (check-not-eqv? (begin (set-sequence! 4) (start-sequence) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (+ (last x) 1))))
+                          (state-mistakes *state*)) 0)
    (check-eqv? (begin (set-sequence! 4) (start-sequence) ; correct answer
                       (let ((x (problem-x *problem*))
                             (y (problem-y *problem*))
                             (op (problem-op *problem*)))
                         (math-quiz-type (number->string (last x))))
                       (state-mistakes *state*)) 0)
+      (check-not-eqv? (begin (set-sequence! 2) (start-sequence) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (+ (last x) 1))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-sequence! 2) (start-sequence) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string (last x))))
+                      (state-mistakes *state*)) 0)
+      (check-not-eqv? (begin (set-sequence! 1) (start-sequence) ; wrong answer
+                          (let ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*)))
+                            (math-quiz-type (number->string (+ (last x) 1))))
+                          (state-mistakes *state*)) 0)
+   (check-eqv? (begin (set-sequence! 1) (start-sequence) ; correct answer
+                      (let ((x (problem-x *problem*))
+                            (y (problem-y *problem*))
+                            (op (problem-op *problem*)))
+                        (math-quiz-type (number->string (last x))))
+                      (state-mistakes *state*)) 0)
    (check-not-exn (λ () (set-sequence! 1) (reset))))
- 
 
   (test-case
    "start Before Between After tests"
