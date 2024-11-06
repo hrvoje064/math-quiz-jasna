@@ -275,7 +275,7 @@ When finished with exercises, exit the program by clicking X in the right top co
   )
 
 (define about1
-  "Jasna's Math Quiz, v5.4.8
+  "Jasna's Math Quiz, v5.4.9
 
 This program was started when I realized that it is much more interesting to write a program about elementary school math problems, than to write them down on a piece of paper to test my daughter's knowledge.
 
@@ -284,7 +284,7 @@ Most of the exercises have several levels of difficulty, with level one being ap
 
 I intend to continue updating the program with new exercises (and/or new levels of existing exercises), as per material she is learning at school.
 
-The program is written in Racket (Scheme) compiler v8.7 - v8.14.
+The program is written in Racket (Scheme) compiler v8.7 - v8.15.
 It was developed on x86 based PC, and on Orange pi 5 plus, both running Linux OS.
 Windows version was tested on Windows 11. 
 Raspberry pi version was tested on raspberry pi 4B.

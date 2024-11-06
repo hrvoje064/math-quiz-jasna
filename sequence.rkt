@@ -99,18 +99,31 @@
          (seq (build-list 5 (lambda (i) (+ i begin)))))
     (map (lambda (x) (expt x exponent)) seq)))
 
-(define (get-primes n)
-  (let ((pl (cdr (build-list n (lambda (i) (add1 i))))))
-    (define (sieve acc nl)
-      (if (null? nl)
-          (reverse acc)
-          (let ((new-l (filter (lambda (n) (not (zero? (modulo n (car acc))))) nl)))
-            (sieve (cons (car new-l) acc) (cdr new-l)))))
-    (sieve '(2) pl)))
-
+(define (sieve lst)
+  (if (null? lst)
+      null
+      (cons (car lst)
+            (sieve
+             (filter (λ (x) ((negate zero?) (modulo x (car lst)))) (cdr lst))))))
+        
 (define (prime-sequence)
-  (let ((primes (get-primes 100)))
+  (let ((primes (sieve (cddr (build-list 100 values)))))
     (take (drop primes (random (- (length primes) 5))) 5)))
+
+(define (get-sequence-3)
+  (let* ((fibs (lambda ()
+                 (take (drop (fibonacci-sequence IQ-seq-limit-fib 0 1)
+                             (random (- IQ-seq-limit-fib 4))) 5)))
+         (acc1 (random 2 5))
+         (acc2 (random (add1 acc1) 8))
+         (fibs-x (lambda ()
+                   (take (drop (fibonacci-sequence IQ-seq-limit-fib acc1 acc2)
+                               (random (- IQ-seq-limit-fib 4))) 5)))
+         (seq-lst
+          (list fibs-x exp-inc*sequence fibs exp-inc+sequence
+                fibs-x expt-sequence prime-sequence))
+         (chosen (list-ref seq-lst (random (length seq-lst)))))
+    (chosen)))
 
 (module+ test
   (check-equal? (fibonacci-sequence IQ-seq-limit-fib 0 1)
@@ -130,24 +143,10 @@
     (check-equal? (get-sequence-3) '(3 6 15 30 51))
     (check-equal? (get-sequence-3) '(6 10 16 24 34))
     (check-equal? (get-sequence-3) '(2 6 8 14 22))
-    (check-equal? (get-sequence-3) '(7 9 13 19 27)))
+    (check-equal? (get-sequence-3) '(7 9 13 19 27))
+    (random-seed (current-seconds)))
   )
   
-(define (get-sequence-3)
-  (let* ((fibs (lambda ()
-                 (take (drop (fibonacci-sequence IQ-seq-limit-fib 0 1)
-                             (random (- IQ-seq-limit-fib 4))) 5)))
-         (acc1 (random 2 5))
-         (acc2 (random (add1 acc1) 8))
-         (fibs-x (lambda ()
-                   (take (drop (fibonacci-sequence IQ-seq-limit-fib acc1 acc2)
-                               (random (- IQ-seq-limit-fib 4))) 5)))
-         (seq-lst
-          (list fibs-x exp-inc*sequence fibs exp-inc+sequence
-                fibs-x expt-sequence prime-sequence))
-         (chosen (list-ref seq-lst (random (length seq-lst)))))
-    (chosen)))
-
 ;;; Export
 
 (provide get-sequence-1 get-sequence-2 get-sequence-3)

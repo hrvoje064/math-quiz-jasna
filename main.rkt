@@ -13,6 +13,7 @@
 (require "math-quiz.rkt")
 
 (enable-bell) ; no tests to be done here
+(random-seed (current-seconds)) ; just making sure that RNG is reset
 
 ;;; Starting the GUI
 ;;; ===========================================================
