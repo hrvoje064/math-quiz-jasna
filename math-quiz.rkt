@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.4.10
+;;; Math Quiz, v5.4.11
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -4691,18 +4691,17 @@ Restart program immediately after"]
 
 (define (get-problem/quot3)
   (let* ((op div)
-         (q (random 5 100))
-         (y (random 11 40))
-         (x (* q y))
-         (r (+ x (random 1 y))))
+         (q (random 11 50))
+         (y (random 11 20))
+         (x (* q y)))
     (if (<= x *left-number*)
         (check-used x op y)
         (get-problem/quot3))))
 
 (define (get-problem/quotr4)
   (let* ((op divr)
-         (q (random 5 100))
-         (y (random 11 40))
+         (q (random 11 50))
+         (y (random 11 20))
          (x (* q y))
          (r (+ x (random 1 y))))
     (if (<= r *left-number*)
@@ -4711,15 +4710,15 @@ Restart program immediately after"]
 
 (define (get-problem/quot5)
   (let* ((op div)
-         (q (random 3 42))
-         (y (random 15 50))
+         (q (random 11 42))
+         (y (random 25 60))
          (x (* q y)))
     (check-used x op y)))
 
 (define (get-problem/quotr6)
   (let* ((op divr)
-         (q (random 3 42))
-         (y (random 15 50))
+         (q (random 11 42))
+         (y (random 25 60))
          (x (* q y))
          (r (+ x (random 1 y))))
     (check-used r op y)))
@@ -6114,25 +6113,109 @@ but limited by *max-penalty-exercises*"
    "start (integer/fraction /) tests"
    (check-not-exn (λ () (set-quot-level! 1) (start/quot)))
    (check-exn exn:fail? (λ () (set-quot-level! 8) (start/quot)))
-   (check-not-exn (λ () (set-quot-level! 4) (start/quot)
-                    (let* ((x (problem-x *problem*))
-                           (y (problem-y *problem*))
-                           (op (problem-op *problem*))
-                           (res ((run op) x y)))
-                      (math-quiz-type
-                       (string-append (number->string (car res)) "r"
-                                      (number->string (cadr res)))))))
-   (check-eq? (+ 1 (state-mistakes *state*))
-              (begin (start/quot)
+   (check-not-exn (λ () (set-quot-level! 2) (start/quot)))
+   (check-not-eqv? 0 ; wrong
+                  (begin (start/quot)
+                         (let* ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*))
+                                (res ((run op) x y)))
+                       (math-quiz-type 
+                        (string-append (number->string (car res)) "r"
+                                       (number->string (+ 7 (cadr res))))))
+                     (state-mistakes *state*)))
+   (reset)
+   (check-eqv? 0 ; right
+                  (begin (start/quot)
+                         (let* ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*))
+                                (res ((run op) x y)))
+                           (math-quiz-type (string-append (number->string (car res)) "r"
+                                           (number->string (cadr res)))))
+                         (state-mistakes *state*)))
+   (reset)
+   (check-not-exn (λ () (set-quot-level! 3) (start/quot))) 
+   (check-not-eq? 0 ; wrong
+                  (begin (start/quot)
+                         (let* ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*))
+                                (res ((run op) x y)))
+                           (math-quiz-type (number->string (add1 res))))
+                     (state-mistakes *state*)))
+   (check-eq? 0 ; right
+                  (begin (start/quot)
+                         (let* ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*))
+                                (res ((run op) x y)))
+                           (math-quiz-type (number->string res)))
+                         (state-mistakes *state*)))
+   (reset)
+   (check-not-exn (λ () (set-quot-level! 4) (start/quot)))
+   (check-eqv? 0 ; right
+               (begin
+                 (let* ((x (problem-x *problem*))
+                        (y (problem-y *problem*))
+                        (op (problem-op *problem*))
+                        (res ((run op) x y)))
+                   (math-quiz-type
+                    (string-append (number->string (car res)) "r"
+                                   (number->string (cadr res)))))
+                 (state-mistakes *state*)))
+  (check-not-eq? 0 ; wrong
+                  (begin (start/quot)
+                         (let* ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*))
+                                (res ((run op) x y)))
+                           (math-quiz-type
+                            (string-append (number->string (car res)) "r"
+                                           (number->string (+ 7 (cadr res))))))
+                         (state-mistakes *state*)))
+   (reset)
+   (check-not-exn (λ () (set-quot-level! 5) (start/quot))) 
+   (check-not-eq? 0 ; wrong
+                  (begin (start/quot)
+                         (let* ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*))
+                                (res ((run op) x y)))
+                           (math-quiz-type (number->string (add1 res))))
+                     (state-mistakes *state*)))
+   (check-eq? 0 ; right
+                  (begin (start/quot)
+                         (let* ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*))
+                                (res ((run op) x y)))
+                           (math-quiz-type (number->string res)))
+                         (state-mistakes *state*)))
+   (reset)
+   (check-not-exn (λ () (set-quot-level! 6) (start/quot)))
+   (check-eq? 0 ; right
+              (begin (start/quot) ; right
                      (let* ((x (problem-x *problem*))
                             (y (problem-y *problem*))
                             (op (problem-op *problem*))
                             (res ((run op) x y)))
                        (math-quiz-type
                         (string-append (number->string (car res)) "r"
-                                       (number->string (+ 7 (cadr res))))))
+                                       (number->string (cadr res)))))
                      (state-mistakes *state*)))
-   (check-eq? (begin (set-quot-level! 7) (start/quot) (+ 0 (state-mistakes *state*)))
+   (check-not-eq? 0 ; wrong
+                  (begin (start/quot)
+                         (let* ((x (problem-x *problem*))
+                                (y (problem-y *problem*))
+                                (op (problem-op *problem*))
+                                (res ((run op) x y)))
+                           (math-quiz-type
+                            (string-append (number->string (car res)) "r"
+                                           (number->string (+ 7 (cadr res))))))
+                         (state-mistakes *state*)))
+   (reset)   
+   (check-eq? (begin (set-quot-level! 7) (start/quot) 0)
               (let ((x (problem-x *problem*))
                     (y (problem-y *problem*))
                     (op (problem-op *problem*)))
