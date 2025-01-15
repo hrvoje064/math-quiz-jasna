@@ -1,6 +1,6 @@
 #lang racket/gui
 
-;;; Math Quiz, v5.4.9
+;;; Math Quiz, v5.4.10
 
 (require net/sendurl)
 (require racket/runtime-path)
@@ -622,9 +622,9 @@
                              [alignment '(right top)]))
 
 (define slider-/quot-dialog (new dialog%
-                                 [label "Set"]
+                                 [label "For even levels enter 123r7 - where 123 is result and 7 is remainder"]
                                  [parent main-window]
-                                 [width 320]
+                                 [width 480]
                                  [height 80]
                                  [style '(close-button)]
                                  [alignment '(right top)]))
@@ -798,7 +798,7 @@
 
 (define level-/quot-slider
   (new slider%
-       [label "level of integer/fraction ÷ exe; all even levels with remainder; l7 fractions"]
+       [label "level of integer/fraction ÷ :all even with remainder: l 1-2 1d, l 3-4 2d, l 5-6 2d; l 7 fractions"]
        [min-value 1]
        [max-value 7]
        [parent slider-/quot-dialog]
